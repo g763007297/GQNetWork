@@ -527,16 +527,6 @@
     return FALSE;
 }
 
-- (NSString*)encodeURL:(NSString *)string
-{
-    NSString *newString = [string stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"]];
-//    NSString *newString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)string, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)));
-    if (newString) {
-        return newString;
-    }
-    return @"";
-}
-
 - (void)cancelRequest
 {
     

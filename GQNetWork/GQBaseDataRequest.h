@@ -223,7 +223,6 @@
 
 - (NSStringEncoding)getResponseEncoding;
 
-- (NSString*)encodeURL:(NSString *)string;
 - (NSString*)getRequestUrl;
 
 - (NSDictionary*)getStaticParams;

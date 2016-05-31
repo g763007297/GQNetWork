@@ -31,15 +31,12 @@
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
     
-    
     for (int i = 0; i < 20; i ++) {
-        dispatch_async(dispatch_queue_create("123456", DISPATCH_QUEUE_CONCURRENT), ^{
-            [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-                NSLog(@"%@",result.dictionary);
-            } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
-                NSLog(@"%@",error);
-            }];
-        });
+        [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+            NSLog(@"%@",result.dictionary);
+        } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
+            NSLog(@"%@",error);
+        }];
     }
 }
 
