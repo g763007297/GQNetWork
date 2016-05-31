@@ -23,7 +23,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQHttpRequestManager, sharedHttpRequestManager)
     return self;
 }
 
-- (void)addOperation:(GQUrlConnectionOperation *)operation{
+- (void)addOperation:(NSOperation *)operation{
     [self.connectionQueue addOperation:operation];
 }
 

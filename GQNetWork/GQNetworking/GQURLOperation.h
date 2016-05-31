@@ -8,29 +8,20 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-@class GQUrlConnectionOperation;
+@class GQURLOperation;
 
 enum {
-    GQHTTPRequestStateReady = 0,
-    GQHTTPRequestStateExecuting,
-    GQHTTPRequestStateFinished
+    GQURLStateReady = 0,
+    GQURLStateExecuting,
+    GQURLStateFinished
 };
-typedef NSUInteger GQHTTPRequestState;
+typedef NSUInteger GQURLState;
 
-enum {
-    GQHTTPRequestMethodGET = 0,
-    GQHTTPRequestMethodPOST,
-    GQHTTPRequestMethodPUT,
-    GQHTTPRequestMethodDELETE,
-    GQHTTPRequestMethodHEAD
-};
-typedef NSUInteger GQHTTPRequestMethod;
+typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL requestSuccess, NSError *error);
 
-typedef void (^GQHTTPRequestCompletionHandler)(GQUrlConnectionOperation *urlConnectionOperation,BOOL requestSuccess, NSError *error);
-
-@interface GQUrlConnectionOperation : NSOperation
+@interface GQURLOperation : NSOperation
 {
-    void (^_onRequestStartBlock)(GQUrlConnectionOperation *);
+    void (^_onRequestStartBlock)(GQURLOperation *);
 }
 
 @property (nonatomic, strong) NSMutableURLRequest           *operationRequest;
@@ -43,18 +34,19 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQUrlConnectionOperation *urlConn
 
 @property (nonatomic, strong) NSString                      *operationSavePath;
 
+@property (nonatomic, strong) NSURLSessionDataTask          *operationSession;
+
 @property (nonatomic, strong) NSURLConnection               *operationConnection;
 @property (nonatomic, strong) NSMutableData                 *operationData;
 @property (nonatomic, assign) CFRunLoopRef                  operationRunLoop;
-//@property (nonatomic, strong) NSTimer                       *timeoutTimer;
 @property (nonatomic, readwrite) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
 
-@property (nonatomic, readwrite) GQHTTPRequestState        state;
+@property (nonatomic, readwrite) GQURLState        state;
 @property (nonatomic, readwrite) float                      expectedContentLength;
 @property (nonatomic, readwrite) float                      receivedContentLength;
 @property (nonatomic, copy) void (^operationProgressBlock)(float progress);
 
-- (GQUrlConnectionOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQUrlConnectionOperation *urlConnectionOperation))onStartBlock
+- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
                                        completion:(GQHTTPRequestCompletionHandler)completionBlock;
 
 

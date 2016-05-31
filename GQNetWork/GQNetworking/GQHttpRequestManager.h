@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GQUrlConnectionOperation.h"
 
 @interface GQHttpRequestManager : NSObject
 
@@ -15,6 +14,6 @@
 
 + (GQHttpRequestManager *)sharedHttpRequestManager;
 
-- (void)addOperation:(GQUrlConnectionOperation *)operation;
+- (void)addOperation:(NSOperation *)operation;
 
 @end

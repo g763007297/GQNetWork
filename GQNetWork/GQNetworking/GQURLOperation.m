@@ -6,9 +6,9 @@
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#import "GQUrlConnectionOperation.h"
+#import "GQURLOperation.h"
 
-@interface GQUrlConnectionOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate>
+@interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
 {
     
 }
@@ -23,7 +23,7 @@
 
 @end
 
-@implementation GQUrlConnectionOperation
+@implementation GQURLOperation
 
 @synthesize state = _state;
 
@@ -44,7 +44,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 #endif
 }
 
-- (GQUrlConnectionOperation *)initWithURLRequest:(NSMutableURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock onRequestStart:(void(^)(GQUrlConnectionOperation *urlConnectionOperation))onStartBlock completion:(GQHTTPRequestCompletionHandler)completionBlock;
+- (GQURLOperation *)initWithURLRequest:(NSMutableURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock completion:(GQHTTPRequestCompletionHandler)completionBlock;
 {
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
@@ -77,22 +77,22 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (BOOL)isFinished
 {
-    return self.state == GQHTTPRequestStateFinished;
+    return self.state == GQURLStateFinished;
 }
 
 - (BOOL)isExecuting
 {
-    return self.state == GQHTTPRequestStateExecuting;
+    return self.state == GQURLStateExecuting;
 }
 
-- (GQHTTPRequestState)state
+- (GQURLState)state
 {
     @synchronized(self) {
         return _state;
     }
 }
 
-- (void)setState:(GQHTTPRequestState)newState
+- (void)setState:(GQURLState)newState
 {
     @synchronized(self) {
         [self willChangeValueForKey:@"state"];
@@ -116,7 +116,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     
     [self willChangeValueForKey:@"isExecuting"];
     [self willChangeValueForKey:@"isFinished"];
-    self.state = GQHTTPRequestStateFinished;
+    self.state = GQURLStateFinished;
     [self didChangeValueForKey:@"isExecuting"];
     [self didChangeValueForKey:@"isFinished"];
 }
@@ -149,7 +149,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     });
     
     [self willChangeValueForKey:@"isExecuting"];
-    self.state = GQHTTPRequestStateExecuting;
+    self.state = GQURLStateExecuting;
     [self didChangeValueForKey:@"isExecuting"];
     
 #if TARGET_OS_IPHONE
@@ -166,17 +166,26 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         self.operationFileHandle = [NSFileHandle fileHandleForWritingAtPath:self.operationSavePath];
     }
     
-    self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest delegate:self startImmediately:NO];
     NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
-    BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
-    NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
-    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
-    [self.operationConnection start];
     
-    if(inBackgroundAndInOperationQueue) {
-        self.operationRunLoop = CFRunLoopGetCurrent();
-        CFRunLoopRun();
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0) {
+        NSURLSession *session =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:currentQueue];
+        self.operationSession = [session dataTaskWithRequest:self.operationRequest];
+        [self.operationSession resume];
+    }else{
+        self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest delegate:self startImmediately:NO];
+        
+        BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
+        NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
+        [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
+        [self.operationConnection start];
+        
+        if(inBackgroundAndInOperationQueue) {
+            self.operationRunLoop = CFRunLoopGetCurrent();
+            CFRunLoopRun();
+        }
     }
+    
     __weak __typeof(&*self)weakSelf = self;
     if (_onRequestStartBlock) {
         _onRequestStartBlock(weakSelf);
@@ -199,6 +208,93 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
+    [self handleResponseData:data];
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection
+{
+    [self callCompletionBlockWithResponse:nil requestSuccess:YES error:nil];
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+{
+    [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didCompleteWithError:(NSError *)error
+{
+    if (error) {
+        [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
+    }else{
+        [self callCompletionBlockWithResponse:nil requestSuccess:YES error:nil];
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
+{
+    self.expectedContentLength = response.expectedContentLength;
+    
+    self.receivedContentLength = 0;
+    
+    self.operationURLResponse = (NSHTTPURLResponse *)response;
+    
+    NSURLSessionResponseDisposition disposition = NSURLSessionResponseAllow;
+    if (completionHandler) {
+        completionHandler(disposition);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+        newRequest:(NSURLRequest *)request
+ completionHandler:(void (^)(NSURLRequest * __nullable))completionHandler
+{
+    if (completionHandler) {
+        completionHandler(request);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler
+{
+    NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
+    __block NSURLCredential *credential = nil;
+    if (completionHandler) {
+        completionHandler(disposition, credential);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+ needNewBodyStream:(void (^)(NSInputStream * __nullable bodyStream))completionHandler
+{
+    NSInputStream *inputStream = nil;
+    if (completionHandler) {
+        completionHandler(inputStream);
+    }
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data
+{
+    [self handleResponseData:data];
+}
+
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+ willCacheResponse:(NSCachedURLResponse *)proposedResponse
+ completionHandler:(void (^)(NSCachedURLResponse * __nullable cachedResponse))completionHandler
+{
+    NSCachedURLResponse *cachedResponse = proposedResponse;
+    
+    if (completionHandler) {
+        completionHandler(cachedResponse);
+    }
+}
+
+- (void)handleResponseData:(NSData *)data{
     dispatch_group_async(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{
         if(self.operationSavePath) {
             @try {
@@ -206,7 +302,6 @@ static NSInteger GQHTTPRequestTaskCount = 0;
             }@catch (NSException *exception) {
                 [self.operationConnection cancel];
                 NSError *writeError = [NSError errorWithDomain:@"GQHTTPRequestWriteError" code:0 userInfo:exception.userInfo];
-                //                NSLog(@"writeError%ld",[self.operationData length]);
                 [self callCompletionBlockWithResponse:nil requestSuccess:NO error:writeError];
             }
         }
@@ -224,16 +319,6 @@ static NSInteger GQHTTPRequestTaskCount = 0;
             self.operationProgressBlock(-1);
         }
     }
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-    [self callCompletionBlockWithResponse:nil requestSuccess:YES error:nil];
-}
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
-{
-    [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
 }
 
 -(void)callCompletionBlockWithResponse:(NSData *)response requestSuccess:(BOOL)requestSuccess error:(NSError *)error
@@ -260,6 +345,5 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         [strongSelf finish];
     });
 }
-
 
 @end

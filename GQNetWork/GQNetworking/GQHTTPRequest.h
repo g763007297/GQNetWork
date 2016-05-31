@@ -8,16 +8,19 @@
 
 #import <Foundation/Foundation.h>
 #import "GQHTTPRequestManager.h"
-#import "GQBaseDataRequest.h"
 #import "GQNetwork.h"
+
+@class GQURLOperation;
+
+@class GQURLSessionOpetation;
 
 @interface GQHTTPRequest : NSObject
 {
-    void (^_onRequestStartBlock)(GQUrlConnectionOperation *);
-    void (^_onRequestFinishBlock)(GQUrlConnectionOperation *);
-    void (^_onRequestCanceled)(GQUrlConnectionOperation *);
-    void (^_onRequestFailedBlock)(GQUrlConnectionOperation *, NSError *);
-    void (^_onRequestProgressChangedBlock)(GQUrlConnectionOperation *, float);
+    void (^_onRequestStartBlock)();
+    void (^_onRequestFinishBlock)(NSData *);
+    void (^_onRequestCanceled)();
+    void (^_onRequestFailedBlock)(NSError *);
+    void (^_onRequestProgressChangedBlock)(float);
 }
 
 @property (nonatomic, assign) GQRequestMethod          requestMethod;
@@ -27,15 +30,21 @@
 @property (nonatomic, strong) NSMutableDictionary       *requestParameters;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, strong) GQUrlConnectionOperation *urlConnectionOperation;
+@property (nonatomic, strong) GQURLOperation *urlOperation;
+@property (nonatomic, strong) GQURLSessionOpetation    *uRLSessionOpetation;
 @property (nonatomic, assign) GQParameterEncoding      parmaterEncoding;
 
-- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding parmaterEncoding:(GQParameterEncoding)parameterEncoding  requestMethod:(GQRequestMethod)requestMethod
-                               onRequestStart:(void(^)(GQUrlConnectionOperation *request))onStartBlock
-                            onProgressChanged:(void(^)(GQUrlConnectionOperation *request,float progress))onProgressChangedBlock
-                            onRequestFinished:(void(^)(GQUrlConnectionOperation *request))onFinishedBlock
-                            onRequestCanceled:(void(^)(GQUrlConnectionOperation *request))onCanceledBlock
-                              onRequestFailed:(void(^)(GQUrlConnectionOperation *request ,NSError *error))onFailedBlock;
+- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
+                                         URL:(NSString *)url
+                                  saveToPath:(NSString *)filePath
+                             requestEncoding:(NSStringEncoding)requestEncoding
+                            parmaterEncoding:(GQParameterEncoding)parameterEncoding
+                               requestMethod:(GQRequestMethod)requestMethod
+                               onRequestStart:(void(^)())onStartBlock
+                            onProgressChanged:(void(^)(float progress))onProgressChangedBlock
+                            onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
+                            onRequestCanceled:(void(^)())onCanceledBlock
+                              onRequestFailed:(void(^)(NSError *error))onFailedBlock;
 
 - (void)setTimeoutInterval:(NSTimeInterval)seconds;
 - (void)addPostForm:(NSString *)key value:(NSString *)value;

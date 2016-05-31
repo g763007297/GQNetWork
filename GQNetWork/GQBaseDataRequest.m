@@ -382,7 +382,10 @@
 //            self.loadingMessage = DEFAULT_LOADING_MESSAGE;
 //        }
         _requestStartDate = [NSDate date];
-        _userInfo = [[NSDictionary alloc] initWithDictionary:params];
+        _userInfo = [[NSMutableDictionary alloc] initWithDictionary:params];
+        if ([self getStaticParams]) {
+            [_userInfo addEntriesFromDictionary:[self getStaticParams]];
+        }
         if ([self useDumpyData]) {
             [self processDumpyRequest];
         }
@@ -406,6 +409,28 @@
 }
 
 #pragma mark - init methods using block
+
++ (id)requestWithOnRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
+                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock{
+    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:nil
+                                                        withSubRequestUrl:nil
+                                                        withIndicatorView:nil
+                                                                  keyPath:nil
+                                                                  mapping:nil
+                                                       withLoadingMessage:nil
+                                                        withCancelSubject:nil
+                                                          withSilentAlert:YES
+                                                             withCacheKey:nil
+                                                            withCacheType:DataCacheManagerCacheTypeMemory
+                                                             withFilePath:nil
+                                                           onRequestStart:nil
+                                                        onRequestFinished:onFinishedBlock
+                                                        onRequestCanceled:nil
+                                                          onRequestFailed:onFailedBlock
+                                                        onProgressChanged:nil];
+    [[GQDataRequestManager sharedManager] addRequest:request];
+    return request;
+}
 
 + (id)requestWithParameters:(NSDictionary*)params
           withIndicatorView:(UIView*)indiView
@@ -673,7 +698,10 @@
 //            self.loadingMessage = DEFAULT_LOADING_MESSAGE;
 //        }
         _requestStartDate = [NSDate date];
-        _userInfo = [[NSDictionary alloc] initWithDictionary:params];
+        _userInfo = [[NSMutableDictionary alloc] initWithDictionary:params];
+        if ([self getStaticParams]) {
+            [_userInfo addEntriesFromDictionary:[self getStaticParams]];
+        }
         if ([self useDumpyData]) {
             [self processDumpyRequest];
         }
@@ -831,6 +859,7 @@
 
 - (void)cancelRequest
 {
+    
 }
 
 - (void)showNetowrkUnavailableAlertView:(NSString*)message
@@ -965,7 +994,6 @@
 - (NSStringEncoding)getResponseEncoding
 {
     return NSUTF8StringEncoding;
-    //return CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
 }
 
 - (NSDictionary*)getStaticParams
@@ -991,14 +1019,14 @@
 
 - (void)processDumpyRequest
 {
-    [self showIndicator:TRUE];
+//    [self showIndicator:TRUE];
     [self dumpyRequestDone];
     [self doRelease];
 }
 
 - (void)dumpyRequestDone
 {
-    [self showIndicator:FALSE];
+//    [self showIndicator:FALSE];
     NSString *jsonString = [self dumpyResponseString];
     [self handleResponseString:jsonString];
 }

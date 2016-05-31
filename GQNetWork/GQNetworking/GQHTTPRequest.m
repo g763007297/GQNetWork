@@ -12,6 +12,7 @@
 #import "GQNetworkTrafficManager.h"
 #import "CONSTS.h"
 #import "NSJSONSerialization+GQAdditions.h"
+#import "GQURLOperation.h"
 
 @interface GQHTTPRequest()
 {
@@ -30,7 +31,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     self.request = nil;
     self.bodyData = nil;
     self.requestParameters = nil;
-    self.urlConnectionOperation = nil;
+    self.urlOperation = nil;
 }
 
 - (id)init
@@ -65,11 +66,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     [self.requestParameters setObject:data forKey:key];
 }
 
-- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url  saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding  parmaterEncoding:(GQParameterEncoding)parameterEncoding requestMethod:(GQRequestMethod)requestMethod onRequestStart:(void(^)(GQUrlConnectionOperation *request))onStartBlock
-                            onProgressChanged:(void(^)(GQUrlConnectionOperation *request,float progress))onProgressChangedBlock
-                            onRequestFinished:(void(^)(GQUrlConnectionOperation *request))onFinishedBlock
-                            onRequestCanceled:(void(^)(GQUrlConnectionOperation *request))onCanceledBlock
-                              onRequestFailed:(void(^)(GQUrlConnectionOperation *request ,NSError *error))onFailedBlock
+- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url  saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding  parmaterEncoding:(GQParameterEncoding)parameterEncoding requestMethod:(GQRequestMethod)requestMethod onRequestStart:(void(^)())onStartBlock
+                            onProgressChanged:(void(^)(float progress))onProgressChangedBlock
+                            onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
+                            onRequestCanceled:(void(^)())onCanceledBlock
+                              onRequestFailed:(void(^)(NSError *error))onFailedBlock
 {
     self = [self init];
     if (self) {
@@ -238,9 +239,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (NSMutableURLRequest *)generateGETRequest
 {
-    NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
-    NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
-    self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
+    if ([[self.requestParameters allKeys] count]) {
+        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
+        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
+        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
+    }
     [self.request setURL:[NSURL URLWithString:self.requestURL]];
     [self.request setHTTPMethod:@"GET"];
     long long postBodySize = [self.requestURL lengthOfBytesUsingEncoding:self.requestEncoding];
@@ -284,38 +287,34 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             break;
     }
     
-    __weak typeof(self) weakself = self;
-    
-    self.urlConnectionOperation =  [[GQUrlConnectionOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath progress:^(float progress) {
+    self.urlOperation =  [[GQURLOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath progress:^(float progress) {
         if (_onRequestProgressChangedBlock) {
-            _onRequestProgressChangedBlock(weakself.urlConnectionOperation,progress);
+            _onRequestProgressChangedBlock(progress);
         }
-    } onRequestStart:^(GQUrlConnectionOperation *urlConnectionOperation) {
+    } onRequestStart:^(GQURLOperation *urlConnectionOperation) {
         if (_onRequestStartBlock) {
-            _onRequestStartBlock(weakself.urlConnectionOperation);
+            _onRequestStartBlock();
         }
-    } completion:^(GQUrlConnectionOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
+    } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
         if (requestSuccess) {
             if (_onRequestFinishBlock) {
-                _onRequestFinishBlock(weakself.urlConnectionOperation);
+                _onRequestFinishBlock(self.urlOperation.responseData);
             }
         }else{
             if (_onRequestFailedBlock) {
-                _onRequestFailedBlock(weakself.urlConnectionOperation,error);
+                _onRequestFailedBlock(error);
             }
         }
     }];
-    [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlConnectionOperation];
+    [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlOperation];
 }
 
 - (void)cancelRequest
 {
-    [self.urlConnectionOperation cancel];
+    [self.urlOperation cancel];
     if (_onRequestCanceled) {
-        _onRequestCanceled(self.urlConnectionOperation);
+        _onRequestCanceled(self.urlOperation);
     }
 }
-
-
 
 @end

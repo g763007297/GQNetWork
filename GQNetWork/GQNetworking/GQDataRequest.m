@@ -18,11 +18,9 @@
 
 - (void)doRequestWithParams:(NSDictionary*)params
 {
-    //    __weak GQBaseDataRequest *weakSelf = self;
-    
     __weak typeof(self) weakSelf  = self;
     
-    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_filePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:[self getRequestMethod] onRequestStart:^(GQUrlConnectionOperation *request) {
+    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_filePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:[self getRequestMethod] onRequestStart:^() {
         if (_onRequestStartBlock) {
             _onRequestStartBlock(weakSelf);
         }else if (weakSelf.delegate) {
@@ -30,7 +28,7 @@
                 [weakSelf.delegate requestDidStartLoad:weakSelf];
             }
         }
-    } onProgressChanged:^(GQUrlConnectionOperation *request, float progress) {
+    } onProgressChanged:^(float progress) {
         if (_onRequestProgressChangedBlock) {
             _onRequestProgressChangedBlock(weakSelf,progress);
         }else if (weakSelf.delegate) {
@@ -38,7 +36,7 @@
                 [weakSelf.delegate request:weakSelf progressChanged:progress];
             }
         }
-    } onRequestFinished:^(GQUrlConnectionOperation *request) {
+    } onRequestFinished:^(NSData *responseData) {
         if (_filePath) {
             if (_onRequestFinishBlock) {
                 _onRequestFinishBlock(weakSelf, nil);
@@ -48,12 +46,12 @@
                 }
             }
         }else{
-            [weakSelf handleResponseString:[[NSString alloc] initWithData:request.responseData encoding:NSUTF8StringEncoding]];
+            [weakSelf handleResponseString:[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]];
         }
         
-        [weakSelf showIndicator:NO];
+//        [weakSelf showIndicator:NO];
         [weakSelf doRelease];
-    } onRequestCanceled:^(GQUrlConnectionOperation *request) {
+    } onRequestCanceled:^() {
         if (_onRequestCanceled) {
             _onRequestCanceled(weakSelf);
         }else if (weakSelf.delegate) {
@@ -62,20 +60,19 @@
             }
         }
         [weakSelf doRelease];
-    } onRequestFailed:^(GQUrlConnectionOperation *request, NSError *error) {
+    } onRequestFailed:^(NSError *error) {
         [weakSelf notifyDelegateRequestDidErrorWithError:error];
-        [weakSelf showIndicator:NO];
+//        [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     }];
     
     [self.httpRequest startRequest];
-    [self showIndicator:YES];
+//    [self showIndicator:YES];
 }
 
 - (NSStringEncoding)getResponseEncoding
 {
     return NSUTF8StringEncoding;
-    //return CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000);
 }
 
 - (NSDictionary*)getStaticParams
@@ -112,7 +109,7 @@
         __weak GQBaseDataRequest *weakSelf = self;
         _onRequestCanceled(weakSelf);
     }
-    [self showIndicator:NO];
+//    [self showIndicator:NO];
     GQDINFO(@"%@ request is cancled", [self class]);
 }
 

@@ -7,20 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GQDataCacheManager.h"
 #import <UIKit/UIKit.h>
+#import "GQDataCacheManager.h"
+#import "GQMappingResult.h"
 #import "GQNetwork.h"
 
-#define USE_DUMPY_DATA	TRUE
+#define USE_DUMPY_DATA	0
 
 @class GQObjectMapping;
 @class GQMappingResult;
-
-typedef enum : NSUInteger{
-    GQRequestMethodGet = 0,
-    GQRequestMethodPost = 1,           // content type = @"application/x-www-form-urlencoded"
-    GQRequestMethodMultipartPost = 2,   // content type = @"multipart/form-data"
-} GQRequestMethod;
 
 @class GQRequestDataHandler;
 @class GQBaseDataRequest;
@@ -74,7 +69,7 @@ typedef enum : NSUInteger{
 @property (nonatomic, assign) GQParameterEncoding parmaterEncoding;
 @property (nonatomic, strong) NSString *rawResultString;
 @property (nonatomic, strong, readonly) NSString *requestUrl;
-@property (nonatomic, strong, readonly) NSDictionary *userInfo;
+@property (nonatomic, strong, readonly) NSMutableDictionary *userInfo;
 @property (nonatomic, strong, readonly) GQRequestDataHandler *requestDataHandler;
 
 #pragma mark - init methods using delegate
@@ -216,6 +211,41 @@ typedef enum : NSUInteger{
 
 #pragma mark - init methods using blocks
 
+/**
+ *  不需要添加参数的请求
+ *
+ *  @param onFinishedBlock 完成block
+ *  @param onFailedBlock   失败block
+ *
+ *  @return self
+ */
++ (id)requestWithOnRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
+                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
+
+/**
+ *  添加请求体的request
+ *
+ *  @param params          请求体
+ *  @param onFinishedBlock 完成block
+ *  @param onFailedBlock   失败block
+ *
+ *  @return self
+ */
++ (id)requestWithWithParameters:(NSDictionary*)params
+              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
+                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
+
+/**
+ *  <#Description#>
+ *
+ *  @param params          <#params description#>
+ *  @param indiView        <#indiView description#>
+ *  @param keyPath         <#keyPath description#>
+ *  @param mapping         <#mapping description#>
+ *  @param onFinishedBlock <#onFinishedBlock description#>
+ *
+ *  @return <#return value description#>
+ */
 + (id)requestWithParameters:(NSDictionary*)params
           withIndicatorView:(UIView*)indiView
                     keyPath:(NSString*)keyPath
@@ -316,7 +346,7 @@ typedef enum : NSUInteger{
  * subclass can override the method, access data from responseResult and parse it to sepecfied data format
  */
 - (void)processResult;
-- (void)showIndicator:(BOOL)bshow;
+//- (void)showIndicator:(BOOL)bshow;
 - (void)doRequestWithParams:(NSDictionary*)params;
 - (void)cancelRequest;                                     //subclass should override the method to cancel its request
 - (void)showNetowrkUnavailableAlertView:(NSString*)message;

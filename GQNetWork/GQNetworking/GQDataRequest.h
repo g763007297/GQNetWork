@@ -7,7 +7,6 @@
 //
 
 #import "GQBaseDataRequest.h"
-#import "GQBaseDataRequest.h"
 #import "GQHTTPRequest.h"
 
 @interface GQDataRequest : GQBaseDataRequest

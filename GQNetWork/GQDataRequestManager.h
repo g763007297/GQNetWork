@@ -21,5 +21,6 @@
 - (void)addRequest:(GQBaseDataRequest*)request;
 - (void)removeRequest:(GQBaseDataRequest*)request;
 
+- (void)cancelAllOperation;
 
 @end

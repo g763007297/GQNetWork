@@ -42,7 +42,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQDataRequestManager, sharedManager)
 - (void)removeRequest:(GQBaseDataRequest*)request
 {
     [_requests removeObject:request];
-    request = nil;
+}
+
+- (void)cancelAllOperation{
+    [_requests makeObjectsPerformSelector:@selector(cancelRequest)];
 }
 
 @end
