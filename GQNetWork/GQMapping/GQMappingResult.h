@@ -14,8 +14,6 @@
 
 - (instancetype)intWithDataSource:(GQObjectDataSource*)dataSource;
 
-- (BOOL)isSuccess;
-
 - (NSArray*)array;
 - (NSDictionary*)dictionary;
 - (NSDictionary*)rawDictionary;

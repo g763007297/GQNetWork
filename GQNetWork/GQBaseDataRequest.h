@@ -10,7 +10,9 @@
 #import <UIKit/UIKit.h>
 #import "GQDataCacheManager.h"
 #import "GQMappingResult.h"
+#import "GQMaskActivityView.h"
 #import "GQNetwork.h"
+#import "GQRequestParameter.h"
 
 #define USE_DUMPY_DATA	0
 
@@ -34,11 +36,10 @@
 @interface GQBaseDataRequest : NSObject
 {
 @protected
-    BOOL        _useSilentAlert;
     BOOL        _usingCacheData;
     
     DataCacheManagerCacheType _cacheType;
-//    GQMaskActivityView       *_maskActivityView;
+    GQMaskActivityView       *_maskActivityView;
     
     //progress related
     long long _totalData;
@@ -72,7 +73,7 @@
 @property (nonatomic, strong, readonly) NSMutableDictionary *userInfo;
 @property (nonatomic, strong, readonly) GQRequestDataHandler *requestDataHandler;
 
-#pragma mark - init methods using delegate
+#pragma mark - class methods using delegate
 
 /**
  *  请求方法
@@ -82,6 +83,17 @@
  *  @return  GQBaseDataRequest
  */
 + (id)requestWithDelegate:(id<DataRequestDelegate>)delegate;
+
+/**
+ *  如果想一次性配置请求参数 则配置成GQRequestParameter
+ *
+ *  @param parameterBody parameterBody
+ *  @param delegate      DataRequestDelegate
+ *
+ *  @return GQBaseDataRequest
+ */
++ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                     withDelegate:(id<DataRequestDelegate>)delegate;
 
 /**
  *  请求方法
@@ -118,104 +130,13 @@
         withSubRequestUrl:(NSString*)subUrl
         withCancelSubject:(NSString*)cancelSubject;
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl
-           withParameters:(NSDictionary*)params
-        withCancelSubject:(NSString*)cancelSubject;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-        withCancelSubject:(NSString*)cancelSubject;
-
-+ (id)silentRequestWithDelegate:(id<DataRequestDelegate>)delegate
-                        keyPath:(NSString*)keyPath
-                        mapping:(GQObjectMapping*)mapping
-                 withParameters:(NSDictionary*)params;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params
-             withCacheKey:(NSString*)cache
-            withCacheType:(DataCacheManagerCacheType)cacheType;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params
-        withCancelSubject:(NSString*)cancelSubject;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-        withIndicatorView:(UIView*)indiView;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-        withIndicatorView:(UIView*)indiView
-        withCancelSubject:(NSString*)cancelSubject;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params
-        withIndicatorView:(UIView*)indiView;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params
-        withIndicatorView:(UIView*)indiView
-             withCacheKey:(NSString*)cache
-            withCacheType:(DataCacheManagerCacheType)cacheType;
-
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
-                  keyPath:(NSString*)keyPath
-                  mapping:(GQObjectMapping*)mapping
-           withParameters:(NSDictionary*)params
-        withIndicatorView:(UIView*)indiView
-        withCancelSubject:(NSString*)cancelSubject;
-
-- (id)initWithDelegate:(id<DataRequestDelegate>)delegate
-               keyPath:(NSString*)keyPath
-               mapping:(GQObjectMapping*)mapping
-        withParameters:(NSDictionary*)params
-     withIndicatorView:(UIView*)indiView
-     withCancelSubject:(NSString*)cancelSubject
-       withSilentAlert:(BOOL)silent
-          withCacheKey:(NSString*)cache
-         withCacheType:(DataCacheManagerCacheType)cacheType
-          withFilePath:(NSString*)localFilePath;
-
-- (id)initWithDelegate:(id<DataRequestDelegate>)delegate
-     withSubRequestUrl:(NSString*)subUrl
-               keyPath:(NSString*)keyPath
-               mapping:(GQObjectMapping*)mapping
-        withParameters:(NSDictionary*)params
-     withIndicatorView:(UIView*)indiView
-    withLoadingMessage:(NSString*)loadingMessage
-     withCancelSubject:(NSString*)cancelSubject
-       withSilentAlert:(BOOL)silent
-          withCacheKey:(NSString*)cache
-         withCacheType:(DataCacheManagerCacheType)cacheType
-          withFilePath:(NSString*)localFilePath;
-
-#pragma mark - init methods using blocks
+#pragma mark - class methods using blocks
 
 /**
  *  不需要添加参数的请求
  *
- *  @param onFinishedBlock 完成block
- *  @param onFailedBlock   失败block
+ *  @param onFinishedBlock 请求完成block
+ *  @param onFailedBlock   请求失败block
  *
  *  @return self
  */
@@ -226,8 +147,8 @@
  *  添加请求体的request
  *
  *  @param params          请求体
- *  @param onFinishedBlock 完成block
- *  @param onFailedBlock   失败block
+ *  @param onFinishedBlock 请求完成block
+ *  @param onFailedBlock   请求失败block
  *
  *  @return self
  */
@@ -236,120 +157,61 @@
                 onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
 
 /**
- *  <#Description#>
+ *  添加请求体的request
  *
- *  @param params          <#params description#>
- *  @param indiView        <#indiView description#>
- *  @param keyPath         <#keyPath description#>
- *  @param mapping         <#mapping description#>
- *  @param onFinishedBlock <#onFinishedBlock description#>
+ *  @param params          请求体
+ *  @param subUrl          拼接url
+ *  @param onFinishedBlock 请求完成block
+ *  @param onFailedBlock   请求失败block
  *
- *  @return <#return value description#>
+ *  @return self
  */
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock;
++ (id)requestWithWithParameters:(NSDictionary*)params
+              withSubRequestUrl:(NSString*)subUrl
+              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
+                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
 
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-            onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
+/**
+ *  如果想一次性配置请求参数 则配置成GQRequestParameter
+ *
+ *  @param parameterBody          parameterBody
+ *  @param onStartBlock           请求开始block
+ *  @param onFinishedBlock        请求完成block
+ *  @param onCanceledBlock        请求取消block
+ *  @param onFailedBlock          请求失败block
+ *  @param onProgressChangedBlock 请求进度block
+ *
+ *  @return GQBaseDataRequest
+ */
++ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                   onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
+                onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
+                onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
+                  onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
+                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock;
 
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          withCancelSubject:(NSString*)cancelSubject
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock;
-
+#pragma mark -  file download class method  by using block
 + (id)requestWithParameters:(NSDictionary*)params
           withSubRequestUrl:(NSString*)subUrl
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock;
-
-+ (id)requestWithParameters:(NSDictionary*)params
-          withSubRequestUrl:(NSString*)subUrl
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          withCancelSubject:(NSString*)cancelSubject
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock;
-
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          withCancelSubject:(NSString*)cancelSubject
-             onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-          onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-            onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
-
-+ (id)requestWithParameters:(NSDictionary*)params
-          withSubRequestUrl:(NSString*)subUrl
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          withCancelSubject:(NSString*)cancelSubject
-             onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-          onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-            onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
-
-#pragma mark - file download related init methods
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
-          withCancelSubject:(NSString*)cancelSubject
-               withFilePath:(NSString*)localFilePath
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-          onProgressChanged:(void(^)(GQBaseDataRequest *request,CGFloat progress))onProgressChangedBlock;
-
-+ (id)requestWithParameters:(NSDictionary*)params
-          withIndicatorView:(UIView*)indiView
-                    keyPath:(NSString*)keyPath
-                    mapping:(GQObjectMapping*)mapping
           withCancelSubject:(NSString*)cancelSubject
                withFilePath:(NSString*)localFilePath
           onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
             onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
           onProgressChanged:(void(^)(GQBaseDataRequest *request,CGFloat progress))onProgressChangedBlock;
 
-- (id)initWithParameters:(NSDictionary*)params
-       withSubRequestUrl:(NSString*)subUrl
-       withIndicatorView:(UIView*)indiView
-                 keyPath:(NSString*)keyPath
-                 mapping:(GQObjectMapping*)mapping
-      withLoadingMessage:(NSString*)loadingMessage
-       withCancelSubject:(NSString*)cancelSubject
-         withSilentAlert:(BOOL)silent
-            withCacheKey:(NSString*)cache
-           withCacheType:(DataCacheManagerCacheType)cacheType
-            withFilePath:(NSString*)localFilePath
-          onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-       onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-       onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-         onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-       onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock;
-
+#pragma mark - subclass not override method
 - (void)notifyDelegateRequestDidErrorWithError:(NSError*)error;
 - (void)notifyDelegateRequestDidSuccess;
 - (void)doRelease;
+
+#pragma mark - subclass can  override method
 /*!
  * subclass can override the method, access data from responseResult and parse it to sepecfied data format
  */
 - (void)processResult;
-//- (void)showIndicator:(BOOL)bshow;
+- (void)showIndicator:(BOOL)bshow;
 - (void)doRequestWithParams:(NSDictionary*)params;
 - (void)cancelRequest;                                     //subclass should override the method to cancel its request
-- (void)showNetowrkUnavailableAlertView:(NSString*)message;
 - (void)handleResponseString:(NSString*)resultString;
 
 - (BOOL)onReceivedCacheData:(NSObject*)cacheData;
@@ -371,7 +233,5 @@
 #pragma mark - 假数据方法
 - (BOOL)useDumpyData;
 - (NSString*)dumpyResponseString;
-
-
 
 @end

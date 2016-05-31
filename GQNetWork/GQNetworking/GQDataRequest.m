@@ -49,7 +49,7 @@
             [weakSelf handleResponseString:[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]];
         }
         
-//        [weakSelf showIndicator:NO];
+        [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     } onRequestCanceled:^() {
         if (_onRequestCanceled) {
@@ -62,12 +62,12 @@
         [weakSelf doRelease];
     } onRequestFailed:^(NSError *error) {
         [weakSelf notifyDelegateRequestDidErrorWithError:error];
-//        [weakSelf showIndicator:NO];
+        [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     }];
     
     [self.httpRequest startRequest];
-//    [self showIndicator:YES];
+    [self showIndicator:YES];
 }
 
 - (NSStringEncoding)getResponseEncoding
@@ -103,19 +103,13 @@
 - (void)cancelRequest
 {
     [self.httpRequest cancelRequest];
-    //to cancel here
     
     if (_onRequestCanceled) {
         __weak GQBaseDataRequest *weakSelf = self;
         _onRequestCanceled(weakSelf);
     }
-//    [self showIndicator:NO];
+    [self showIndicator:NO];
     GQDINFO(@"%@ request is cancled", [self class]);
-}
-
-- (void)dealloc
-{
-    
 }
 
 @end

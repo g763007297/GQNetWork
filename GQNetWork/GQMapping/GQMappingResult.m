@@ -8,11 +8,9 @@
 
 #import "GQMappingResult.h"
 #import "GQObjectDataSource.h"
-#import "GQRequestResult.h"
 
 @interface GQMappingResult()
 {
-    GQRequestResult    *_responseResult;
     GQObjectDataSource *_dataSource;
 }
 @end
@@ -23,7 +21,6 @@
 {
     if (self) {
         _dataSource = dataSource;
-        _responseResult = [[GQRequestResult alloc] initWithCode:dataSource.rawDictionary[@"code"] withMessage:dataSource.rawDictionary[@"message"]];
     }
     return self;
 }
@@ -52,11 +49,6 @@
 - (NSDictionary*)rawDictionary
 {
     return _dataSource.rawDictionary;
-}
-
-- (BOOL)isSuccess
-{
-    return [_responseResult isSuccess];
 }
 
 - (id)valueForKeyPath:(NSString *)keyPath

@@ -41,7 +41,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQDataEnvironment, sharedDataEnvironment)
 
 - (void)clearCacheData
 {
-    //clear cache data if needed
+     [[GQDataCacheManager sharedManager] clearMemoryCache];
 }
 
 #pragma mark - private methods
@@ -49,6 +49,27 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQDataEnvironment, sharedDataEnvironment)
 - (void)restore
 {
     _urlRequestHost = REQUEST_DOMAIN;
+}
+
+- (void)registerMemoryWarningNotification
+{
+#if TARGET_OS_IPHONE
+    // Subscribe to app events
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(clearCacheData)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+#ifdef __IPHONE_4_0
+    UIDevice *device = [UIDevice currentDevice];
+    if ([device respondsToSelector:@selector(isMultitaskingSupported)] && device.multitaskingSupported){
+        // When in background, clean memory in order to have less chance to be killed
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(clearCacheData)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
+    }
+#endif
+#endif
 }
 
 @end

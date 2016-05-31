@@ -167,15 +167,15 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     }
     
     NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
+    BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0) {
-        NSURLSession *session =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:currentQueue];
+        NSURLSession *session =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
         self.operationSession = [session dataTaskWithRequest:self.operationRequest];
         [self.operationSession resume];
     }else{
         self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest delegate:self startImmediately:NO];
         
-        BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
         NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
         [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
         [self.operationConnection start];
