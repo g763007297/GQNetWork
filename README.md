@@ -7,9 +7,9 @@
 
 ##CocoaPods
 
-1.在 Podfile 中添加 pod 'GQImageViewer'。
+1.在 Podfile 中添加 pod 'GQNetWork'。
 2.执行 pod install 或 pod update。
-3.导入 GQImageViewer.h。
+3.添加一个类继承GQDataRequest，详见demo
 
 ## Basic usage
 
