@@ -12,7 +12,6 @@
 #import "GQMappingResult.h"
 #import "GQNetwork.h"
 #import "GQRequestParameter.h"
-#import "GQCommonMacros.h"
 
 #if GQUSE_MaskView
 #import "GQMaskActivityView.h"

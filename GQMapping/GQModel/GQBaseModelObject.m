@@ -8,7 +8,7 @@
 
 #import "GQBaseModelObject.h"
 #import <objc/runtime.h>
-#import "GQCommonMacros.h"
+#import "GQNetwork.h"
 
 @interface GQBaseModelObject()
 

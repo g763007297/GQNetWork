@@ -7,7 +7,7 @@
 //
 
 #import "GQUserDefaultCache.h"
-#import "GQCommonMacros.h"
+#import "GQNetwork.h"
 
 @interface GQUserDefaultCache()
 {

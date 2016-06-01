@@ -7,7 +7,7 @@
 //
 
 #import "GQBaseCache.h"
-#import "GQCommonMacros.h"
+#import "GQNetwork.h"
 
 @implementation GQBaseCache
 
