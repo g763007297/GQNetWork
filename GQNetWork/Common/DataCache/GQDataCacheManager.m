@@ -24,8 +24,6 @@
 GQOBJECT_SINGLETON_BOILERPLATE(GQDataCacheManager, sharedManager)
 
 #pragma mark - lifecycle methods
-
-
 - (id)init
 {
     self = [super init];

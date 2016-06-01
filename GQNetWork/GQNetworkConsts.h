@@ -1,13 +1,13 @@
 //
-//  GQNetwork.h
+//  GQNetworkConsts.h
 //  GQNetWorkDemo
 //
 //  Created by 高旗 on 16/5/27.
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#ifndef GQNetwork_h
-#define GQNetwork_h
+#ifndef GQNetworkConsts_h
+#define GQNetworkConsts_h
 
 typedef enum {
     GQURLParameterEncoding,             //常规post请求  可有图片
@@ -57,4 +57,4 @@ typedef enum : NSUInteger{
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#endif /* GQNetwork_h */
+#endif /* GQNetworkConsts_h */

@@ -90,8 +90,8 @@
     if ([fileManager fileExistsAtPath:filePath]) {
         NSError *error = nil;
         [fileManager removeItemAtPath:filePath error:&error];
-        NSString *errorMessage = [NSString stringWithFormat:@"delete file %@ failed", filePath];
-        NSAssert(nil == error,  errorMessage);
+//        NSString *errorMessage = [NSString stringWithFormat:@"delete file %@ failed", filePath];
+//        NSAssert(nil == error,  errorMessage);
     }
 }
 
