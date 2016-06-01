@@ -18,8 +18,6 @@
     GQObjectMapping    *_mapping;
 }
 
-#define DEFAULT_LOADING_MESSAGE  @"正在加载..."
-
 @property (nonatomic, strong) UIView *indicatorView;
 @property (nonatomic, strong) NSString *loadingMessage;
 
@@ -92,6 +90,8 @@
 @end
 
 @implementation GQBaseDataRequest
+
+#pragma mark - class methods using delegate
 
 + (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
 {
@@ -253,7 +253,7 @@
     return self;
 }
 
-#pragma mark - init methods using block
+#pragma mark - class methods using block
 
 + (id)requestWithOnRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
                    onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock{
@@ -326,7 +326,7 @@
                 onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
                 onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock{
+                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat progress))onProgressChangedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:parameterBody.parameters
                                                         withSubRequestUrl:parameterBody.subRequestUrl
                                                         withIndicatorView:parameterBody.indicatorView
@@ -514,7 +514,7 @@
 
 - (BOOL)useDumpyData
 {
-    return USE_DUMPY_DATA;
+    return GQUSE_DUMPY_DATA;
 }
 
 - (NSString*)dumpyResponseString
@@ -535,6 +535,7 @@
 - (void)showIndicator:(BOOL)bshow
 {
     _loading = bshow;
+#if GQUSE_MaskView
     if (bshow && _indicatorView) {
         if (!_maskActivityView) {
             _maskActivityView = [GQMaskActivityView loadFromXib];
@@ -548,6 +549,7 @@
             _maskActivityView = nil;
         }
     }
+#endif
 }
 
 - (void)cacheResult
@@ -575,7 +577,6 @@
 
 - (void)notifyDelegateRequestDidErrorWithError:(NSError*)error
 {
-    //using block callback
     if (_onRequestFailedBlock) {
         _onRequestFailedBlock(self, error);
     }else if (self.delegate) {

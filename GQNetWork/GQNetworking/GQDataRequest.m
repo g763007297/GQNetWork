@@ -95,11 +95,6 @@
     return GQRequestMethodGet;
 }
 
-- (NSString*)getRequestHost
-{
-    return DATA_ENV.urlRequestHost;
-}
-
 - (void)cancelRequest
 {
     [self.httpRequest cancelRequest];

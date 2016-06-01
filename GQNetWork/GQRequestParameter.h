@@ -21,7 +21,7 @@
 
 @property (nonatomic, copy) NSDictionary *parameters;
 
-@property (nonatomic, copy) UIView *indicatorView;
+@property (nonatomic, strong) UIView *indicatorView;
 
 @property (nonatomic, copy) NSString *loadingMessage;
 

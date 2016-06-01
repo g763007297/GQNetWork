@@ -10,9 +10,7 @@
 #import "GQDataCacheManager.h"
 #import "GQNetworkTrafficManager.h"
 #import "GQObjectSingleton.h"
-#import "CONSTS.h"
 @interface GQDataEnvironment()
-- (void)restore;
 - (void)registerMemoryWarningNotification;
 @end
 
@@ -26,7 +24,6 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQDataEnvironment, sharedDataEnvironment)
 {
     self = [super init];
     if ( self) {
-        [self restore];
         [self registerMemoryWarningNotification];
     }
     return self;
@@ -42,13 +39,6 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQDataEnvironment, sharedDataEnvironment)
 - (void)clearCacheData
 {
      [[GQDataCacheManager sharedManager] clearMemoryCache];
-}
-
-#pragma mark - private methods
-
-- (void)restore
-{
-    _urlRequestHost = REQUEST_DOMAIN;
 }
 
 - (void)registerMemoryWarningNotification

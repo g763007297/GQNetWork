@@ -250,7 +250,7 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         newRequest:(NSURLRequest *)request
- completionHandler:(void (^)(NSURLRequest * __nullable))completionHandler
+ completionHandler:(void (^)(NSURLRequest *))completionHandler
 {
     if (completionHandler) {
         completionHandler(request);
@@ -259,7 +259,7 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
- completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * __nullable credential))completionHandler
+ completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * credential))completionHandler
 {
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
     __block NSURLCredential *credential = nil;
@@ -269,7 +269,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 }
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
- needNewBodyStream:(void (^)(NSInputStream * __nullable bodyStream))completionHandler
+ needNewBodyStream:(void (^)(NSInputStream * bodyStream))completionHandler
 {
     NSInputStream *inputStream = nil;
     if (completionHandler) {
@@ -285,7 +285,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
  willCacheResponse:(NSCachedURLResponse *)proposedResponse
- completionHandler:(void (^)(NSCachedURLResponse * __nullable cachedResponse))completionHandler
+ completionHandler:(void (^)(NSCachedURLResponse * cachedResponse))completionHandler
 {
     NSCachedURLResponse *cachedResponse = proposedResponse;
     
@@ -340,7 +340,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                                           userInfo:nil];
         }
         if(strongSelf.operationCompletionBlock && !strongSelf.isCancelled){
-            strongSelf.operationCompletionBlock(weakSelf,requestSuccess, serverError);
+            strongSelf.operationCompletionBlock(weakSelf,requestSuccess,requestSuccess?nil:serverError);
         }
         [strongSelf finish];
     });

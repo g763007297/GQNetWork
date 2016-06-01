@@ -95,7 +95,6 @@
 		B6CB1D7E1CF848A600D485E3 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		B6CB1D861CF84C8F00D485E3 /* GQDataEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataEnvironment.h; sourceTree = "<group>"; };
 		B6CB1D871CF84C8F00D485E3 /* GQDataEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDataEnvironment.m; sourceTree = "<group>"; };
-		B6CB1D891CF84CEC00D485E3 /* CONSTS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CONSTS.h; sourceTree = "<group>"; };
 		B6CB1D8C1CF84D4800D485E3 /* GQQueryStringPair.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQQueryStringPair.h; sourceTree = "<group>"; };
 		B6CB1D8D1CF84D4800D485E3 /* GQQueryStringPair.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQQueryStringPair.m; sourceTree = "<group>"; };
 		B6CB1D8E1CF84D4800D485E3 /* GQRequestDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQRequestDataHandler.h; sourceTree = "<group>"; };
@@ -254,7 +253,6 @@
 				B6CB1D8B1CF84D4800D485E3 /* DataHandler */,
 				B6CB1D8A1CF84D3700D485E3 /* DataCache */,
 				B6CB1D5B1CF840F500D485E3 /* GQObjectSingleton.h */,
-				B6CB1D891CF84CEC00D485E3 /* CONSTS.h */,
 				B6CB1D861CF84C8F00D485E3 /* GQDataEnvironment.h */,
 				B6CB1D871CF84C8F00D485E3 /* GQDataEnvironment.m */,
 			);

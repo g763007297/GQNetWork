@@ -8,11 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GQDataEnvironment : NSObject{
-    NSString *_urlRequestHost;
-}
-
-@property (nonatomic,strong) NSString *urlRequestHost;
+@interface GQDataEnvironment : NSObject
 
 + (GQDataEnvironment *)sharedDataEnvironment;
 

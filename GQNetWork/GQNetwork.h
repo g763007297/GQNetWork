@@ -10,10 +10,9 @@
 #define GQNetwork_h
 
 typedef enum {
-    GQURLParameterEncoding,
-    GQJSONParameterEncoding,
-    GQPropertyListParameterEncoding,
-    GQURLJSONParameterEncoding
+    GQURLParameterEncoding,             //常规post请求  可有图片
+    GQJSONParameterEncoding,            //parameter json化 无图片
+    GQURLJSONParameterEncoding          //post请求  但是parameter拼接到url后面  可有图片
 } GQParameterEncoding;
 
 typedef enum : NSUInteger{

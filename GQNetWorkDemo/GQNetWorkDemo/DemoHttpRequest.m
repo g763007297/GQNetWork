@@ -7,17 +7,23 @@
 //
 
 #import "DemoHttpRequest.h"
-#import "CONSTS.h"
+#import "GQCommonMacros.h"
 
 @implementation DemoHttpRequest
 
 - (NSString*)getRequestUrl
 {
-    return [GQHttpReuqestURL stringByAppendingString:@"/zh-services/resources/leftIndex"];
+    return [GQHttpReuqestURL stringByAppendingString:@"product/list"];
 }
 
-- (GQRequestMethod)getRequestMethod{
-    return GQRequestMethodGet;
+-(GQParameterEncoding)getParameterEncoding
+{
+    return GQURLJSONParameterEncoding;
+}
+
+- (GQRequestMethod)getRequestMethod
+{
+    return GQRequestMethodPost;
 }
 
 @end

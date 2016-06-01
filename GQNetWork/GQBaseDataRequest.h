@@ -10,11 +10,13 @@
 #import <UIKit/UIKit.h>
 #import "GQDataCacheManager.h"
 #import "GQMappingResult.h"
-#import "GQMaskActivityView.h"
 #import "GQNetwork.h"
 #import "GQRequestParameter.h"
+#import "GQCommonMacros.h"
 
-#define USE_DUMPY_DATA	0
+#if GQUSE_MaskView
+#import "GQMaskActivityView.h"
+#endif
 
 @class GQObjectMapping;
 @class GQMappingResult;
@@ -39,7 +41,9 @@
     BOOL        _usingCacheData;
     
     DataCacheManagerCacheType _cacheType;
+#if GQUSE_MaskView
     GQMaskActivityView       *_maskActivityView;
+#endif
     
     //progress related
     long long _totalData;
@@ -188,9 +192,9 @@
                 onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
                 onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock;
+                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat progress))onProgressChangedBlock;
 
-#pragma mark -  file download class method  by using block
+#pragma mark -  file download class method using block
 + (id)requestWithParameters:(NSDictionary*)params
           withSubRequestUrl:(NSString*)subUrl
           withCancelSubject:(NSString*)cancelSubject

@@ -31,18 +31,22 @@
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
     
+    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];
+    parameter.indicatorView = self.view;
+    
     for (int i = 0; i < 20; i ++) {
-        [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+        [DemoHttpRequest requestWithRequestParameter:parameter onRequestStart:^(GQBaseDataRequest *request) {
+            
+        } onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
             NSLog(@"%@",result.dictionary);
-        } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
-            NSLog(@"%@",error);
-        }];
+        } onRequestCanceled:^(GQBaseDataRequest *request) {
+            
+        } onRequestFailed:nil onProgressChanged:nil];
     }
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)insertNewObject:(id)sender {

@@ -10,9 +10,9 @@
 #import "GQQueryStringPair.h"
 #import "GQHttpRequestManager.h"
 #import "GQNetworkTrafficManager.h"
-#import "CONSTS.h"
 #import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
+#import "GQCommonMacros.h"
 
 @interface GQHTTPRequest()
 {
@@ -153,7 +153,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         _isUploadFile = NO;
         NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
         NSData *postData = [paramString dataUsingEncoding:weakSelf.requestEncoding allowLossyConversion:YES];
-        [weakSelf.bodyData appendData:postData];
+        [self.bodyData appendData:postData];
     } else {
         _isUploadFile = YES;
         [paramsDict enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
@@ -174,6 +174,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     }
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
@@ -213,6 +214,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     [self.request setURL:[NSURL URLWithString:self.requestURL]];
     
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return self.request;
@@ -232,6 +234,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     
     [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [self.request setValue:@"application/json" forHTTPHeaderField:@"Accept-Type"];
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return  self.request;
@@ -270,10 +274,10 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                     [self generateJSONPOSTRequest];
                 }
                     break;
-                    
-                case GQPropertyListParameterEncoding: {
-                    
-                }
+//                    
+//                case GQPropertyListParameterEncoding: {
+//                    
+//                }
                 case GQURLJSONParameterEncoding:{
                     [self generateURLJSONPOSTRequest];
                 }
