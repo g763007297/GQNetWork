@@ -6,6 +6,8 @@
 
 继承形式的网络请求库，支持关系映射，支持NSURLSession
 
+### Simple Use
+
 ##CocoaPods
 
 1.在 Podfile 中添加 pod 'GQNetWork'。
@@ -41,6 +43,10 @@ GQCommonMacros中有配置文件
   //使用假数据
   - (BOOL)useDumpyData;
 ``` 
+
+### Hard Use
+
+
 
 在iOS9以上的系统需要添加plist字段，否则无法发起请求:
   
