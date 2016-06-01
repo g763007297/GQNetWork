@@ -8,7 +8,7 @@
 
 #import "GQBaseModelObject.h"
 #import <objc/runtime.h>
-#import "GQNetwork.h"
+#import "GQDebug.h"
 
 @interface GQBaseModelObject()
 

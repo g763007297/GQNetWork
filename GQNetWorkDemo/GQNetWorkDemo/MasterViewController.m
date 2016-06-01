@@ -48,7 +48,7 @@
     
 #pragma mark -- 高级用法  使用mapping
     
-    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];
+    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];//配置请求参数
     
     GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
     

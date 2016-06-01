@@ -10,7 +10,7 @@
 #import "GQHttpRequestManager.h"
 #import "GQNetworkTrafficManager.h"
 #import "GQRequestJsonDataHandler.h"
-#import "GQNetwork.h"
+#import "GQNetworkConsts.h"
 #import "GQDataEnvironment.h"
 #import "GQDebug.h"
 

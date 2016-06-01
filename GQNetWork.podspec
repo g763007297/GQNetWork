@@ -21,12 +21,7 @@ s.version = "0.0.3"
   s.default_subspec = 'NetWork'
 
   s.subspec 'Mapping' do |ss|
-    ss.source_files = [
-      'GQMapping/**/*.{h,m}',
-      'GQNetWork/Additions/NSString+GQAdditions.h',
-      'GQNetWork/Additions/NSString+GQAdditions.m',
-    ]
-    ss.public_header_files = "GQMapping/*.h"
+    ss.source_files = 'GQMapping/**/*.{h,m}'
   end
   
   s.subspec 'NetWork' do |nw|

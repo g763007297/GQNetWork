@@ -34,8 +34,6 @@ typedef enum : NSUInteger{
 
 #define DEFAULT_LOADING_MESSAGE  @"正在加载..."   //正在加载maskview显示的默认文字
 
-#define SHOULDOVERRIDE(basename, subclassname){ NSAssert([basename isEqualToString:subclassname], @"subclass should override the method!");}
-
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma mark - shortcuts

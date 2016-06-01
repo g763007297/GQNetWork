@@ -12,7 +12,7 @@
 #import "GQNetworkTrafficManager.h"
 #import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
-#import "GQNetwork.h"
+#import "GQNetworkConsts.h"
 
 @interface GQHTTPRequest()
 {

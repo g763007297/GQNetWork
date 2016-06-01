@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "GQHTTPRequestManager.h"
-#import "GQNetwork.h"
+#import "GQNetworkConsts.h"
 
 @class GQURLOperation;
 

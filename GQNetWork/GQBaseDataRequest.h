@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "GQDataCacheManager.h"
 #import "GQMappingResult.h"
-#import "GQNetwork.h"
+#import "GQNetworkConsts.h"
 #import "GQRequestParameter.h"
 
 #if GQUSE_MaskView

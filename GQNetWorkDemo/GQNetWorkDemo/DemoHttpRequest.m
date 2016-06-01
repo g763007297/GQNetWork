@@ -7,7 +7,7 @@
 //
 
 #import "DemoHttpRequest.h"
-#import "GQCommonMacros.h"
+#import "GQNetworkConsts.h"
 
 @implementation DemoHttpRequest
 

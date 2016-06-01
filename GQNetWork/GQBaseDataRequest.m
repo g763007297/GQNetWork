@@ -11,7 +11,6 @@
 #import "GQRequestJsonDataHandler.h"
 #import "GQMappingHeader.h"
 #import "GQDebug.h"
-#import "GQNetwork.h"
 
 @interface GQBaseDataRequest()
 {
