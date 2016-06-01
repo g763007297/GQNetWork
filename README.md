@@ -4,7 +4,7 @@
 
 # GQNetWork
 
-继承形式的网络请求库，支持关系映射，支持NSURLSession
+继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，请求数据缓存机制
 
 # Simple Use
 
