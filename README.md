@@ -4,6 +4,7 @@
 
 # GQNetWork
 
+继承形式的网络请求库，支持关系映射，支持NSURLSession
 
 ##CocoaPods
 
@@ -12,6 +13,20 @@
 2.执行 pod install 或 pod update。
 
 3.添加一个类继承GQDataRequest，详见demo
+
+## Configure File
+
+GQCommonMacros中有配置文件
+
+1.  配置默认请求地址:GQHttpReuqestURL   
+
+2.  默认请求host:REQUEST_HOST  
+
+3. 是否使用maskview: GQUSE_MaskView
+
+4. 是否使用假数据:GQUSE_DUMPY_DATA
+
+5.加载默认提示文字:DEFAULT_LOADING_MESSAGE
 
 ## Basic usage
 
