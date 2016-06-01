@@ -18,8 +18,7 @@
 
 @implementation GQBaseModelObject
 
--(NSDictionary*)attributeMapDictionary
-{
++ (NSDictionary *)attributeMapDictionary{
     SHOULDOVERRIDE(@"GQBaseModelObject", NSStringFromClass([self class]));
     return nil;
 }
@@ -37,7 +36,7 @@
 - (NSString *)description
 {
     NSMutableString *attrsDesc = [NSMutableString stringWithCapacity:100];
-    NSDictionary *attrMapDic = [self attributeMapDictionary];
+    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
     NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
     id attributeName;
     while ((attributeName = [keyEnum nextObject])) {
@@ -81,7 +80,7 @@
 - (id)copyWithZone:(NSZone *)zone
 {
     id object = [[self class] allocWithZone:zone];
-    NSDictionary *attrMapDic = [self attributeMapDictionary];
+    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
     NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
     id attributeName;
     while ((attributeName = [keyEnum nextObject])) {
@@ -110,7 +109,7 @@
 - (id)initWithCoder:(NSCoder *)decoder
 {
     if( self = [super init] ){
-        NSDictionary *attrMapDic = [self attributeMapDictionary];
+        NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
         if (attrMapDic == nil) {
             return self;
         }
@@ -129,7 +128,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
-    NSDictionary *attrMapDic = [self attributeMapDictionary];
+    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
     if (attrMapDic == nil) {
         return;
     }
@@ -169,7 +168,7 @@
 
 -(void)setAttributes:(NSDictionary*)dataDic
 {
-    NSDictionary *attrMapDic = [self attributeMapDictionary];
+    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
     if (attrMapDic == nil) {
         return;
     }

@@ -17,7 +17,7 @@
 
 @property (nonatomic, copy) NSString *keyPath;
 
-@property (nonatomic, copy) GQObjectMapping *mapping;
+@property (nonatomic, strong) GQObjectMapping *mapping;
 
 @property (nonatomic, copy) NSDictionary *parameters;
 

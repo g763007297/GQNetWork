@@ -58,5 +58,4 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQMappingManager, sharedManager)
     [_mappingOperationQueue addOperation:mappingOperation];
 }
 
-
 @end

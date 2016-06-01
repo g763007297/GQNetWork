@@ -14,9 +14,9 @@
 
 - (instancetype)intWithDataSource:(GQObjectDataSource*)dataSource;
 
-- (NSArray*)array;
-- (NSDictionary*)dictionary;
-- (NSDictionary*)rawDictionary;
+- (NSArray*)array;//map数组
+- (NSDictionary*)dictionary;//map后结果
+- (NSDictionary*)rawDictionary;//原始结果
 - (id)valueForKeyPath:(NSString *)keyPath;
 - (void)replaceObjectAtKey:(NSString*)key object:(id)object;
 - (void)replaceObjectAtKeyPath:(NSString*)keyPath object:(id)object;

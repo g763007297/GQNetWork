@@ -20,7 +20,8 @@
  *	value:  dictionary key name
  *	\returns a dictionary key-value pair by property name and key of data dictionary
  */
-- (NSDictionary*)attributeMapDictionary;
+
++ (NSDictionary *)attributeMapDictionary;
 
 /*!
  *	You can implement this. Default implementation nil is returned

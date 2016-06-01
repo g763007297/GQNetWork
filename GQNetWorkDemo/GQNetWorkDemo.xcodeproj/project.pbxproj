@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B6279D101CFC325300E5F15C /* GQHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B6279D0D1CFC325300E5F15C /* GQHTTPRequest.m */; };
 		B6279D111CFC325300E5F15C /* GQHttpRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6279D0F1CFC325300E5F15C /* GQHttpRequestManager.m */; };
+		B6292D851CFE88A100FA12B4 /* ProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B6292D841CFE88A100FA12B4 /* ProductModel.m */; };
 		B6574BDB1CFD6A6900648541 /* GQXibView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6574BDA1CFD6A6900648541 /* GQXibView.m */; };
 		B6574BDE1CFD6AAF00648541 /* GQXibViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B6574BDD1CFD6AAF00648541 /* GQXibViewUtils.m */; };
 		B6574BE31CFD6B2900648541 /* GQMaskActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = B6574BE21CFD6B2900648541 /* GQMaskActivityView.m */; };
@@ -54,6 +55,8 @@
 		B6279D0D1CFC325300E5F15C /* GQHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQHTTPRequest.m; sourceTree = "<group>"; };
 		B6279D0E1CFC325300E5F15C /* GQHttpRequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQHttpRequestManager.h; sourceTree = "<group>"; };
 		B6279D0F1CFC325300E5F15C /* GQHttpRequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQHttpRequestManager.m; sourceTree = "<group>"; };
+		B6292D831CFE88A100FA12B4 /* ProductModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductModel.h; sourceTree = "<group>"; };
+		B6292D841CFE88A100FA12B4 /* ProductModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductModel.m; sourceTree = "<group>"; };
 		B6574BD91CFD6A6900648541 /* GQXibView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQXibView.h; sourceTree = "<group>"; };
 		B6574BDA1CFD6A6900648541 /* GQXibView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQXibView.m; sourceTree = "<group>"; };
 		B6574BDC1CFD6AAF00648541 /* GQXibViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQXibViewUtils.h; sourceTree = "<group>"; };
@@ -199,6 +202,8 @@
 			children = (
 				B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */,
 				B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */,
+				B6292D831CFE88A100FA12B4 /* ProductModel.h */,
+				B6292D841CFE88A100FA12B4 /* ProductModel.m */,
 				B6CB1D391CF83E3B00D485E3 /* AppDelegate.h */,
 				B6CB1D3A1CF83E3B00D485E3 /* AppDelegate.m */,
 				B6CB1D3C1CF83E3B00D485E3 /* MasterViewController.h */,
@@ -433,6 +438,7 @@
 				B6279D111CFC325300E5F15C /* GQHttpRequestManager.m in Sources */,
 				B6574BDB1CFD6A6900648541 /* GQXibView.m in Sources */,
 				B6CB1D3B1CF83E3B00D485E3 /* AppDelegate.m in Sources */,
+				B6292D851CFE88A100FA12B4 /* ProductModel.m in Sources */,
 				B6CB1D541CF83E9500D485E3 /* GQBaseDataRequest.m in Sources */,
 				B6CB1DAD1CF8503600D485E3 /* GQBaseModelObject.m in Sources */,
 				B6CB1D881CF84C8F00D485E3 /* GQDataEnvironment.m in Sources */,

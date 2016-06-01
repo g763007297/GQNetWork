@@ -27,11 +27,11 @@
 @protocol DataRequestDelegate <NSObject>
 
 @optional
-- (void)requestDidStartLoad:(GQBaseDataRequest*)request;
-- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;
-- (void)requestDidCancelLoad:(GQBaseDataRequest*)request;
-- (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress;
-- (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error;
+- (void)requestDidStartLoad:(GQBaseDataRequest*)request;//请求开始代理
+- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
+- (void)requestDidCancelLoad:(GQBaseDataRequest*)request;//请求取消代理
+- (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress;//请求数据变化代理
+- (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error;//请求失败代理
 
 @end
 

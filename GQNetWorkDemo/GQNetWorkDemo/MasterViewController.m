@@ -9,8 +9,11 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "DemoHttpRequest.h"
+#import "ProductModel.h"
+#import "GQDebug.h"
+#import "GQObjectMapping.h"
 
-@interface MasterViewController ()
+@interface MasterViewController ()<DataRequestDelegate>
 
 @property NSMutableArray *objects;
 @end
@@ -31,18 +34,67 @@
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
     
+#pragma mark -- 初级用法 使用delegate
+    
+    [DemoHttpRequest requestWithDelegate:self];
+    
+#pragma mark -- 初级用法 使用block
+    
+    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+        GQDPRINT(@"%@",result.dictionary);
+    } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
+        GQDPRINT(@"%@",error);
+    }];
+    
+#pragma mark -- 高级用法  使用mapping
+    
     GQRequestParameter *parameter = [[GQRequestParameter alloc] init];
-    parameter.indicatorView = self.view;
+    
+    GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
+    
+    [map addPropertyMappingsFromDictionary:[ProductModel attributeMapDictionary]];//往我们的map中加映射规则
+    
+    parameter.keyPath = @"result/rows";//如果取的数据在字典里面很多层的话需要指定map的层级keyPath
+    
+    parameter.mapping = map;
     
     for (int i = 0; i < 20; i ++) {
-        [DemoHttpRequest requestWithRequestParameter:parameter onRequestStart:^(GQBaseDataRequest *request) {
-            
-        } onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-            NSLog(@"%@",result.dictionary);
-        } onRequestCanceled:^(GQBaseDataRequest *request) {
-            
-        } onRequestFailed:nil onProgressChanged:nil];
+        [DemoHttpRequest requestWithRequestParameter:parameter
+                                      onRequestStart:nil
+                                   onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
+                                       GQDPRINT(@"%@",result.rawDictionary);
+                                       GQDPRINT(@"%@",result.array);
+                                   }
+                                   onRequestCanceled:nil
+                                     onRequestFailed:nil
+                                   onProgressChanged:nil];
+        
     }
+}
+
+#pragma mark -- DataRequestDelegate
+
+- (void)requestDidStartLoad:(GQBaseDataRequest*)request;
+{
+    
+}
+
+- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result{
+    if ([request isKindOfClass:[DemoHttpRequest class]]) {//如果同一页面有多个不同的请求的话可以使用isKindOfClass判断是哪个请求
+        GQDPRINT(@"%@",result.rawDictionary);
+    }
+}
+
+- (void)requestDidCancelLoad:(GQBaseDataRequest*)request{
+    
+}
+
+- (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress{
+    
+}
+
+- (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error{
+    
 }
 
 - (void)didReceiveMemoryWarning {

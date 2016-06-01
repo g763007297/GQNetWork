@@ -1,4 +1,4 @@
-//
+
 //  GQMappingOperation.m
 //  GQNetWorkDemo
 //
@@ -13,6 +13,7 @@
 #import "GQMappingResult.h"
 #import "GQMappingUtilities.h"
 #import "GQMappingConsts.h"
+#import "GQDebug.h"
 
 @interface GQMappingOperation()
 {
@@ -60,10 +61,10 @@
     if (_objectMapping) {
         NSDate *beginDate = [NSDate date];
         id source = [_dataSource valueForKeyPath:_keyPath];
-        //        NSAssert(!([source isKindOfClass:[NSArray class]] && [source[0] isKindOfClass:[NSNull class]]),  @"can not get value at key %@", _keyPath);
-        //        NSAssert(source != nil, @"can not get value at key %@", _keyPath);
-        //        NSAssert(![source isKindOfClass:[NSNull class]], @"can not get value at key %@", _keyPath);
-        //
+        NSAssert(!([source isKindOfClass:[NSArray class]] && [source[0] isKindOfClass:[NSNull class]]),  @"can not get value at key %@", _keyPath);
+        NSAssert(source != nil, @"can not get value at key %@", _keyPath);
+        NSAssert(![source isKindOfClass:[NSNull class]], @"can not get value at key %@", _keyPath);
+        
         id mappedObject = [self map:source mapping:_objectMapping];
         if (_errorOccured || _error) {
             _complectionBlock(mappingResult, _error);
@@ -72,7 +73,7 @@
             NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:beginDate];
             [_dataSource replaceObjectAtKeyPath:_keyPath object:mappedObject];
             mappingResult = [[GQMappingResult alloc] intWithDataSource:_dataSource];
-            //            GQDINFO(@"total time of parse process is %lf seconds", interval);
+            GQDPRINT(@"total time of parse process is %lf seconds", interval);
             _complectionBlock(mappingResult, _error);
         }
     }
