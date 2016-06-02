@@ -16,6 +16,8 @@
 
 3.添加一个类继承GQDataRequest，详见demo。
 
+*注:如果只是需要单独的mapping类的话可以在podfile里面单独添加 pod 'GQNetWork/Mapping'
+
 ## Configure File
 
 GQCommonMacros中有配置文件
