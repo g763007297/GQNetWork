@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-s.version = "0.0.3"
+  s.version      = "0.0.4"
   s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
@@ -9,25 +9,31 @@ s.version = "0.0.3"
   s.license      = "MIT (example)"
   s.license      = { :type => "MIT", :file => "LICENSE" }
 
-  s.author             = { "developer_高" => "763007297@qq.com" }
+  s.author       = { "developer_高" => "763007297@qq.com" }
 
-  s.platform     = :iOS
-  s.platform     = :ios, "6.0"
+  s.platform     = :ios
 
-  s.source       = { :git => "https://github.com/g763007297/GQNetWork.git", :tag => s.version.to_s }
+  s.ios.deployment_target = '5.0'
+
+  s.source       = { :git => "https://github.com/g763007297/GQNetWork.git", :tag => s.version }
 
   s.requires_arc = true
 
-  s.default_subspec = 'NetWork'
-
   s.subspec 'Mapping' do |ss|
-    ss.source_files = 'GQMapping/**/*.{h,m}'
+    ss.ios.source_files = [
+      'GQMapping/**/*.{h,m}',
+      'GQNetWork/Additions/NSString+GQAdditions.h',
+      'GQNetWork/Additions/NSString+GQAdditions.3',
+    ]
+
     ss.public_header_files = "GQMapping/**/*.h"
   end
   
-  s.subspec 'NetWork' do |nw|
-    nw.source_files  = "GQNetWork/**/*.{h,m}"
-    nw.dependency 'GQNetWork/Mapping'
+  s.subspec 'NetWork' do |ss|
+    ss.ios.source_files  = "GQNetWork/**/*.{h,m}"
+    ss.dependency 'GQNetWork/Mapping'
   end
   
+  s.default_subspec = 'NetWork'
+
 end
