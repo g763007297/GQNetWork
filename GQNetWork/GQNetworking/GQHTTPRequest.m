@@ -108,6 +108,21 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     return  self;
 }
 
+
+- (NSMutableURLRequest *)generateGETRequest
+{
+    if ([[self.requestParameters allKeys] count]) {
+        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
+        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
+        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
+    }
+    [self.request setURL:[NSURL URLWithString:self.requestURL]];
+    [self.request setHTTPMethod:@"GET"];
+    long long postBodySize = [self.requestURL lengthOfBytesUsingEncoding:self.requestEncoding];
+    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
+    return self.request;
+}
+
 - (void)addBodyData:(NSString *)key value:(id)value
 {
     if(![value isKindOfClass:[NSData class]] && ![value isKindOfClass:[UIImage class]]) {
@@ -142,24 +157,15 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     __weak GQHTTPRequest *weakSelf = self;
     
-    __block BOOL hasData = NO;
     NSDictionary *paramsDict = (NSDictionary*)self.requestParameters;
     [paramsDict.allValues enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         if([obj isKindOfClass:[NSData class]] || [obj isKindOfClass:[UIImage class]]){
-            hasData = YES;
+            _isUploadFile = YES;
         }
     }];
-    if(!hasData) {
-        _isUploadFile = NO;
-        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
-        NSData *postData = [paramString dataUsingEncoding:weakSelf.requestEncoding allowLossyConversion:YES];
-        [self.bodyData appendData:postData];
-    } else {
-        _isUploadFile = YES;
-        [paramsDict enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-            [weakSelf addBodyData:key value:value];
-        }];
-    }
+    [paramsDict enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
+        [weakSelf addBodyData:key value:value];
+    }];
 }
 
 - (NSMutableURLRequest *)generatePOSTRequest
@@ -170,12 +176,31 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     if (_isUploadFile) {
         NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
         [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-    }else{
-        [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
     }
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
     [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
+    [self.request setHTTPMethod:@"POST"];
+    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
+    return  self.request;
+}
+
+- (NSMutableURLRequest *)generateJSONPOSTRequest
+{
+    long long postBodySize;
+    if ([[self.requestParameters allKeys] count]) {
+        NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
+        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.bodyData appendData:jsonData];
+        [self.bodyData appendData: [@"\r\n" dataUsingEncoding:self.requestEncoding]];
+        postBodySize =  [self.bodyData length];
+        [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
+        [self.request setHTTPBody:self.bodyData];
+    }
+    
+    [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [self.request setValue:@"application/json" forHTTPHeaderField:@"Accept-Type"];
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return  self.request;
@@ -216,41 +241,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     
     [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return self.request;
-}
-
-- (NSMutableURLRequest *)generateJSONPOSTRequest
-{
-    long long postBodySize;
-    if ([[self.requestParameters allKeys] count]) {
-        NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
-        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-        [self.bodyData appendData:jsonData];
-        [self.bodyData appendData: [@"\r\n" dataUsingEncoding:self.requestEncoding]];
-        postBodySize =  [self.bodyData length];
-        [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
-        [self.request setHTTPBody:self.bodyData];
-    }
-    
-    [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [self.request setValue:@"application/json" forHTTPHeaderField:@"Accept-Type"];
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
-    [self.request setHTTPMethod:@"POST"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return  self.request;
-}
-
-- (NSMutableURLRequest *)generateGETRequest
-{
-    if ([[self.requestParameters allKeys] count]) {
-        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
-        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
-        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
-    }
-    [self.request setURL:[NSURL URLWithString:self.requestURL]];
-    [self.request setHTTPMethod:@"GET"];
-    long long postBodySize = [self.requestURL lengthOfBytesUsingEncoding:self.requestEncoding];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return self.request;
 }
