@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
 
 #ifndef GQ_OBJECT_SINGLETON_INCLUDE_FLAG
 #define GQ_OBJECT_SINGLETON_INCLUDE_FLAG 1
@@ -39,5 +40,32 @@ static _object_name_ *z##_shared_obj_name_ = nil;  \
     /*GQAssert(NO, @"use the singleton API, not alloc+init"); */       \
 return nil;                                    \
 }                                                  \
+
+#define GQVariableAssert(_Chain_)\
+NSString  *string = [NSString stringWithFormat:@"The %s has initialization",#_Chain_];\
+NSAssert(!_Chain_, string);\
+
+#define GQChainRequestDefine(_key_name_,_Chain_, _type_ , _block_type_)\
+- (_block_type_)_key_name_{\
+    GQVariableAssert(_##_Chain_);\
+    NSAssert(!_loading, @"The request has already begun");\
+    __weak typeof(self) weakSelf = self;\
+    if (!_##_key_name_) {\
+        _##_key_name_ = ^(_type_ value){\
+            __strong typeof(weakSelf) strongSelf = weakSelf;\
+            _##_Chain_ = value;\
+            return strongSelf;\
+        };\
+    }\
+    return _##_key_name_;\
+}\
+
+#define GQMethodRequestDefine( _method_ , _type_)\
+- (instancetype)_method_:(_type_)value{\
+    GQVariableAssert(_##_method_);\
+    _##_method_ = [value copy];\
+    return self;\
+}\
+
 
 #endif /* GQObjectSingleton_h */

@@ -27,11 +27,9 @@
 
 @property (nonatomic, copy) NSString *cancelSubject;
 
-@property (nonatomic, assign) BOOL silent;
-
 @property (nonatomic, copy) NSString *cacheKey;
 
-@property (nonatomic, assign) DataCacheManagerCacheType cacheType;
+@property (nonatomic, assign) GQDataCacheManagerType cacheType;
 
 @property (nonatomic, copy) NSString *localFilePath;
 

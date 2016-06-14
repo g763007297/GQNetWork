@@ -108,7 +108,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     return  self;
 }
 
-
 - (NSMutableURLRequest *)generateGETRequest
 {
     if ([[self.requestParameters allKeys] count]) {
@@ -168,15 +167,43 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }];
 }
 
+- (NSMutableURLRequest *)generateDELETERequest{
+    [self parseRequestParameters];
+    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
+    
+    long long putBodySize =  [self.bodyData length];
+    
+    [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
+    [self.request setHTTPBody:self.bodyData];
+    [self.request setHTTPMethod:@"DELETE"];
+    [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
+    return self.request;
+}
+
+- (NSMutableURLRequest *)generatePUTRequest{
+    [self parseRequestParameters];
+    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
+    
+    long long putBodySize =  [self.bodyData length];
+    
+    [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
+    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
+    [self.request setHTTPBody:self.bodyData];
+    [self.request setHTTPMethod:@"PUT"];
+    [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
+    return self.request;
+}
+
 - (NSMutableURLRequest *)generatePOSTRequest
 {
     [self parseRequestParameters];
     [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
-    if (_isUploadFile) {
+//    if (_isUploadFile) {
         NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
         [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-    }
+//    }
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
     [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
@@ -198,8 +225,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         [self.request setHTTPBody:self.bodyData];
     }
     
-    [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [self.request setValue:@"application/json" forHTTPHeaderField:@"Accept-Type"];
     [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
@@ -277,6 +302,14 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         }
         case GQRequestMethodMultipartPost:{
             [self generatePOSTRequest];
+        }
+            break;
+        case GQRequestMethodPut:{
+            [self generatePUTRequest];
+        }
+            break;
+        case GQRequestMethodDelete:{
+            [self generateDELETERequest];
         }
             break;
     }

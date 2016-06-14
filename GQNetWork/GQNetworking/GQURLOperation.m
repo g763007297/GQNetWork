@@ -221,6 +221,8 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
 }
 
+#pragma mark -- NSURLSessionDelegate NSURLSessionTaskDelegate
+
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
@@ -293,6 +295,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         completionHandler(cachedResponse);
     }
 }
+
+#pragma mark -- HandleResponseData
 
 - (void)handleResponseData:(NSData *)data{
     dispatch_group_async(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{

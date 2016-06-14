@@ -23,6 +23,29 @@
 @class GQRequestDataHandler;
 @class GQBaseDataRequest;
 
+
+#pragma mark -- blockTypedef  普通函数式block
+
+typedef void (^GQRequestStart)(GQBaseDataRequest * request);//请求开始block
+typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);//请求完成block
+typedef void (^GQRequestCanceled)(GQBaseDataRequest * request);//请求取消block
+typedef void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error);//请求失败block
+typedef void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress);//请求进度改变block
+
+#pragma mark -- ChainBlockTypedef 链式写法block
+
+typedef GQBaseDataRequest *(^GQChainObjectRequest)(id value);//nsobject block
+typedef GQBaseDataRequest *(^GQChainStuctRequest)(GQDataCacheManagerType value);   //enum block
+typedef void(^GQChainBlockStartRequest)();//发送请求block
+
+typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
+typedef GQBaseDataRequest * (^GQChainBlockRequestFinished)(GQRequestFinished);//请求完成block
+typedef GQBaseDataRequest * (^GQChainBlockRequestCanceled)(GQRequestCanceled);//请求取消block
+typedef GQBaseDataRequest * (^GQChainBlockRequestFailed)(GQRequestFailed);//请求失败block
+typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//请求进度改变block
+
+#pragma mark -- DataRequestDelegate
+
 @protocol DataRequestDelegate <NSObject>
 
 @optional
@@ -37,44 +60,182 @@
 @interface GQBaseDataRequest : NSObject
 {
 @protected
-    BOOL        _usingCacheData;
+    BOOL                _usingCacheData;
     
-    DataCacheManagerCacheType _cacheType;
+    GQDataCacheManagerType _cacheType;
 #if GQUSE_MaskView
-    GQMaskActivityView       *_maskActivityView;
+    GQMaskActivityView  *_maskActivityView;
 #endif
     
     //progress related
-    long long _totalData;
-    long long _downloadedData;
-    CGFloat   _currentProgress;
+    long long           _totalData;
     
-    NSString    *_cancelSubject;
+    long long           _downloadedData;
     
-    NSString    *_cacheKey;
-    NSString    *_filePath;
-    NSString    *_keyPath;
-    NSDate      *_requestStartDate;
+    CGFloat             _currentProgress;
+    
+    NSString            *_cancelSubject;
+    
+    NSString            *_subRequestUrl;
+    
+    NSDictionary        *_parameters;
+    
+    NSString            *_cacheKey;
+    NSString            *_localFilePath;
+    NSString            *_keyPath;
+    NSDate              *_requestStartDate;
+    UIView              *_indicatorView;
     
     //callback stuffs
-    void (^_onRequestStartBlock)(GQBaseDataRequest *);
-    void (^_onRequestFinishBlock)(GQBaseDataRequest *, GQMappingResult *);
-    void (^_onRequestCanceled)(GQBaseDataRequest *);
-    void (^_onRequestFailedBlock)(GQBaseDataRequest *, NSError *);
-    void (^_onRequestProgressChangedBlock)(GQBaseDataRequest *, CGFloat);
+    GQRequestStart      _onRequestStart;
+    GQRequestFinished   _onRequestFinished;
+    GQRequestCanceled   _onRequestCanceled;
+    GQRequestFailed     _onRequestFailed;
+    GQProgressChanged   _onProgressChanged;
     
     //the finall mapping result
-    GQMappingResult    *_responseResult;
+    GQMappingResult     *_responseResult;
+    GQObjectMapping     *_mapping;
 }
 
 @property (nonatomic, strong) id<DataRequestDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL loading;
 @property (nonatomic, assign) CGFloat currentProgress;
 @property (nonatomic, assign) GQParameterEncoding parmaterEncoding;
-@property (nonatomic, strong) NSString *rawResultString;
-@property (nonatomic, strong, readonly) NSString *requestUrl;
-@property (nonatomic, strong, readonly) NSMutableDictionary *userInfo;
-@property (nonatomic, strong, readonly) GQRequestDataHandler *requestDataHandler;
+@property (nonatomic, copy) NSString *rawResultString;
+@property (nonatomic, copy, readonly) NSString *requestUrl;
+@property (nonatomic, copy, readonly) NSMutableDictionary *userInfo;
+@property (nonatomic, copy, readonly) GQRequestDataHandler *requestDataHandler;
+
+#pragma mark -- chain code methods   链式写法
+
++ (instancetype)prepareRequset;
+
+/**
+ *  请求代理  type: self
+ */
+@property (nonatomic, copy, readonly) GQChainObjectRequest delegateChain;
+
+/**
+ *  拼接url  type : NSString
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest subRequestUrlChain;
+
+/**
+ *  取消请求的key   type : NSString
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest cancelSubjectChain;
+
+/**
+ *  mapping所需的key层级  type : NSString
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest keyPathChain;
+
+/**
+ *  具体映射的关系   type : GQObjectMapping
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest mappingChain;
+
+/**
+ *  请求参数字典   type : NSDictionary
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest parametersChain;
+
+/**
+ *  提示框所需要显示在哪个view上面  type : UIView
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest indicatorViewChain;
+
+/**
+ *  缓存key   type : NSString
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest cacheKeyChain;
+
+/**
+ *  缓存类型   type : GQDataCacheManagerType
+ */
+@property (nonatomic, copy , readonly) GQChainStuctRequest cacheTypeChain;
+
+/**
+ *  如果是需要把文件下载到某一个文件夹的话就传全地址  type : NSString
+ */
+@property (nonatomic, copy , readonly) GQChainObjectRequest localFilePathChain;
+
+/**
+ *  请求开始block    type : void (^GQRequestStart)(GQBaseDataRequest * request);
+ */
+@property (nonatomic, copy , readonly) GQChainBlockRequestStart onStartBlockChain;
+
+/**
+ *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);
+ */
+@property (nonatomic, copy , readonly) GQChainBlockRequestFinished onFinishedBlockChain;
+
+/**
+ *  请求取消block   type : void (^GQRequestCanceled)(GQBaseDataRequest * request)
+ */
+@property (nonatomic, copy , readonly) GQChainBlockRequestCanceled onCanceledBlockChain;
+
+/**
+ *  请求失败block       type : void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error)
+ */
+@property (nonatomic, copy , readonly) GQChainBlockRequestFailed onFailedBlockChain;
+
+/**
+ *  请求进度改变block     type : void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress)
+ */
+@property (nonatomic, copy , readonly) GQChainBlockProgressChanged onProgressChangedBlockChain;
+
+/**
+ *  发起请求  不需要传值
+ */
+@property (nonatomic, copy, readonly) GQChainBlockStartRequest startRequestChain;
+
+#pragma mark --  方法调用式写法  如果不习惯链式的block不自动提示的话就可以用下面的block写法  调用起来唯一的差别在于链式使用.调用  而下面的是方法调用
+/**
+ *  请求开始
+ *
+ *  @param onRequestStart 请求开始block
+ *
+ *  @return self
+ */
+- (instancetype)onRequestStart:(GQRequestStart)onRequestStart;
+/**
+ *  请求完成
+ *
+ *  @param onRequestFinished 请求完成block
+ *
+ *  @return self
+ */
+- (instancetype)onRequestFinished:(GQRequestFinished)onRequestFinished;
+/**
+ *  请求取消
+ *
+ *  @param onRequestCanceled 请求取消block
+ *
+ *  @return self
+ */
+- (instancetype)onRequestCanceled:(GQRequestCanceled)onRequestCanceled;
+/**
+ *  请求失败
+ *
+ *  @param onRequestFailed 请求失败block
+ *
+ *  @return self
+ */
+- (instancetype)onRequestFailed:(GQRequestFailed)onRequestFailed;
+/**
+ *  请求进度改变
+ *
+ *  @param onProgressChanged 请求进度改变block
+ *
+ *  @return self
+ */
+- (instancetype)onProgressChanged:(GQProgressChanged)onProgressChanged;
+/**
+ *  发起请求
+ */
+- (void)startRequest;
 
 #pragma mark - class methods using delegate
 
@@ -214,23 +375,97 @@
 - (void)processResult;
 - (void)showIndicator:(BOOL)bshow;
 - (void)doRequestWithParams:(NSDictionary*)params;
-- (void)cancelRequest;                                     //subclass should override the method to cancel its request
+
+/**
+ *  取消请求  subclass should override the method to cancel its request
+ */
+- (void)cancelRequest;
+
+/**
+ *  处理结果
+ *
+ *  @param resultString 请求结果字符串
+ */
 - (void)handleResponseString:(NSString*)resultString;
 
+/**
+ *  如果需要处理缓存就覆盖这个方法  前提是要使用到了缓存
+ *
+ *  @param cacheData 缓存数据
+ *
+ *  @return 是否适用缓存数据
+ */
 - (BOOL)onReceivedCacheData:(NSObject*)cacheData;
+
+/**
+ *  处理下载文件   比如说 copy 取数据之类的   最终效验文件的合法性
+ *
+ *  @return 是否请求成功
+ */
 - (BOOL)processDownloadFile;
 
+/**
+ *  请求体的encoding
+ *
+ *  @return  parameterEncoding
+ */
 - (GQParameterEncoding)getParameterEncoding;               //default method is GQURLParameterEncoding
 
-- (GQRequestMethod)getRequestMethod;                       //default method is GET
+/**
+ *  请求方法  默认为GET  //default method is GET
+ *
+ *  @return requestMethod
+ */
+- (GQRequestMethod)getRequestMethod;
 
+/**
+ *  请求体encode格式  默认为NSUTF8StringEncoding
+ *
+ *  @return  responseEncoding
+ */
 - (NSStringEncoding)getResponseEncoding;
 
+/**
+ *  请求url  必须重载的方法
+ *
+ *  @return requestUrl
+ */
 - (NSString*)getRequestUrl;
 
+/**
+ *  请求时的弹出框loading信息  默认为 “正在加载...”
+ *
+ *  @return loadingMessage
+ */
+- (NSString *)getLoadingMessage;
+
+/**
+ *  映射关系  默认为nil
+ *
+ *  @return mapping
+ */
+- (GQObjectMapping *)getMapping;
+
+/**
+ *  静态的请求参数   默认为nil
+ *
+ *  @return staticParams
+ */
 - (NSDictionary*)getStaticParams;
 
+/**
+ *   从缓存string中提取字典
+ *
+ *  @param cachedResponse 缓存string
+ *
+ *  @return dic
+ */
 + (NSDictionary*)getDicFromString:(NSString*)cachedResponse;
+
+/**
+ *  子类覆盖该方法修改数据解析方式  默认为json解析
+ */
+- (void)generateRequestHandler;
 
 #pragma mark - 假数据方法
 - (BOOL)useDumpyData;

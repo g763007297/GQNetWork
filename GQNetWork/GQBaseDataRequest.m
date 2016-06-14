@@ -10,15 +10,10 @@
 #import "GQDataRequestManager.h"
 #import "GQRequestJsonDataHandler.h"
 #import "GQMappingHeader.h"
+#import "GQObjectSingleton.h"
 #import "GQDebug.h"
 
 @interface GQBaseDataRequest()
-{
-    GQObjectMapping    *_mapping;
-}
-
-@property (nonatomic, strong) UIView *indicatorView;
-@property (nonatomic, strong) NSString *loadingMessage;
 
 /**
  *  Block实例方法
@@ -46,10 +41,9 @@
        withIndicatorView:(UIView*)indiView
                  keyPath:(NSString*)keyPath
                  mapping:(GQObjectMapping*)mapping
-      withLoadingMessage:(NSString*)loadingMessage
        withCancelSubject:(NSString*)cancelSubject
             withCacheKey:(NSString*)cache
-           withCacheType:(DataCacheManagerCacheType)cacheType
+           withCacheType:(GQDataCacheManagerType)cacheType
             withFilePath:(NSString*)localFilePath
           onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
        onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
@@ -80,15 +74,116 @@
                mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
      withIndicatorView:(UIView*)indiView
-    withLoadingMessage:(NSString*)loadingMessage
      withCancelSubject:(NSString*)cancelSubject
           withCacheKey:(NSString*)cache
-         withCacheType:(DataCacheManagerCacheType)cacheType
+         withCacheType:(GQDataCacheManagerType)cacheType
           withFilePath:(NSString*)localFilePath;
 
 @end
 
 @implementation GQBaseDataRequest
+
+@synthesize delegateChain = _delegateChain;
+@synthesize subRequestUrlChain = _subRequestUrlChain;
+@synthesize cancelSubjectChain = _cancelSubjectChain;
+@synthesize keyPathChain = _keyPathChain;
+@synthesize mappingChain = _mappingChain;
+@synthesize parametersChain = _parametersChain;
+@synthesize indicatorViewChain = _indicatorViewChain;
+@synthesize cacheKeyChain = _cacheKeyChain;
+@synthesize cacheTypeChain = _cacheTypeChain;
+@synthesize localFilePathChain = _localFilePathChain;
+@synthesize onStartBlockChain = _onStartBlockChain;
+@synthesize onFinishedBlockChain = _onFinishedBlockChain;
+@synthesize onCanceledBlockChain = _onCanceledBlockChain;
+@synthesize onFailedBlockChain = _onFailedBlockChain;
+@synthesize onProgressChangedBlockChain = _onProgressChangedBlockChain;
+@synthesize startRequestChain = _startRequestChain;
+
++ (instancetype)prepareRequset{
+    GQBaseDataRequest *request = [[[self class] alloc] init];
+    [[GQDataRequestManager sharedManager] addRequest:request];
+    return request;
+}
+
+GQChainRequestDefine(delegateChain, delegate, id, GQChainObjectRequest);
+GQChainRequestDefine(subRequestUrlChain,subRequestUrl, NSString *, GQChainObjectRequest);
+GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjectRequest);
+GQChainRequestDefine(keyPathChain, keyPath, NSString *, GQChainObjectRequest);
+GQChainRequestDefine(mappingChain, mapping, GQObjectMapping *, GQChainObjectRequest);
+GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectRequest);
+GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectRequest);
+GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObjectRequest);
+GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest);
+GQChainRequestDefine(cacheTypeChain, cacheType, GQDataCacheManagerType , GQChainStuctRequest);
+
+GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
+GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
+GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled, GQChainBlockRequestCanceled);
+GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQChainBlockRequestFailed);
+GQChainRequestDefine(onProgressChangedBlockChain, onProgressChanged, GQProgressChanged, GQChainBlockProgressChanged);
+
+- (GQChainBlockStartRequest)startRequestChain{
+    __weak typeof(self) weakSelf = self;
+    if (!_startRequestChain) {
+        _startRequestChain = ^(){
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [strongSelf startRequest];
+        };
+    }
+    return _startRequestChain;
+}
+
+GQMethodRequestDefine(onRequestStart,GQRequestStart);
+GQMethodRequestDefine(onRequestFinished,GQRequestFinished);
+GQMethodRequestDefine(onRequestCanceled,GQRequestCanceled);
+GQMethodRequestDefine(onRequestFailed,GQRequestFailed);
+GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
+
+- (void)startRequest{
+    
+    NSAssert(!_loading, @"The request has already begun");
+    
+    _parmaterEncoding = [self getParameterEncoding];
+    _loading = NO;
+    
+    if (!_requestUrl || ![_requestUrl length]) {
+        _requestUrl = [self getRequestUrl];
+    }
+    if (_subRequestUrl) {
+        _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,_subRequestUrl];
+    }
+    NSAssert(_requestUrl != nil || [_requestUrl length] > 0, @"invalid request url");
+    if (_cacheKey && [_cacheKey length] > 0) {
+        _usingCacheData = YES;
+    }
+    if (_cancelSubject && _cancelSubject.length >0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelRequest) name:_cancelSubject object:nil];
+    }
+    _requestStartDate = [NSDate date];
+    _userInfo = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
+    if ([self getStaticParams]) {
+        [_userInfo addEntriesFromDictionary:[self getStaticParams]];
+    }
+    if ([self useDumpyData]) {
+        [self processDumpyRequest];
+    }
+    else {
+        BOOL useCurrentCache = NO;
+        NSObject *cacheData = [[GQDataCacheManager sharedManager] getCachedObjectByKey:_cacheKey];
+        if (cacheData) {
+            useCurrentCache = [self onReceivedCacheData:cacheData];
+        }
+        if (!useCurrentCache) {
+            _usingCacheData = NO;
+            [self doRequestWithParams:_userInfo];
+            GQDINFO(@"request %@ is created", [self class]);
+        }else{
+            _usingCacheData = YES;
+            [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
+        }
+    }
+}
 
 #pragma mark - class methods using delegate
 
@@ -100,10 +195,9 @@
                                                                 mapping:nil
                                                          withParameters:nil
                                                       withIndicatorView:nil
-                                                     withLoadingMessage:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
-                                                          withCacheType:DataCacheManagerCacheTypeMemory
+                                                          withCacheType:GQDataCacheManagerMemory
                                                            withFilePath:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -117,10 +211,9 @@
                                                                 mapping:parameterBody.mapping
                                                          withParameters:parameterBody.parameters
                                                       withIndicatorView:parameterBody.indicatorView
-                                                     withLoadingMessage:parameterBody.loadingMessage
                                                       withCancelSubject:parameterBody.cancelSubject
                                                            withCacheKey:parameterBody.cacheKey
-                                                          withCacheType:DataCacheManagerCacheTypeMemory
+                                                          withCacheType:(parameterBody.cacheType?parameterBody.cacheType:GQDataCacheManagerMemory)
                                                            withFilePath:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -134,10 +227,9 @@
                                                                 mapping:nil
                                                          withParameters:params
                                                       withIndicatorView:nil
-                                                     withLoadingMessage:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
-                                                          withCacheType:DataCacheManagerCacheTypeMemory
+                                                          withCacheType:GQDataCacheManagerMemory
                                                            withFilePath:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -151,10 +243,9 @@
                                                                 mapping:nil
                                                          withParameters:nil
                                                       withIndicatorView:nil
-                                                     withLoadingMessage:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
-                                                          withCacheType:DataCacheManagerCacheTypeMemory
+                                                          withCacheType:GQDataCacheManagerMemory
                                                            withFilePath:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -169,10 +260,9 @@
                                                                 mapping:nil
                                                          withParameters:nil
                                                       withIndicatorView:nil
-                                                     withLoadingMessage:nil
                                                       withCancelSubject:cancelSubject
                                                            withCacheKey:nil
-                                                          withCacheType:DataCacheManagerCacheTypeMemory
+                                                          withCacheType:GQDataCacheManagerMemory
                                                            withFilePath:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -184,70 +274,24 @@
                mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
      withIndicatorView:(UIView*)indiView
-    withLoadingMessage:(NSString*)loadingMessage
      withCancelSubject:(NSString*)cancelSubject
           withCacheKey:(NSString*)cache
-         withCacheType:(DataCacheManagerCacheType)cacheType
+         withCacheType:(GQDataCacheManagerType)cacheType
           withFilePath:(NSString*)localFilePath
 {
     self = [super init];
     if(self) {
-        _parmaterEncoding = [self getParameterEncoding];
-        _loading = NO;
         _keyPath = keyPath;
         _mapping = mapping;
         _delegate = delegate;
         
-        if (!_requestUrl || ![_requestUrl length]) {
-            _requestUrl = [self getRequestUrl];
-        }
-        if (subUrl) {
-            _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,subUrl];
-        }
-        NSAssert(_requestUrl != nil || [_requestUrl length] > 0, @"invalid request url");
         _indicatorView = indiView;
         _cacheKey = cache;
-        if (_cacheKey && [_cacheKey length] > 0) {
-            _usingCacheData = YES;
-        }
         _cacheType = cacheType;
-        if (cancelSubject && cancelSubject.length > 0) {
-            _cancelSubject = cancelSubject;
-        }
-        
-        if (_cancelSubject && _cancelSubject.length >0) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelRequest) name:_cancelSubject object:nil];
-        }
-        if (localFilePath) {
-            _filePath = localFilePath;
-        }
-        self.loadingMessage = loadingMessage;
-        if (!self.loadingMessage) {
-            self.loadingMessage = DEFAULT_LOADING_MESSAGE;
-        }
-        _requestStartDate = [NSDate date];
-        _userInfo = [[NSMutableDictionary alloc] initWithDictionary:params];
-        if ([self getStaticParams]) {
-            [_userInfo addEntriesFromDictionary:[self getStaticParams]];
-        }
-        if ([self useDumpyData]) {
-            [self processDumpyRequest];
-        }
-        else {
-            BOOL useCurrentCache = NO;
-            NSObject *cacheData = [[GQDataCacheManager sharedManager] getCachedObjectByKey:_cacheKey];
-            if (cacheData) {
-                useCurrentCache = [self onReceivedCacheData:cacheData];
-            }
-            if (!useCurrentCache) {
-                _usingCacheData = NO;
-                [self doRequestWithParams:params];
-                GQDINFO(@"request %@ is created", [self class]);
-            }else{
-                _usingCacheData = YES;
-                [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
-            }
-        }
+        _cancelSubject = cancelSubject;
+        _localFilePath = localFilePath;
+        _parameters = params;
+        [self startRequest];
     }
     return self;
 }
@@ -261,10 +305,9 @@
                                                         withIndicatorView:nil
                                                                   keyPath:nil
                                                                   mapping:nil
-                                                       withLoadingMessage:nil
                                                         withCancelSubject:nil
                                                              withCacheKey:nil
-                                                            withCacheType:DataCacheManagerCacheTypeMemory
+                                                            withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRequestFinished:onFinishedBlock
@@ -283,10 +326,9 @@
                                                         withIndicatorView:nil
                                                                   keyPath:nil
                                                                   mapping:nil
-                                                       withLoadingMessage:nil
                                                         withCancelSubject:nil
                                                              withCacheKey:nil
-                                                            withCacheType:DataCacheManagerCacheTypeMemory
+                                                            withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRequestFinished:onFinishedBlock
@@ -306,10 +348,9 @@
                                                         withIndicatorView:nil
                                                                   keyPath:nil
                                                                   mapping:nil
-                                                       withLoadingMessage:nil
                                                         withCancelSubject:nil
                                                              withCacheKey:nil
-                                                            withCacheType:DataCacheManagerCacheTypeMemory
+                                                            withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRequestFinished:onFinishedBlock
@@ -331,7 +372,6 @@
                                                         withIndicatorView:parameterBody.indicatorView
                                                                   keyPath:parameterBody.keyPath
                                                                   mapping:parameterBody.mapping
-                                                       withLoadingMessage:parameterBody.loadingMessage
                                                         withCancelSubject:parameterBody.cancelSubject
                                                              withCacheKey:parameterBody.cacheKey
                                                             withCacheType:parameterBody.cacheType
@@ -357,10 +397,9 @@
                                                         withIndicatorView:nil
                                                                   keyPath:nil
                                                                   mapping:nil
-                                                       withLoadingMessage:nil
                                                         withCancelSubject:cancelSubject
                                                              withCacheKey:nil
-                                                            withCacheType:DataCacheManagerCacheTypeMemory
+                                                            withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:localFilePath
                                                            onRequestStart:nil
                                                         onRequestFinished:onFinishedBlock
@@ -376,10 +415,9 @@
        withIndicatorView:(UIView*)indiView
                  keyPath:(NSString*)keyPath
                  mapping:(GQObjectMapping*)mapping
-      withLoadingMessage:(NSString*)loadingMessage
        withCancelSubject:(NSString*)cancelSubject
             withCacheKey:(NSString*)cache
-           withCacheType:(DataCacheManagerCacheType)cacheType
+           withCacheType:(GQDataCacheManagerType)cacheType
             withFilePath:(NSString*)localFilePath
           onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
        onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
@@ -389,76 +427,31 @@
 {
     self = [super init];
     if(self) {
-        _parmaterEncoding = [self getParameterEncoding];
-        _loading = NO;
         _keyPath = keyPath;
         _mapping = mapping;
         
-        if (!_requestUrl || ![_requestUrl length]) {
-            _requestUrl = [self getRequestUrl];
-        }
-        if (subUrl) {
-            _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,subUrl];
-        }
-        NSAssert(_requestUrl != nil || [_requestUrl length] > 0, @"invalid request url");
-         _indicatorView = indiView;
+        _indicatorView = indiView;
         _cacheKey = cache;
-        if (_cacheKey && [_cacheKey length] > 0) {
-            _usingCacheData = YES;
-        }
         _cacheType = cacheType;
-        if (cancelSubject && cancelSubject.length > 0) {
-            _cancelSubject = cancelSubject;
-        }
-        
-        if (_cancelSubject && _cancelSubject) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelRequest) name:_cancelSubject object:nil];
-        }
+        _cancelSubject = cancelSubject;
+        _localFilePath = localFilePath;
+        _parameters = params;
         if (onStartBlock) {
-            _onRequestStartBlock = [onStartBlock copy];
+            _onRequestStart = [onStartBlock copy];
         }
         if (onFinishedBlock) {
-            _onRequestFinishBlock = [onFinishedBlock copy];
+            _onRequestFinished = [onFinishedBlock copy];
         }
         if (onCanceledBlock) {
             _onRequestCanceled = [onCanceledBlock copy];
         }
         if (onFailedBlock) {
-            _onRequestFailedBlock = [onFailedBlock copy];
+            _onRequestFailed = [onFailedBlock copy];
         }
         if (onProgressChangedBlock) {
-            _onRequestProgressChangedBlock = [onProgressChangedBlock copy];
+            _onProgressChanged = [onProgressChangedBlock copy];
         }
-        if (localFilePath) {
-            _filePath = localFilePath;
-        }
-        self.loadingMessage = loadingMessage;
-        if (!self.loadingMessage) {
-            self.loadingMessage = DEFAULT_LOADING_MESSAGE;
-        }
-        _requestStartDate = [NSDate date];
-        _userInfo = [[NSMutableDictionary alloc] initWithDictionary:params];
-        if ([self getStaticParams]) {
-            [_userInfo addEntriesFromDictionary:[self getStaticParams]];
-        }
-        if ([self useDumpyData]) {
-            [self processDumpyRequest];
-        }
-        else {
-            BOOL useCurrentCache = NO;
-            NSObject *cacheData = [[GQDataCacheManager sharedManager] getCachedObjectByKey:_cacheKey];
-            if (cacheData) {
-                useCurrentCache = [self onReceivedCacheData:cacheData];
-            }
-            if (!useCurrentCache) {
-                _usingCacheData = NO;
-                [self doRequestWithParams:params];
-                GQDINFO(@"request %@ is created", [self class]);
-            }else{
-                _usingCacheData = YES;
-                [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
-            }
-        }
+        [self startRequest];
     }
     return self;
 }
@@ -479,7 +472,7 @@
 - (void)dealloc
 {
     GQDINFO(@"request %@ is released, time spend on this request:%f seconds",
-             [self class],[[NSDate date] timeIntervalSinceDate:_requestStartDate]);
+            [self class],[[NSDate date] timeIntervalSinceDate:_requestStartDate]);
     if (_indicatorView) {
         //make sure indicator is closed
         [self showIndicator:NO];
@@ -538,7 +531,7 @@
     if (bshow && _indicatorView) {
         if (!_maskActivityView) {
             _maskActivityView = [GQMaskActivityView loadFromXib];
-            [_maskActivityView showInView:self.indicatorView withHintMessage:self.loadingMessage onCancleRequest:^(GQMaskActivityView *hintView){
+            [_maskActivityView showInView:_indicatorView withHintMessage:[self getLoadingMessage] onCancleRequest:^(GQMaskActivityView *hintView){
                 [self cancelRequest];
             }];
         }
@@ -554,7 +547,7 @@
 - (void)cacheResult
 {
     if (_responseResult.dictionary && _cacheKey) {
-        if (DataCacheManagerCacheTypeMemory == _cacheType) {
+        if (GQDataCacheManagerMemory == _cacheType) {
             [[GQDataCacheManager sharedManager] addObjectToMemory:_responseResult.rawDictionary forKey:_cacheKey];
         }
         else{
@@ -565,8 +558,8 @@
 
 - (void)notifyDelegateRequestDidSuccess
 {
-    if (_onRequestFinishBlock) {
-        _onRequestFinishBlock(self, _responseResult);
+    if (_onRequestFinished) {
+        _onRequestFinished(self, _responseResult);
     }else if (self.delegate) {
         if([self.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)]){
             [self.delegate requestDidFinishLoad:self mappingResult:_responseResult];
@@ -576,8 +569,8 @@
 
 - (void)notifyDelegateRequestDidErrorWithError:(NSError*)error
 {
-    if (_onRequestFailedBlock) {
-        _onRequestFailedBlock(self, error);
+    if (_onRequestFailed) {
+        _onRequestFailed(self, error);
     }else if (self.delegate) {
         if([self.delegate respondsToSelector:@selector(request:didFailLoadWithError:)]){
             [self.delegate request:self didFailLoadWithError:error];
@@ -587,7 +580,7 @@
 
 - (BOOL)isDownloadFileRequest
 {
-    return _filePath && [_filePath length];
+    return _localFilePath && [_localFilePath length];
 }
 
 - (void)handleResponseString:(id)resultString
@@ -595,16 +588,17 @@
     __block BOOL success = FALSE;
     __block NSError *errorInfo = nil;
     __block __weak typeof(self) weakSelf = self;
-    dispatch_block_t callback = ^{ @autoreleasepool {
-        if (success) {
-            [weakSelf cacheResult];
-            [weakSelf notifyDelegateRequestDidSuccess];
+    dispatch_block_t callback = ^{
+        @autoreleasepool {
+            if (success) {
+                [weakSelf cacheResult];
+                [weakSelf notifyDelegateRequestDidSuccess];
+            }
+            else {
+                GQDERROR(@"parse error %@", errorInfo);
+                [weakSelf notifyDelegateRequestDidErrorWithError:errorInfo];
+            }
         }
-        else {
-            GQDERROR(@"parse error %@", errorInfo);
-            [weakSelf notifyDelegateRequestDidErrorWithError:errorInfo];
-        }
-    }
     };
     if([self isDownloadFileRequest]) {
         success = [self processDownloadFile];
@@ -672,6 +666,15 @@
     NSString *reason = [NSString stringWithFormat:@"This is a abstract method. You should subclass of GQBaseDataRequest and override it!"];
     @throw [NSException exceptionWithName:@"Logic Error" reason:reason userInfo:nil];
     return @"";
+}
+
+- (NSString *)getLoadingMessage
+{
+    return DEFAULT_LOADING_MESSAGE;
+}
+
+- (GQObjectMapping *)getMapping{
+    return nil;
 }
 
 - (void)processDumpyRequest

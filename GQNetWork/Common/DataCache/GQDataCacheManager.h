@@ -9,9 +9,9 @@
 #import <Foundation/Foundation.h>
 
 typedef enum : NSUInteger{
-    DataCacheManagerCacheTypeMemory,
-    DataCacheManagerCacheTypePersist
-} DataCacheManagerCacheType;
+    GQDataCacheManagerMemory,
+    GQDataCacheManagerPersist
+} GQDataCacheManagerType;
 
 typedef enum : NSUInteger{
     GQDataCacheNone,

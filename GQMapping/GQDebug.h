@@ -61,7 +61,6 @@
     #define GQDCONDITIONLOG(condition, xx, ...) ((void)0)
 #endif
 
-
 #define GQAssert(condition, ...)                                       \
 do {                                                                      \
     if (!(condition)) {                                                     \

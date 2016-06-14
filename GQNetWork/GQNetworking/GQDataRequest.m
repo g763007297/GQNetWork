@@ -20,26 +20,26 @@
 {
     __weak typeof(self) weakSelf  = self;
     
-    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_filePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:[self getRequestMethod] onRequestStart:^() {
-        if (_onRequestStartBlock) {
-            _onRequestStartBlock(weakSelf);
+    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_localFilePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:[self getRequestMethod] onRequestStart:^() {
+        if (_onRequestStart) {
+            _onRequestStart(weakSelf);
         }else if (weakSelf.delegate) {
             if([weakSelf.delegate respondsToSelector:@selector(requestDidStartLoad:)]){
                 [weakSelf.delegate requestDidStartLoad:weakSelf];
             }
         }
     } onProgressChanged:^(float progress) {
-        if (_onRequestProgressChangedBlock) {
-            _onRequestProgressChangedBlock(weakSelf,progress);
+        if (_onProgressChanged) {
+            _onProgressChanged(weakSelf,progress);
         }else if (weakSelf.delegate) {
             if([weakSelf.delegate respondsToSelector:@selector(request:progressChanged:)]){
                 [weakSelf.delegate request:weakSelf progressChanged:progress];
             }
         }
     } onRequestFinished:^(NSData *responseData) {
-        if (_filePath) {
-            if (_onRequestFinishBlock) {
-                _onRequestFinishBlock(weakSelf, nil);
+        if (_localFilePath) {
+            if (_onRequestFinished) {
+                _onRequestFinished(weakSelf, nil);
             }else if (weakSelf.delegate) {
                 if([weakSelf.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)]){
                     [weakSelf.delegate requestDidFinishLoad:weakSelf mappingResult:nil];
@@ -48,7 +48,6 @@
         }else{
             [weakSelf handleResponseString:[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]];
         }
-        
         [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     } onRequestCanceled:^() {
@@ -65,14 +64,8 @@
         [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     }];
-    
     [self.httpRequest startRequest];
     [self showIndicator:YES];
-}
-
-- (NSStringEncoding)getResponseEncoding
-{
-    return NSUTF8StringEncoding;
 }
 
 - (NSDictionary*)getStaticParams

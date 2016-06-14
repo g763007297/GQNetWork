@@ -16,6 +16,8 @@
 @interface MasterViewController ()<DataRequestDelegate>
 
 @property NSMutableArray *objects;
+
+@property (nonatomic, strong) GQBaseDataRequest *request;
 @end
 
 @implementation MasterViewController
@@ -24,15 +26,15 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
+    
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
+- (void)viewDidAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
-    [super viewWillAppear:animated];
+    [super viewDidAppear:animated];
     
 #pragma mark -- 初级用法 使用delegate
     
@@ -53,23 +55,43 @@
     GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
     
     [map addPropertyMappingsFromDictionary:[ProductModel attributeMapDictionary]];//往我们的map中加映射规则
-    
     parameter.keyPath = @"result/rows";//如果取的数据在字典里面很多层的话需要指定map的层级keyPath
     
     parameter.mapping = map;
     
-    for (int i = 0; i < 20; i ++) {
-        [DemoHttpRequest requestWithRequestParameter:parameter
-                                      onRequestStart:nil
-                                   onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
-                                       GQDPRINT(@"%@",result.rawDictionary);
-                                       GQDPRINT(@"%@",result.array);
-                                   }
-                                   onRequestCanceled:nil
-                                     onRequestFailed:nil
-                                   onProgressChanged:nil];
+#pragma mark -- 链式调用 + 方法调用
+    [[[DemoHttpRequest prepareRequset]
+      .mappingChain(map)
+      .indicatorViewChain(self.view)
+      .keyPathChain(@"result/rows")
+      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+        GQDPRINT(@"%@",result.rawDictionary);
+        GQDPRINT(@"%@",result.array);
+    }] startRequest];
+    
+#pragma mark -- 全链式调用
+    [DemoHttpRequest prepareRequset]
+    .mappingChain(map)
+    .keyPathChain(@"result/rows")
+    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
+        GQDPRINT(@"%@",result.rawDictionary);
+        GQDPRINT(@"%@",result.array);
+    })
+    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
         
-    }
+    })
+    .startRequestChain();
+    
+#pragma mark -- 常规block
+    [DemoHttpRequest requestWithRequestParameter:parameter
+                                  onRequestStart:nil
+                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
+                                   GQDPRINT(@"%@",result.rawDictionary);
+                                   GQDPRINT(@"%@",result.array);
+                               }
+                               onRequestCanceled:nil
+                                 onRequestFailed:nil
+                               onProgressChanged:nil];
 }
 
 #pragma mark -- DataRequestDelegate
@@ -135,7 +157,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-
+    
     NSDate *object = self.objects[indexPath.row];
     cell.textLabel.text = [object description];
     return cell;
