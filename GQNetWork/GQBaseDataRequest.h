@@ -13,16 +13,12 @@
 #import "GQNetworkConsts.h"
 #import "GQRequestParameter.h"
 
-#if GQUSE_MaskView
-#import "GQMaskActivityView.h"
-#endif
-
 @class GQObjectMapping;
 @class GQMappingResult;
 
 @class GQRequestDataHandler;
 @class GQBaseDataRequest;
-
+@class GQMaskActivityView;
 
 #pragma mark -- blockTypedef  普通函数式block
 
@@ -63,9 +59,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     BOOL                _usingCacheData;
     
     GQDataCacheManagerType _cacheType;
-#if GQUSE_MaskView
     GQMaskActivityView  *_maskActivityView;
-#endif
     
     //progress related
     long long           _totalData;

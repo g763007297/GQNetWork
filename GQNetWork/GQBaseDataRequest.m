@@ -11,6 +11,7 @@
 #import "GQRequestJsonDataHandler.h"
 #import "GQMappingHeader.h"
 #import "GQObjectSingleton.h"
+#import "GQMaskActivityView.h"
 #import "GQDebug.h"
 
 @interface GQBaseDataRequest()
@@ -506,7 +507,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (BOOL)useDumpyData
 {
-    return GQUSE_DUMPY_DATA;
+    return NO;
 }
 
 - (NSString*)dumpyResponseString
@@ -527,7 +528,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (void)showIndicator:(BOOL)bshow
 {
     _loading = bshow;
-#if GQUSE_MaskView
     if (bshow && _indicatorView) {
         if (!_maskActivityView) {
             _maskActivityView = [GQMaskActivityView loadFromXib];
@@ -541,7 +541,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             _maskActivityView = nil;
         }
     }
-#endif
 }
 
 - (void)cacheResult
@@ -670,7 +669,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (NSString *)getLoadingMessage
 {
-    return DEFAULT_LOADING_MESSAGE;
+    return @"";
 }
 
 - (GQObjectMapping *)getMapping{

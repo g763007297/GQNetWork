@@ -174,7 +174,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     long long putBodySize =  [self.bodyData length];
     
     [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
     [self.request setHTTPMethod:@"DELETE"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
@@ -188,7 +187,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     long long putBodySize =  [self.bodyData length];
     
     [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
     [self.request setHTTPMethod:@"PUT"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
@@ -205,7 +203,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
 //    }
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPBody:self.bodyData];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
@@ -225,7 +222,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         [self.request setHTTPBody:self.bodyData];
     }
     
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return  self.request;
@@ -264,7 +260,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     [self.request setURL:[NSURL URLWithString:self.requestURL]];
     
-    [self.request setValue:REQUEST_HOST forHTTPHeaderField:@"HOST"];
     [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
     return self.request;

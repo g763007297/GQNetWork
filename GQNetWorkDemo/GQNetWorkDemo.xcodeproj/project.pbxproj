@@ -55,6 +55,7 @@
 		B6292D841CFE88A100FA12B4 /* ProductModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductModel.m; sourceTree = "<group>"; };
 		B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoHttpRequest.h; sourceTree = "<group>"; };
 		B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoHttpRequest.m; sourceTree = "<group>"; };
+		B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoNetworkConsts.h; sourceTree = "<group>"; };
 		B67C1AE81CFFE99E006C4918 /* NSString+GQAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GQAdditions.h"; sourceTree = "<group>"; };
 		B67C1AE91CFFE99E006C4918 /* NSString+GQAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GQAdditions.m"; sourceTree = "<group>"; };
 		B688677C1CFEC86C00850830 /* GQMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQMapping.h; sourceTree = "<group>"; };
@@ -333,6 +334,7 @@
 		B6CB1D351CF83E3B00D485E3 /* GQNetWorkDemo */ = {
 			isa = PBXGroup;
 			children = (
+				B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */,
 				B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */,
 				B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */,
 				B6292D831CFE88A100FA12B4 /* ProductModel.h */,
