@@ -8,7 +8,7 @@
 
 #import "GQNetworkTrafficManager.h"
 #import "GQObjectSingleton.h"
-#import "Reachability.h"
+#import "GQReachability.h"
 #import "GQDebug.h"
 
 #define SHOULD_LOG_TRAFFIC_DATA YES
@@ -31,7 +31,7 @@
     NSDate      *_lastAlertTime;
     NSDate      *_lastResetDate;
     
-    Reachability *_reachability;
+    GQReachability *_reachability;
 }
 
 - (void)restore;
@@ -89,8 +89,8 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 - (void) networkStateDidChanged:(NSNotification*)n
 {
     GQDINFO(@"networkStateDidChanged");
-    Reachability* curReach = [n object];
-    NSParameterAssert([curReach isKindOfClass: [Reachability class]]);
+    GQReachability* curReach = [n object];
+    NSParameterAssert([curReach isKindOfClass: [GQReachability class]]);
     [self updateNetwordStatus:curReach.currentReachabilityStatus];
 }
 
@@ -125,7 +125,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     _lastAlertTime = nil;
     [self inGQrafficData];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStateDidChanged:) name:kReachabilityChangedNotification object:nil];
-    _reachability = [Reachability reachabilityForInternetConnection];
+    _reachability = [GQReachability reachabilityForInternetConnection];
     [self updateNetwordStatus:_reachability.currentReachabilityStatus];
     [_reachability startNotifier];
 }

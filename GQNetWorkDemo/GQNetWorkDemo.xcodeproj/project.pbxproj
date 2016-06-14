@@ -40,7 +40,7 @@
 		B68867E91CFECB0800850830 /* GQRequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867CC1CFECB0800850830 /* GQRequestParameter.m */; };
 		B68867EA1CFECB0800850830 /* GQXibView.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867D01CFECB0800850830 /* GQXibView.m */; };
 		B68867EB1CFECB0800850830 /* GQXibViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867D21CFECB0800850830 /* GQXibViewUtils.m */; };
-		B68867EC1CFECB0800850830 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867D51CFECB0800850830 /* Reachability.m */; };
+		B68867EC1CFECB0800850830 /* GQReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867D51CFECB0800850830 /* GQReachability.m */; };
 		B6CB1D381CF83E3B00D485E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D371CF83E3B00D485E3 /* main.m */; };
 		B6CB1D3B1CF83E3B00D485E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D3A1CF83E3B00D485E3 /* AppDelegate.m */; };
 		B6CB1D3E1CF83E3B00D485E3 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D3D1CF83E3B00D485E3 /* MasterViewController.m */; };
@@ -120,8 +120,8 @@
 		B68867D01CFECB0800850830 /* GQXibView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQXibView.m; sourceTree = "<group>"; };
 		B68867D11CFECB0800850830 /* GQXibViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQXibViewUtils.h; sourceTree = "<group>"; };
 		B68867D21CFECB0800850830 /* GQXibViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQXibViewUtils.m; sourceTree = "<group>"; };
-		B68867D41CFECB0800850830 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
-		B68867D51CFECB0800850830 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		B68867D41CFECB0800850830 /* GQReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQReachability.h; sourceTree = "<group>"; };
+		B68867D51CFECB0800850830 /* GQReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQReachability.m; sourceTree = "<group>"; };
 		B68867ED1CFECB3200850830 /* GQNetworkConsts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQNetworkConsts.h; sourceTree = "<group>"; };
 		B6CB1D331CF83E3B00D485E3 /* GQNetWorkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQNetWorkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CB1D371CF83E3B00D485E3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -306,8 +306,8 @@
 		B68867D31CFECB0800850830 /* Reachability */ = {
 			isa = PBXGroup;
 			children = (
-				B68867D41CFECB0800850830 /* Reachability.h */,
-				B68867D51CFECB0800850830 /* Reachability.m */,
+				B68867D41CFECB0800850830 /* GQReachability.h */,
+				B68867D51CFECB0800850830 /* GQReachability.m */,
 			);
 			path = Reachability;
 			sourceTree = "<group>";
@@ -436,7 +436,7 @@
 				B68867D91CFECB0800850830 /* GQDataCacheManager.m in Sources */,
 				B68867921CFEC86C00850830 /* GQMappingManager.m in Sources */,
 				B68867E81CFECB0800850830 /* GQNetworkTrafficManager.m in Sources */,
-				B68867EC1CFECB0800850830 /* Reachability.m in Sources */,
+				B68867EC1CFECB0800850830 /* GQReachability.m in Sources */,
 				B68867DC1CFECB0800850830 /* GQQueryStringPair.m in Sources */,
 				B68867E41CFECB0800850830 /* GQDataRequest.m in Sources */,
 				B68867E71CFECB0800850830 /* GQURLOperation.m in Sources */,
