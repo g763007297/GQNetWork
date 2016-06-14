@@ -16,11 +16,11 @@ typedef enum {
 } GQParameterEncoding;
 
 typedef enum : NSUInteger{
-    GQRequestMethodGet = 0,
-    GQRequestMethodPost = 1,           // content type = @"application/x-www-form-urlencoded"
-    GQRequestMethodMultipartPost = 2,   // content type = @"multipart/form-data"
-    GQRequestMethodPut = 3,
-    GQRequestMethodDelete = 4,
+    GQRequestMethodGet = 1,
+    GQRequestMethodPost,           // content type = @"application/x-www-form-urlencoded"
+    GQRequestMethodMultipartPost,   // content type = @"multipart/form-data"
+    GQRequestMethodPut,
+    GQRequestMethodDelete
 } GQRequestMethod;
 
 ////////////////////////////////////////////////////////////////////////////////

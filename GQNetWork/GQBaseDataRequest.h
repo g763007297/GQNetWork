@@ -31,7 +31,8 @@ typedef void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress)
 #pragma mark -- ChainBlockTypedef 链式写法block
 
 typedef GQBaseDataRequest *(^GQChainObjectRequest)(id value);//nsobject block
-typedef GQBaseDataRequest *(^GQChainStuctRequest)(GQDataCacheManagerType value);   //enum block
+typedef GQBaseDataRequest *(^GQChainStuctRequest)(NSInteger value);   //enum block
+
 typedef void(^GQChainBlockStartRequest)();//发送请求block
 
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
@@ -59,6 +60,9 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     BOOL                _usingCacheData;
     
     GQDataCacheManagerType _cacheType;
+    
+    GQRequestMethod     _requestMethod;
+    
     GQMaskActivityView  *_maskActivityView;
     
     //progress related
@@ -76,6 +80,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     NSString            *_cacheKey;
     NSString            *_localFilePath;
+    
     NSString            *_keyPath;
     NSDate              *_requestStartDate;
     UIView              *_indicatorView;
@@ -104,6 +109,16 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 #pragma mark -- chain code methods   链式写法
 
 + (instancetype)prepareRequset;
+
+/**
+ *  请求地址    type : NSString
+ */
+@property (nonatomic, copy, readonly) GQChainObjectRequest requestUrlChain;
+
+/**
+ *  请求方法   type :枚举 GQRequestMethod
+ */
+@property (nonatomic, copy, readonly) GQChainStuctRequest requestMethodChain;
 
 /**
  *  请求代理  type: self

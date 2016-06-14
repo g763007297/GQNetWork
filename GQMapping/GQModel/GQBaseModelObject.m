@@ -19,8 +19,7 @@
 @implementation GQBaseModelObject
 
 + (NSDictionary *)attributeMapDictionary{
-    SHOULDOVERRIDE(@"GQBaseModelObject", NSStringFromClass([self class]));
-    return nil;
+    return [[[[self class] alloc] init] propertiesAndValuesAttributeMapDictionary];
 }
 
 - (NSString *)customDescription
@@ -238,6 +237,22 @@
         }
     }
     return propertiesValuesDic;
+}
+
+/*!
+ *	\returns a dictionary Key-Value pair by property and corresponding value.
+ */
+- (NSDictionary*)propertiesAndValuesAttributeMapDictionary
+{
+    NSMutableDictionary *attributeMapDictionary = [NSMutableDictionary dictionary];
+    NSArray *properties = [self propertyNames];
+    for (NSString *property in properties) {
+        SEL getSel = NSSelectorFromString(property);
+        if ([self respondsToSelector:getSel]) {
+            attributeMapDictionary[property] = property;
+        }
+    }
+    return attributeMapDictionary;
 }
 
 @end

@@ -84,6 +84,8 @@
 
 @implementation GQBaseDataRequest
 
+@synthesize requestUrlChain = _requestUrlChain;
+@synthesize requestMethodChain = _requestMethodChain;
 @synthesize delegateChain = _delegateChain;
 @synthesize subRequestUrlChain = _subRequestUrlChain;
 @synthesize cancelSubjectChain = _cancelSubjectChain;
@@ -107,6 +109,8 @@
     return request;
 }
 
+GQChainRequestDefine(requestUrlChain, requestUrl, NSString *, GQChainObjectRequest);
+GQChainRequestDefine(requestMethodChain, requestMethod, NSInteger , GQChainStuctRequest);
 GQChainRequestDefine(delegateChain, delegate, id, GQChainObjectRequest);
 GQChainRequestDefine(subRequestUrlChain,subRequestUrl, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjectRequest);
@@ -116,7 +120,8 @@ GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectR
 GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectRequest);
 GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObjectRequest);
 GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest);
-GQChainRequestDefine(cacheTypeChain, cacheType, GQDataCacheManagerType , GQChainStuctRequest);
+GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest);
+
 
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
 GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
@@ -148,6 +153,9 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     _parmaterEncoding = [self getParameterEncoding];
     _loading = NO;
     
+    if (_requestMethod == 0) {
+        _requestMethod = [self getRequestMethod];
+    }
     if (!_requestUrl || ![_requestUrl length]) {
         _requestUrl = [self getRequestUrl];
     }

@@ -32,4 +32,6 @@
 
 - (NSDictionary*)propertiesAndValuesDictionary;
 
+- (NSDictionary*)propertiesAndValuesAttributeMapDictionary;
+
 @end

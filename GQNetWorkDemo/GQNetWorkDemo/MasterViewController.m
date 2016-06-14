@@ -62,7 +62,6 @@
 #pragma mark -- 链式调用 + 方法调用
     [[[DemoHttpRequest prepareRequset]
       .mappingChain(map)
-      .indicatorViewChain(self.view)
       .keyPathChain(@"result/rows")
       onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
         GQDPRINT(@"%@",result.rawDictionary);
@@ -71,6 +70,7 @@
     
 #pragma mark -- 全链式调用
     [DemoHttpRequest prepareRequset]
+    .requestUrlChain(@"http://123.57.81.80:3001/product/list")
     .mappingChain(map)
     .keyPathChain(@"result/rows")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
@@ -80,6 +80,7 @@
     .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
         
     })
+    .parametersChain(@{})
     .startRequestChain();
     
 #pragma mark -- 常规block

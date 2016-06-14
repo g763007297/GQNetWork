@@ -20,7 +20,7 @@
 {
     __weak typeof(self) weakSelf  = self;
     
-    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_localFilePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:[self getRequestMethod] onRequestStart:^() {
+    self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_localFilePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:_requestMethod onRequestStart:^() {
         if (_onRequestStart) {
             _onRequestStart(weakSelf);
         }else if (weakSelf.delegate) {
