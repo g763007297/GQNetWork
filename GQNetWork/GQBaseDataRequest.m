@@ -590,7 +590,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return _localFilePath && [_localFilePath length];
 }
 
-- (void)handleResponseString:(id)resultString
+- (void)handleResponseString:(id)result
 {
     __block BOOL success = FALSE;
     __block NSError *errorInfo = nil;
@@ -613,20 +613,24 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         dispatch_async(dispatch_get_main_queue(), callback);
     }
     else {
-        self.rawResultString = resultString;
+        self.rawResultData = result;
+        NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:NSUTF8StringEncoding];
         //add callback here
-        if (!self.rawResultString || ![self.rawResultString length]) {
+        if (!rawResultString|| ![rawResultString length]) {
             GQDERROR(@"!empty response error with request:%@", [self class]);
             [self notifyDelegateRequestDidErrorWithError:nil];
         }
         [self generateRequestHandler];
-        id response = [self.requestDataHandler parseJsonString:self.rawResultString error:&errorInfo];
+        id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
         if (errorInfo) {
             success = FALSE;
             dispatch_async(dispatch_get_main_queue(), callback);
         }
         else {
-            [[GQMappingManager sharedManager] mapWithSourceData:response objectMapping:_mapping keyPath:_keyPath completionBlock:^(GQMappingResult *result, NSError *error) {
+            [[GQMappingManager sharedManager]mapWithSourceData:response
+                                                  originalData:self.rawResultData
+                                                 objectMapping:_mapping keyPath:_keyPath
+                                               completionBlock:^(GQMappingResult *result, NSError *error) {
                 _responseResult = result;
                 if (result) {
                     success = TRUE;

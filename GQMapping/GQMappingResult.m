@@ -46,6 +46,11 @@
     return _dataSource.dictionary;
 }
 
+- (NSData *)originalData
+{
+    return _dataSource.originalData;
+}
+
 - (NSDictionary*)rawDictionary
 {
     return _dataSource.rawDictionary;

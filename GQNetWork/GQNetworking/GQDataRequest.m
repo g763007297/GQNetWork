@@ -46,7 +46,7 @@
                 }
             }
         }else{
-            [weakSelf handleResponseString:[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding]];
+            [weakSelf handleResponseString:responseData];
         }
         [weakSelf showIndicator:NO];
         [weakSelf doRelease];

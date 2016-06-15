@@ -16,6 +16,7 @@
 
 - (NSArray*)array;//map数组
 - (NSDictionary*)dictionary;//map后结果
+- (NSData *)originalData;//请求回来的原始数据
 - (NSDictionary*)rawDictionary;//原始结果
 - (id)valueForKeyPath:(NSString *)keyPath;
 - (void)replaceObjectAtKey:(NSString*)key object:(id)object;

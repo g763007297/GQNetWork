@@ -101,7 +101,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 @property (nonatomic, assign, readonly) BOOL loading;
 @property (nonatomic, assign) CGFloat currentProgress;
 @property (nonatomic, assign) GQParameterEncoding parmaterEncoding;
-@property (nonatomic, copy) NSString *rawResultString;
+@property (nonatomic, copy) NSData *rawResultData;
 @property (nonatomic, copy, readonly) NSString *requestUrl;
 @property (nonatomic, copy, readonly) NSMutableDictionary *userInfo;
 @property (nonatomic, copy, readonly) GQRequestDataHandler *requestDataHandler;
@@ -393,9 +393,9 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 /**
  *  处理结果
  *
- *  @param resultString 请求结果字符串
+ *  @param result 请求结果
  */
-- (void)handleResponseString:(NSString*)resultString;
+- (void)handleResponseString:(NSData*)result;
 
 /**
  *  如果需要处理缓存就覆盖这个方法  前提是要使用到了缓存

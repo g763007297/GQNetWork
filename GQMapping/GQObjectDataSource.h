@@ -11,10 +11,11 @@
 @interface GQObjectDataSource : NSObject
 
 @property (nonatomic, readonly) NSString *keyPath;
+@property (nonatomic, readonly) NSData *originalData;
 @property (nonatomic, readonly) NSDictionary *dictionary;
 @property (nonatomic, readonly) NSDictionary *rawDictionary;
 
-- (instancetype)initWithSourceDictionary:(NSDictionary*)dictionary keyPath:(NSString*)keyPath;
+- (instancetype)initWithSourceDictionary:(NSDictionary*)dictionary originalData:(NSData *)originalData keyPath:(NSString*)keyPath;
 
 - (id)valueForKey:(NSString *)key;
 - (id)valueForKeyPath:(NSString *)keyPath;

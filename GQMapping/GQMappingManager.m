@@ -40,6 +40,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQMappingManager, sharedManager)
 }
 
 - (void)mapWithSourceData:(id)sourceData
+             originalData:(NSData *)originalData
             objectMapping:(GQObjectMapping*)objectMapping
                   keyPath:(NSString*)keyPath
           completionBlock:(void(^)(GQMappingResult *result, NSError *error))completionBlock
@@ -50,7 +51,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQMappingManager, sharedManager)
         keyPath = [NSString stringWithFormat:@"%@/%@", ROOT_KEY, keyPath];
         sourceData = @{ROOT_KEY:sourceData};
     }
-    GQObjectDataSource *dataSource = [[GQObjectDataSource alloc] initWithSourceDictionary:sourceData keyPath:keyPath];
+    GQObjectDataSource *dataSource = [[GQObjectDataSource alloc] initWithSourceDictionary:sourceData originalData:originalData keyPath:keyPath];
     GQMappingOperation *mappingOperation = [[GQMappingOperation alloc] initWithObjectDataSource:dataSource
                                                                                     objectMapping:objectMapping
                                                                                           keyPath:keyPath

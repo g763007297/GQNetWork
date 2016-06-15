@@ -11,6 +11,7 @@
 @interface GQObjectDataSource()
 {
     NSString            *_keyPath;
+    NSData              *_originalData;
     NSMutableDictionary *_resultDictionary;
     NSMutableDictionary *_rawDictionary;
 }
@@ -25,11 +26,12 @@
     _rawDictionary = nil;
 }
 
-- (instancetype)initWithSourceDictionary:(NSDictionary*)dictionary keyPath:(NSString*)keyPath
+- (instancetype)initWithSourceDictionary:(NSDictionary*)dictionary originalData:(NSData *)originalData keyPath:(NSString*)keyPath
 {
     self = [super init];
     if (self) {
         _keyPath = keyPath;
+        _originalData = originalData;
         _resultDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
         _rawDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:TRUE];
     }

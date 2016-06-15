@@ -22,6 +22,7 @@
  * @param completionBlock A completion callback handler
  */
 - (void)mapWithSourceData:(id)sourceData
+             originalData:(NSData *)originalData
             objectMapping:(GQObjectMapping*)objectMapping
                   keyPath:(NSString*)keyPath
           completionBlock:(void(^)(GQMappingResult *result, NSError *error))completionBlock;
