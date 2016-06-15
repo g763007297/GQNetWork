@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-s.version = "1.0.6"
-  s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession,增加链式调用"
+  s.version = "1.0.7"
+  s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession,支持链式调用"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
 
@@ -23,7 +23,7 @@ s.version = "1.0.6"
     ss.ios.source_files = [
       'GQMapping/**/*.{h,m}',
       'GQNetWork/Additions/NSString+GQAdditions.h',
-      'GQNetWork/Additions/NSString+GQAdditions.3',
+      'GQNetWork/Additions/NSString+GQAdditions.m',
     ]
 
     ss.public_header_files = "GQMapping/**/*.h"
