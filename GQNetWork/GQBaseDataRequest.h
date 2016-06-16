@@ -435,11 +435,18 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 - (NSStringEncoding)getResponseEncoding;
 
 /**
- *  请求url  必须重载的方法
+ *  请求url  必须重写的方法
  *
  *  @return requestUrl
  */
 - (NSString*)getRequestUrl;
+
+/**
+ *  host
+ *
+ *  @return BaseUrl
+ */
+- (NSString *)getBaseUrl;
 
 /**
  *  请求时的弹出框loading信息  默认为 “正在加载...”

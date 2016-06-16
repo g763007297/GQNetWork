@@ -156,9 +156,17 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     if (_requestMethod == 0) {
         _requestMethod = [self getRequestMethod];
     }
-    if (!_requestUrl || ![_requestUrl length]) {
-        _requestUrl = [self getRequestUrl];
+    
+    _requestUrl = @"";
+    
+    if ([self getBaseUrl]) {
+        _requestUrl = [self getBaseUrl];
     }
+    
+    if ([self getRequestUrl]) {
+        _requestUrl = [_requestUrl stringByAppendingString:[self getRequestUrl]];
+    }
+    
     if (_subRequestUrl) {
         _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,_subRequestUrl];
     }
@@ -674,6 +682,12 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (NSString*)getRequestUrl
 {
+    NSString *reason = [NSString stringWithFormat:@"This is a abstract method. You should subclass of GQBaseDataRequest and override it!"];
+    @throw [NSException exceptionWithName:@"Logic Error" reason:reason userInfo:nil];
+    return @"";
+}
+
+- (NSString *)getBaseUrl{
     NSString *reason = [NSString stringWithFormat:@"This is a abstract method. You should subclass of GQBaseDataRequest and override it!"];
     @throw [NSException exceptionWithName:@"Logic Error" reason:reason userInfo:nil];
     return @"";
