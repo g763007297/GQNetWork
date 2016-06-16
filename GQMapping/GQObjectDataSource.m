@@ -32,8 +32,10 @@
     if (self) {
         _keyPath = keyPath;
         _originalData = originalData;
-        _resultDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
-        _rawDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:TRUE];
+        if (dictionary) {            
+            _resultDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary];
+            _rawDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:TRUE];
+        }
     }
     return self;
 }

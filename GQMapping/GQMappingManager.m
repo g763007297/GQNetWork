@@ -45,7 +45,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQMappingManager, sharedManager)
                   keyPath:(NSString*)keyPath
           completionBlock:(void(^)(GQMappingResult *result, NSError *error))completionBlock
 {
-    NSAssert([sourceData isKindOfClass:[NSDictionary class]] || [sourceData isKindOfClass:[NSArray class]], @"sourceData is not a dictionary or array!");
+    if (![sourceData isKindOfClass:[NSDictionary class]]&&![sourceData isKindOfClass:[NSArray class]]) {
+        sourceData = nil;
+    }
+//    NSAssert([sourceData isKindOfClass:[NSDictionary class]] || [sourceData isKindOfClass:[NSArray class]], @"sourceData is not a dictionary or array!");
     
     if([sourceData isKindOfClass:[NSArray class]]) {
         keyPath = [NSString stringWithFormat:@"%@/%@", ROOT_KEY, keyPath];

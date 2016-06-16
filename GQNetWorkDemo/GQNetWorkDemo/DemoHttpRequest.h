@@ -11,3 +11,7 @@
 @interface DemoHttpRequest : GQDataRequest
 
 @end
+
+@interface TestHttpRequest : GQDataRequest
+
+@end

@@ -32,4 +32,18 @@
 
 @end
 
+@implementation TestHttpRequest
 
+- (NSString *)getRequestUrl{
+    return @"";
+}
+
+- (NSString *)getBaseUrl{
+    return @"";
+}
+
+- (void)generateRequestHandler{
+    NSLog(@"");
+}
+
+@end

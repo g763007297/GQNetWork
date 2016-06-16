@@ -635,7 +635,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             dispatch_async(dispatch_get_main_queue(), callback);
         }
         else {
-            [[GQMappingManager sharedManager]mapWithSourceData:response
+            [[GQMappingManager sharedManager]mapWithSourceData:_requestDataHandler?response:rawResultString
                                                   originalData:self.rawResultData
                                                  objectMapping:_mapping keyPath:_keyPath
                                                completionBlock:^(GQMappingResult *result, NSError *error) {
@@ -712,8 +712,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (void)dumpyRequestDone
 {
     [self showIndicator:FALSE];
-    NSString *jsonString = [self dumpyResponseString];
-    [self handleResponseString:jsonString];
+    NSData *jsonData = [[self dumpyResponseString] dataUsingEncoding:[self getResponseEncoding]];
+    [self handleResponseString:jsonData];
 }
 
 

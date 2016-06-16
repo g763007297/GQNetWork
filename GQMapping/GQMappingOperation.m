@@ -58,7 +58,7 @@
 - (void)main
 {
     GQMappingResult *mappingResult = nil;
-    if (_objectMapping) {
+    if (_objectMapping&&_dataSource&&_keyPath) {
         NSDate *beginDate = [NSDate date];
         id source = [_dataSource valueForKeyPath:_keyPath];
         NSAssert(!([source isKindOfClass:[NSArray class]] && [source[0] isKindOfClass:[NSNull class]]),  @"can not get value at key %@", _keyPath);

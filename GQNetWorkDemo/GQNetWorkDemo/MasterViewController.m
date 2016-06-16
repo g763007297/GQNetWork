@@ -71,6 +71,16 @@
         GQDPRINT(@"%@",result.array);
     }] startRequest];
     
+    [TestHttpRequest prepareRequset]
+    .requestUrlChain(@"http://www.baidu.com")
+    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
+        GQDPRINT(@"%@",result.originalData);
+    })
+    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
+        GQDPRINT(@"%@",error);
+    })
+    .startRequestChain();
+    
 #pragma mark -- 全链式调用
     [DemoHttpRequest prepareRequset]
     .requestUrlChain(@"product/list")
@@ -96,6 +106,7 @@
                                onRequestCanceled:nil
                                  onRequestFailed:nil
                                onProgressChanged:nil];
+    
 }
 
 #pragma mark -- DataRequestDelegate
