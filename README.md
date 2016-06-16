@@ -118,7 +118,7 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
 ```
 （4）将配置好的map传到请求体中再发起请求，不对这样返回的数组为(null)
 
-	```objc
+```objc
 	GQRequestParameter *parameter = [[GQRequestParameter alloc] init];
 	
 	parameter.mapping = map;
@@ -132,10 +132,10 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
                                    onRequestCanceled:nil
                                      onRequestFailed:nil
                                    onProgressChanged:nil];
-	```
+```
 （5）再改改，是不是发现rows是在字典的里面第2层，这里我们要设置keyPath，因为是使用kvc进行关系映射的，所以改一下后的代码就是下面这样了：
 
-	```objc
+```objc
     GQRequestParameter *parameter = [[GQRequestParameter alloc] init];
     
     GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
@@ -155,7 +155,7 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
                                onRequestCanceled:nil
                                  onRequestFailed:nil
                                onProgressChanged:nil];
-	```
+```
 （6）这样我们打印的数组就是下面这样了，到此我们圆满的完成了这个请求并拿到了想要的数据：
 
 ```objc
