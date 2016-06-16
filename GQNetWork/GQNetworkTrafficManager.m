@@ -26,7 +26,7 @@
     int         _resetDayInMonth;
     int         _max3gMegaBytes;     // this is MB not byte
     
-    GGNetworkStatus _networkStatus;
+    GQNetworkStatus _networkStatus;
     
     NSDate      *_lastAlertTime;
     NSDate      *_lastResetDate;
@@ -94,22 +94,22 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     [self updateNetwordStatus:curReach.currentReachabilityStatus];
 }
 
-- (void) updateNetwordStatus:(GGNetworkStatus)status
+- (void) updateNetwordStatus:(GQNetworkStatus)status
 {
     _isUsing3GNetwork = FALSE;
     switch (status)
     {
-        case GGReachableViaWiFi:
+        case GQReachableViaWiFi:
             _networkType = @"wifi";
             break;
-        case GGReachableVia3G:
+        case GQReachableVia3G:
             _networkType = @"3g";
             _isUsing3GNetwork = TRUE;
             break;
-        case GGReachableVia2G:
+        case GQReachableVia2G:
             _networkType = @"2g";
             break;
-        case GGNotReachable:
+        case GQNotReachable:
             _networkType = @"unavailable";
             break;
         default:
@@ -121,10 +121,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
 - (void)restore
 {
-    _networkStatus = GGReachableViaWiFi;
+    _networkStatus = GQReachableViaWiFi;
     _lastAlertTime = nil;
     [self inGQrafficData];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStateDidChanged:) name:kReachabilityChangedNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkStateDidChanged:) name:kGQReachabilityChangedNotification object:nil];
     _reachability = [GQReachability reachabilityForInternetConnection];
     [self updateNetwordStatus:_reachability.currentReachabilityStatus];
     [_reachability startNotifier];
@@ -189,7 +189,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 {
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     switch (_networkStatus) {
-        case GGReachableVia2G:
+        case GQReachableVia2G:
             _2gInBytes = _2gInBytes + bytes;
             [userinfo setObject:@(_2gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_IN];
             [userinfo synchronize];
@@ -197,7 +197,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
                 GQDINFO(@"2g trafic in :%lf bytes", _2gInBytes);
             }
             break;
-        case GGReachableVia3G:
+        case GQReachableVia3G:
             _3gInBytes = _3gInBytes + bytes;
             [userinfo setObject:@(_3gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_IN];
             [userinfo synchronize];
@@ -205,7 +205,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
                 GQDINFO(@"3g trafic in :%lf bytes", _3gInBytes);
             }
             break;
-        case GGReachableViaWiFi:
+        case GQReachableViaWiFi:
             _wifiInBytes = _wifiInBytes + bytes;
             [userinfo setObject:@(_wifiInBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_IN];
             [userinfo synchronize];
@@ -245,7 +245,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 {
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     switch (_networkStatus) {
-        case GGReachableVia2G:
+        case GQReachableVia2G:
             _2gOutBytes = _2gOutBytes + bytes;
             [userinfo setObject:@(_2gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_OUT];
             [userinfo synchronize];
@@ -253,7 +253,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
                 GQDINFO(@"2g trafic in :%lf bytes", _2gInBytes);
             }
             break;
-        case GGReachableVia3G:
+        case GQReachableVia3G:
             _3gOutBytes = _3gOutBytes + bytes;
             [userinfo setObject:@(_3gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_OUT];
             [userinfo synchronize];
@@ -261,7 +261,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
                 GQDINFO(@"3g trafic in :%lf bytes", _3gInBytes);
             }
             break;
-        case GGReachableViaWiFi:
+        case GQReachableViaWiFi:
             _wifiOutBytes = _wifiOutBytes + bytes;
             [userinfo setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
             [userinfo synchronize];

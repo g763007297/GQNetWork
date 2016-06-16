@@ -52,14 +52,14 @@
 
 typedef enum
 {
-	GGNotReachable = 0,
-	GGReachableViaWiFi,
-	GGReachableViaWWAN,
-    GGReachableVia3G,
-    GGReachableVia2G
-} GGNetworkStatus;
+	GQNotReachable = 0,
+	GQReachableViaWiFi,
+	GQReachableViaWWAN,
+    GQReachableVia3G,
+    GQReachableVia2G
+} GQNetworkStatus;
 
-#define kReachabilityChangedNotification @"kNetworkReachabilityChangedNotification"
+#define kGQReachabilityChangedNotification @"kGQNetworkReachabilityChangedNotification"
 
 @interface GQReachability: NSObject
 {
@@ -84,7 +84,7 @@ typedef enum
 - (BOOL) startNotifier;
 - (void) stopNotifier;
 
-- (GGNetworkStatus) currentReachabilityStatus;
+- (GQNetworkStatus) currentReachabilityStatus;
 //WWAN may be available, but not active until a connection has been established.
 //WiFi may require a connection for VPN on Demand.
 - (BOOL) connectionRequired;

@@ -91,7 +91,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	
 	GQReachability* noteObject = (__bridge GQReachability*) info;
 	// Post a notification to notify the client that the network reachability changed.
-	[[NSNotificationCenter defaultCenter] postNotificationName: kReachabilityChangedNotification object: noteObject];
+	[[NSNotificationCenter defaultCenter] postNotificationName: kGQReachabilityChangedNotification object: noteObject];
 }
 
 - (BOOL) startNotifier
@@ -185,34 +185,34 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 
 #pragma mark Network Flag Handling
 
-- (GGNetworkStatus) localWiFiStatusForFlags: (SCNetworkReachabilityFlags) flags
+- (GQNetworkStatus) localWiFiStatusForFlags: (SCNetworkReachabilityFlags) flags
 {
 	PrintReachabilityFlags(flags, "localWiFiStatusForFlags");
     
-	BOOL retVal = GGNotReachable;
+	BOOL retVal = GQNotReachable;
 	if((flags & kSCNetworkReachabilityFlagsReachable) && (flags & kSCNetworkReachabilityFlagsIsDirect))
 	{
-		retVal = GGReachableViaWiFi;
+		retVal = GQReachableViaWiFi;
 	}
 	return retVal;
 }
 
-- (GGNetworkStatus) networkStatusForFlags: (SCNetworkReachabilityFlags) flags
+- (GQNetworkStatus) networkStatusForFlags: (SCNetworkReachabilityFlags) flags
 {
 	PrintReachabilityFlags(flags, "networkStatusForFlags");
 	if ((flags & kSCNetworkReachabilityFlagsReachable) == 0)
 	{
 		// if target host is not reachable
-		return GGNotReachable;
+		return GQNotReachable;
 	}
     
-	BOOL retVal = GGNotReachable;
+	BOOL retVal = GQNotReachable;
 	
 	if ((flags & kSCNetworkReachabilityFlagsConnectionRequired) == 0)
 	{
 		// if target host is reachable and no connection is required
 		//  then we'll assume (for now) that your on Wi-Fi
-		retVal = GGReachableViaWiFi;
+		retVal = GQReachableViaWiFi;
 	}
 	
 	
@@ -225,16 +225,16 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
         if ((flags & kSCNetworkReachabilityFlagsInterventionRequired) == 0)
         {
             // ... and no [user] intervention is needed
-            retVal = GGReachableViaWiFi;
+            retVal = GQReachableViaWiFi;
         }
     }
     if ((flags & kSCNetworkReachabilityFlagsIsWWAN) == kSCNetworkReachabilityFlagsIsWWAN)
     {
         if((flags & kSCNetworkReachabilityFlagsReachable) == kSCNetworkReachabilityFlagsReachable) {
             if ((flags & kSCNetworkReachabilityFlagsTransientConnection) == kSCNetworkReachabilityFlagsTransientConnection) {
-                retVal = GGReachableVia3G;
+                retVal = GQReachableVia3G;
                 if((flags & kSCNetworkReachabilityFlagsConnectionRequired) == kSCNetworkReachabilityFlagsConnectionRequired) {
-                    retVal = GGReachableVia2G;
+                    retVal = GQReachableVia2G;
                 }
             }
         }
@@ -253,10 +253,10 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	return NO;
 }
 
-- (GGNetworkStatus) currentReachabilityStatus
+- (GQNetworkStatus) currentReachabilityStatus
 {
 	NSAssert(reachabilityRef != NULL, @"currentNetworkStatus called with NULL reachabilityRef");
-	GGNetworkStatus retVal = GGNotReachable;
+	GQNetworkStatus retVal = GQNotReachable;
 	SCNetworkReachabilityFlags flags;
 	if (SCNetworkReachabilityGetFlags(reachabilityRef, &flags))
 	{
