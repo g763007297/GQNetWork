@@ -157,14 +157,12 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         _requestMethod = [self getRequestMethod];
     }
     
-    _requestUrl = @"";
-    
-    if ([self getBaseUrl]) {
-        _requestUrl = [self getBaseUrl];
+    if (!_requestUrl || ![_requestUrl length]) {
+        _requestUrl = [self getRequestUrl];
     }
     
-    if ([self getRequestUrl]) {
-        _requestUrl = [_requestUrl stringByAppendingString:[self getRequestUrl]];
+    if ([self getBaseUrl]) {
+        _requestUrl = [NSString stringWithFormat:@"%@%@",[self getBaseUrl],_requestUrl];
     }
     
     if (_subRequestUrl) {
@@ -302,6 +300,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         _mapping = mapping;
         _delegate = delegate;
         
+        _subRequestUrl = subUrl;
         _indicatorView = indiView;
         _cacheKey = cache;
         _cacheType = cacheType;
@@ -447,6 +446,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         _keyPath = keyPath;
         _mapping = mapping;
         
+        _subRequestUrl = subUrl;
         _indicatorView = indiView;
         _cacheKey = cache;
         _cacheType = cacheType;

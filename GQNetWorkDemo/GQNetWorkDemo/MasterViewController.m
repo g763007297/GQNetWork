@@ -38,15 +38,15 @@
     
 #pragma mark -- 初级用法 使用delegate
     
-    [DemoHttpRequest requestWithDelegate:self];
+//    [DemoHttpRequest requestWithDelegate:self];
     
 #pragma mark -- 初级用法 使用block
     
-    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        GQDPRINT(@"%@",result.dictionary);
-    } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
-        GQDPRINT(@"%@",error);
-    }];
+//    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+//        GQDPRINT(@"%@",result.dictionary);
+//    } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
+//        GQDPRINT(@"%@",error);
+//    }];
     
 #pragma mark -- 高级用法  使用mapping
     
@@ -59,8 +59,11 @@
     
     parameter.mapping = map;
     
+    parameter.subRequestUrl = @"product/list";
+    
 #pragma mark -- 链式调用 + 方法调用
     [[[DemoHttpRequest prepareRequset]
+      .requestUrlChain(@"product/list")
       .mappingChain(map)
       .keyPathChain(@"result/rows")
       onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
@@ -70,7 +73,7 @@
     
 #pragma mark -- 全链式调用
     [DemoHttpRequest prepareRequset]
-    .requestUrlChain(@"http://123.57.81.80:3001/product/list")
+    .requestUrlChain(@"product/list")
     .mappingChain(map)
     .keyPathChain(@"result/rows")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){

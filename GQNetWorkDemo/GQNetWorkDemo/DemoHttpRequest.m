@@ -13,7 +13,11 @@
 
 - (NSString*)getRequestUrl
 {
-    return [GQHttpReuqestURL stringByAppendingString:@"product/list"];
+    return @"";
+}
+
+- (NSString *)getBaseUrl{
+    return GQHttpReuqestURL;
 }
 
 -(GQParameterEncoding)getParameterEncoding
