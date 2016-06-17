@@ -12,6 +12,6 @@
 
 @end
 
-@interface TestHttpRequest : GQDataRequest
+@interface TestRequestHandlerHttpRequest : GQDataRequest
 
 @end

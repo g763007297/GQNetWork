@@ -8,6 +8,7 @@
 
 #import "DemoHttpRequest.h"
 #import "DemoNetworkConsts.h"
+#import "GQRequestDataHandleHeader.h"
 
 @implementation DemoHttpRequest
 
@@ -32,7 +33,7 @@
 
 @end
 
-@implementation TestHttpRequest
+@implementation TestRequestHandlerHttpRequest
 
 - (NSString *)getRequestUrl{
     return @"";
@@ -42,8 +43,8 @@
     return @"";
 }
 
-- (void)generateRequestHandler{
-    NSLog(@"");
+- (GQRequestDataHandler *)generateRequestHandler{
+    return nil;
 }
 
 @end

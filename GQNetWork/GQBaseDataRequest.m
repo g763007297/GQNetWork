@@ -8,7 +8,7 @@
 
 #import "GQBaseDataRequest.h"
 #import "GQDataRequestManager.h"
-#import "GQRequestJsonDataHandler.h"
+#import "GQRequestDataHandleHeader.h"
 #import "GQMappingHeader.h"
 #import "GQObjectSingleton.h"
 #import "GQMaskActivityView.h"
@@ -504,9 +504,9 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 }
 
-- (void)generateRequestHandler
+- (GQRequestDataHandler*)generateRequestHandler
 {
-    _requestDataHandler = [[GQRequestJsonDataHandler alloc] init];
+    return [[GQRequestJsonDataHandler alloc] init];
 }
 
 - (BOOL)onReceivedCacheData:(NSObject*)cacheData
@@ -628,7 +628,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             GQDERROR(@"!empty response error with request:%@", [self class]);
             [self notifyDelegateRequestDidErrorWithError:nil];
         }
-        [self generateRequestHandler];
+        _requestDataHandler = [self generateRequestHandler];
         id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
         if (errorInfo) {
             success = FALSE;

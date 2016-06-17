@@ -481,7 +481,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 /**
  *  子类覆盖该方法修改数据解析方式  默认为json解析
  */
-- (void)generateRequestHandler;
+- (GQRequestDataHandler *)generateRequestHandler;
 
 #pragma mark - 假数据方法
 - (BOOL)useDumpyData;

@@ -71,7 +71,7 @@
         GQDPRINT(@"%@",result.array);
     }] startRequest];
     
-    [TestHttpRequest prepareRequset]
+    [TestRequestHandlerHttpRequest prepareRequset]
     .requestUrlChain(@"http://www.baidu.com")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         GQDPRINT(@"%@",result.originalData);

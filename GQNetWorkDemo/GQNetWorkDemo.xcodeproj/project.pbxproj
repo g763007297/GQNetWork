@@ -124,6 +124,7 @@
 		B68867D41CFECB0800850830 /* GQReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQReachability.h; sourceTree = "<group>"; };
 		B68867D51CFECB0800850830 /* GQReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQReachability.m; sourceTree = "<group>"; };
 		B68867ED1CFECB3200850830 /* GQNetworkConsts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQNetworkConsts.h; sourceTree = "<group>"; };
+		B69EEFE01D13AF2F00F7C72A /* GQRequestDataHandleHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GQRequestDataHandleHeader.h; sourceTree = "<group>"; };
 		B6CB1D331CF83E3B00D485E3 /* GQNetWorkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQNetWorkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CB1D371CF83E3B00D485E3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B6CB1D391CF83E3B00D485E3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -250,6 +251,7 @@
 		B68867AE1CFECB0800850830 /* DataHandler */ = {
 			isa = PBXGroup;
 			children = (
+				B69EEFE01D13AF2F00F7C72A /* GQRequestDataHandleHeader.h */,
 				B68867AF1CFECB0800850830 /* GQQueryStringPair.h */,
 				B68867B01CFECB0800850830 /* GQQueryStringPair.m */,
 				B68867B11CFECB0800850830 /* GQRequestDataHandler.h */,
