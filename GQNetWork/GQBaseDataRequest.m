@@ -102,6 +102,7 @@
 @synthesize onFailedBlockChain = _onFailedBlockChain;
 @synthesize onProgressChangedBlockChain = _onProgressChangedBlockChain;
 @synthesize startRequestChain = _startRequestChain;
+@synthesize timeOutIntervalChain = _timeOutIntervalChain;
 
 + (instancetype)prepareRequset{
     GQBaseDataRequest *request = [[[self class] alloc] init];
@@ -115,6 +116,7 @@ GQChainRequestDefine(delegateChain, delegate, id, GQChainObjectRequest);
 GQChainRequestDefine(subRequestUrlChain,subRequestUrl, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(keyPathChain, keyPath, NSString *, GQChainObjectRequest);
+GQChainRequestDefine(timeOutIntervalChain, timeOutInterval, NSInteger, GQChainStuctRequest);
 GQChainRequestDefine(mappingChain, mapping, GQObjectMapping *, GQChainObjectRequest);
 GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectRequest);
@@ -622,7 +624,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     }
     else {
         self.rawResultData = result;
-        NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:NSUTF8StringEncoding];
+        NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {
             GQDERROR(@"!empty response error with request:%@", [self class]);
@@ -669,6 +671,10 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (NSDictionary*)getStaticParams
 {
     return nil;
+}
+
+- (NSInteger)getTimeOutInterval{
+    return 30;
 }
 
 - (GQParameterEncoding)getParameterEncoding{

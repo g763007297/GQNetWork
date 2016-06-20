@@ -64,6 +64,8 @@
         [weakSelf showIndicator:NO];
         [weakSelf doRelease];
     }];
+    
+    [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
     [self.httpRequest startRequest];
     [self showIndicator:YES];
 }

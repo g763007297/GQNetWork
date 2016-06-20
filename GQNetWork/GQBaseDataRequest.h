@@ -74,6 +74,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     NSString            *_cancelSubject;
     
+    NSInteger           *_timeOutInterval;
+    
     NSString            *_subRequestUrl;
     
     NSDictionary        *_parameters;
@@ -139,6 +141,11 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  mapping所需的key层级  type : NSString
  */
 @property (nonatomic, copy , readonly) GQChainObjectRequest keyPathChain;
+
+/**
+ *  timeOutInterval    type  NSTimeInterval
+ */
+@property (nonatomic, copy, readonly) GQChainStuctRequest timeOutIntervalChain;
 
 /**
  *  具体映射的关系   type : GQObjectMapping
@@ -468,6 +475,13 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return staticParams
  */
 - (NSDictionary*)getStaticParams;
+
+/**
+ *  设置超时时间
+ *
+ *  @return timeOutInterval
+ */
+- (NSInteger)getTimeOutInterval;
 
 /**
  *   从缓存string中提取字典
