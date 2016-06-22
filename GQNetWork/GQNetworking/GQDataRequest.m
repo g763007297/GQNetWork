@@ -21,48 +21,53 @@
     __weak typeof(self) weakSelf  = self;
     
     self.httpRequest = [[GQHTTPRequest alloc] initRequestWithParameters:params URL:self.requestUrl saveToPath:_localFilePath requestEncoding:[self getResponseEncoding] parmaterEncoding:[self getParameterEncoding] requestMethod:_requestMethod onRequestStart:^() {
-        if (_onRequestStart) {
-            _onRequestStart(weakSelf);
-        }else if (weakSelf.delegate) {
-            if([weakSelf.delegate respondsToSelector:@selector(requestDidStartLoad:)]){
-                [weakSelf.delegate requestDidStartLoad:weakSelf];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (strongSelf ->_onRequestStart) {
+            strongSelf->_onRequestStart(weakSelf);
+        }else if (strongSelf.delegate) {
+            if([strongSelf.delegate respondsToSelector:@selector(requestDidStartLoad:)]){
+                [strongSelf.delegate requestDidStartLoad:strongSelf];
             }
         }
     } onProgressChanged:^(float progress) {
-        if (_onProgressChanged) {
-            _onProgressChanged(weakSelf,progress);
-        }else if (weakSelf.delegate) {
-            if([weakSelf.delegate respondsToSelector:@selector(request:progressChanged:)]){
-                [weakSelf.delegate request:weakSelf progressChanged:progress];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (strongSelf->_onProgressChanged) {
+            strongSelf->_onProgressChanged(weakSelf,progress);
+        }else if (strongSelf.delegate) {
+            if([strongSelf.delegate respondsToSelector:@selector(request:progressChanged:)]){
+                [strongSelf.delegate request:strongSelf progressChanged:progress];
             }
         }
     } onRequestFinished:^(NSData *responseData) {
-        if (_localFilePath) {
-            if (_onRequestFinished) {
-                _onRequestFinished(weakSelf, nil);
-            }else if (weakSelf.delegate) {
-                if([weakSelf.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)]){
-                    [weakSelf.delegate requestDidFinishLoad:weakSelf mappingResult:nil];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (strongSelf->_localFilePath) {
+            if (strongSelf->_onRequestFinished) {
+                strongSelf->_onRequestFinished(strongSelf, nil);
+            }else if (strongSelf.delegate) {
+                if([strongSelf.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)]){
+                    [strongSelf.delegate requestDidFinishLoad:strongSelf mappingResult:nil];
                 }
             }
         }else{
-            [weakSelf handleResponseString:responseData];
+            [strongSelf handleResponseString:responseData];
         }
-        [weakSelf showIndicator:NO];
-        [weakSelf doRelease];
+        [strongSelf showIndicator:NO];
+        [strongSelf doRelease];
     } onRequestCanceled:^() {
-        if (_onRequestCanceled) {
-            _onRequestCanceled(weakSelf);
-        }else if (weakSelf.delegate) {
-            if([weakSelf.delegate respondsToSelector:@selector(requestDidCancelLoad:)]){
-                [weakSelf.delegate requestDidCancelLoad:weakSelf];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        if (strongSelf->_onRequestCanceled) {
+            strongSelf->_onRequestCanceled(strongSelf);
+        }else if (strongSelf.delegate) {
+            if([strongSelf.delegate respondsToSelector:@selector(requestDidCancelLoad:)]){
+                [strongSelf.delegate requestDidCancelLoad:strongSelf];
             }
         }
-        [weakSelf doRelease];
+        [strongSelf doRelease];
     } onRequestFailed:^(NSError *error) {
-        [weakSelf notifyDelegateRequestDidErrorWithError:error];
-        [weakSelf showIndicator:NO];
-        [weakSelf doRelease];
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf notifyDelegateRequestDidErrorWithError:error];
+        [strongSelf showIndicator:NO];
+        [strongSelf doRelease];
     }];
     
     [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
@@ -94,10 +99,6 @@
 {
     [self.httpRequest cancelRequest];
     
-    if (_onRequestCanceled) {
-        __weak GQBaseDataRequest *weakSelf = self;
-        _onRequestCanceled(weakSelf);
-    }
     [self showIndicator:NO];
     GQDINFO(@"%@ request is cancled", [self class]);
 }

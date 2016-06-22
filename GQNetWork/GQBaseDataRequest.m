@@ -604,16 +604,16 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 {
     __block BOOL success = FALSE;
     __block NSError *errorInfo = nil;
-    __block __weak typeof(self) weakSelf = self;
+//    __weak typeof(self) weakSelf = self;
     dispatch_block_t callback = ^{
         @autoreleasepool {
             if (success) {
-                [weakSelf cacheResult];
-                [weakSelf notifyDelegateRequestDidSuccess];
+                [self cacheResult];
+                [self notifyDelegateRequestDidSuccess];
             }
             else {
                 GQDERROR(@"parse error %@", errorInfo);
-                [weakSelf notifyDelegateRequestDidErrorWithError:errorInfo];
+                [self notifyDelegateRequestDidErrorWithError:errorInfo];
             }
         }
     };
@@ -649,7 +649,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                     success = FALSE;
                 }
                 errorInfo = error;
-                [weakSelf processResult];
+                [self processResult];
                 dispatch_async(dispatch_get_main_queue(), callback);
             }];
         }

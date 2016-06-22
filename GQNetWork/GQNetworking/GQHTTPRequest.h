@@ -31,7 +31,6 @@
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
 @property (nonatomic, strong) GQURLOperation *urlOperation;
-@property (nonatomic, strong) GQURLSessionOpetation    *uRLSessionOpetation;
 @property (nonatomic, assign) GQParameterEncoding      parmaterEncoding;
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters

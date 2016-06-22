@@ -34,7 +34,9 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 
 @property (nonatomic, strong) NSString                      *operationSavePath;
 
-@property (nonatomic, strong) NSURLSessionDataTask          *operationSession;
+@property (nonatomic, strong) NSURLSession                  *operationSession;
+
+@property (nonatomic, strong) NSURLSessionDataTask          *operationSessionTask;
 
 @property (nonatomic, strong) NSURLConnection               *operationConnection;
 @property (nonatomic, strong) NSMutableData                 *operationData;

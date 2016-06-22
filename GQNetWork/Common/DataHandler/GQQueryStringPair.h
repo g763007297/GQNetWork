@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-extern NSString * GQAFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding);
-extern NSArray * GQAFQueryStringPairsFromDictionary(NSDictionary *dictionary);
-extern NSArray * GQAFQueryStringPairsFromKeyAndValue(NSString *key, id value);
+extern NSString * GQQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding);
+extern NSArray * GQQueryStringPairsFromDictionary(NSDictionary *dictionary);
+extern NSArray * GQQueryStringPairsFromKeyAndValue(NSString *key, id value);
 
 @interface GQQueryStringPair : NSObject
 

@@ -19,7 +19,6 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQHttpRequestManager, sharedHttpRequestManager)
     if (self) {
         self.connectionQueue  = [[NSOperationQueue alloc] init];
         [self.connectionQueue setMaxConcurrentOperationCount:4];
-//        [self.connectionQueue waitUntilAllOperationsAreFinished];
     }
     return self;
 }

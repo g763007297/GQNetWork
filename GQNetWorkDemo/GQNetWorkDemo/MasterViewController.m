@@ -38,15 +38,15 @@
     
 #pragma mark -- 初级用法 使用delegate
     
-//    [DemoHttpRequest requestWithDelegate:self];
+    [DemoHttpRequest requestWithDelegate:self];
     
 #pragma mark -- 初级用法 使用block
     
-//    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-//        GQDPRINT(@"%@",result.dictionary);
-//    } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
-//        GQDPRINT(@"%@",error);
-//    }];
+    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+        GQDPRINT(@"%@",result.dictionary);
+    } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
+        GQDPRINT(@"%@",error);
+    }];
     
 #pragma mark -- 高级用法  使用mapping
     
@@ -70,7 +70,7 @@
         GQDPRINT(@"%@",result.rawDictionary);
         GQDPRINT(@"%@",result.array);
     }] startRequest];
-    
+//
     [TestRequestHandlerHttpRequest prepareRequset]
     .requestUrlChain(@"http://www.baidu.com")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){

@@ -8,10 +8,9 @@
 
 #import "GQURLOperation.h"
 
+#import "GQHttpRequestManager.h"
+
 @interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
-{
-    
-}
 
 #if !OS_OBJECT_USE_OBJC
 @property (nonatomic, assign) dispatch_queue_t saveDataDispatchQueue;
@@ -37,6 +36,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self.operationFileHandle = nil;
     self.operationData = nil;
     self.responseData = nil;
+    self.responseString = nil;
     
 #if !OS_OBJECT_USE_OBJC
     dispatch_release(_saveDataDispatchGroup);
@@ -103,6 +103,9 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (void)finish
 {
+    [self.operationSession finishTasksAndInvalidate];
+    [self.operationSessionTask cancel];
+    self.operationSession = nil;
     [self.operationConnection cancel];
     self.operationConnection = nil;
     [self decreaseSVHTTPRequestTaskCount];
@@ -148,6 +151,15 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         [self increaseSVHTTPRequestTaskCount];
     });
     
+    __weak typeof(self) weakSelf = self;
+    dispatch_block_t callStart = ^{
+        @autoreleasepool {
+            if (_onRequestStartBlock) {
+                _onRequestStartBlock(weakSelf);
+            }
+        }
+    };
+    
     [self willChangeValueForKey:@"isExecuting"];
     self.state = GQURLStateExecuting;
     [self didChangeValueForKey:@"isExecuting"];
@@ -170,25 +182,21 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
     
     if ([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0) {
-        NSURLSession *session =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
-        self.operationSession = [session dataTaskWithRequest:self.operationRequest];
-        [self.operationSession resume];
+        self.operationSession =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:[GQHttpRequestManager sharedHttpRequestManager].connectionQueue];
+        self.operationSessionTask = [_operationSession dataTaskWithRequest:_operationRequest];
+        [self.operationSessionTask resume];
     }else{
         self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest delegate:self startImmediately:NO];
         
         NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
         [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
         [self.operationConnection start];
-        
-        if(inBackgroundAndInOperationQueue) {
-            self.operationRunLoop = CFRunLoopGetCurrent();
-            CFRunLoopRun();
-        }
     }
+    dispatch_async(dispatch_get_main_queue(), callStart);
     
-    __weak __typeof(&*self)weakSelf = self;
-    if (_onRequestStartBlock) {
-        _onRequestStartBlock(weakSelf);
+    if(inBackgroundAndInOperationQueue) {
+        self.operationRunLoop = CFRunLoopGetCurrent();
+        CFRunLoopRun();
     }
 }
 
@@ -304,25 +312,26 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             @try {
                 [self.operationFileHandle writeData:data];
             }@catch (NSException *exception) {
-                [self.operationConnection cancel];
+                self.operationSessionTask?[self.operationSessionTask cancel]:nil;
+                self.operationConnection?[self.operationConnection cancel]:nil;
                 NSError *writeError = [NSError errorWithDomain:@"GQHTTPRequestWriteError" code:0 userInfo:exception.userInfo];
                 [self callCompletionBlockWithResponse:nil requestSuccess:NO error:writeError];
             }
         }
     });
-    
-    [self.operationData appendData:data];
-    
-    if(self.operationProgressBlock) {
-        //If its -1 that means the header does not have the content size value
-        if(self.expectedContentLength != -1) {
-            self.receivedContentLength += data.length;
-            self.operationProgressBlock(self.receivedContentLength/self.expectedContentLength);
-        } else {
-            //we dont know the full size so always return -1 as the progress
-            self.operationProgressBlock(-1);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.operationData appendData:data];
+        if(self.operationProgressBlock) {
+            //If its -1 that means the header does not have the content size value
+            if(self.expectedContentLength != -1) {
+                self.receivedContentLength += data.length;
+                self.operationProgressBlock(self.receivedContentLength/self.expectedContentLength);
+            } else {
+                //we dont know the full size so always return -1 as the progress
+                self.operationProgressBlock(-1);
+            }
         }
-    }
+    });
 }
 
 -(void)callCompletionBlockWithResponse:(NSData *)response requestSuccess:(BOOL)requestSuccess error:(NSError *)error
@@ -330,12 +339,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     if(self.operationRunLoop){
         CFRunLoopStop(self.operationRunLoop);
     }
-    __weak __typeof(&*self)weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        __strong __typeof(&*self)strongSelf = weakSelf;
         
-        strongSelf.responseData = strongSelf.operationData;
-        strongSelf.responseString = [[NSString alloc] initWithData:strongSelf.operationData encoding:NSUTF8StringEncoding];
+        self.responseData = self.operationData;
+        self.responseString = [[NSString alloc] initWithData:self.operationData encoding:NSUTF8StringEncoding];
         
         NSError *serverError = error;
         if(!serverError) {
@@ -343,10 +350,10 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
                                               code:NSURLErrorBadServerResponse
                                           userInfo:nil];
         }
-        if(strongSelf.operationCompletionBlock && !strongSelf.isCancelled){
-            strongSelf.operationCompletionBlock(weakSelf,requestSuccess,requestSuccess?nil:serverError);
+        if(self.operationCompletionBlock && !self.isCancelled){
+            self.operationCompletionBlock(self,requestSuccess,requestSuccess?nil:serverError);
         }
-        [strongSelf finish];
+        [self finish];
     });
 }
 

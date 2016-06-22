@@ -38,21 +38,21 @@
 @end
 
 #pragma mark -
-NSString * GQAFQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding)
+NSString * GQQueryStringFromParametersWithEncoding(NSDictionary *parameters, NSStringEncoding stringEncoding)
 {
     NSMutableArray *mutablePairs = [NSMutableArray array];
-    for (GQQueryStringPair *pair in GQAFQueryStringPairsFromDictionary(parameters)) {
+    for (GQQueryStringPair *pair in GQQueryStringPairsFromDictionary(parameters)) {
         [mutablePairs addObject:[pair urlEncodedStringValueWithEncoding:stringEncoding]];
     }
     return [mutablePairs componentsJoinedByString:@"&"];
 }
 
-NSArray * GQAFQueryStringPairsFromDictionary(NSDictionary *dictionary)
+NSArray * GQQueryStringPairsFromDictionary(NSDictionary *dictionary)
 {
-    return GQAFQueryStringPairsFromKeyAndValue(nil, dictionary);
+    return GQQueryStringPairsFromKeyAndValue(nil, dictionary);
 }
 
-NSArray * GQAFQueryStringPairsFromKeyAndValue(NSString *key, id value)
+NSArray * GQQueryStringPairsFromKeyAndValue(NSString *key, id value)
 {
     NSMutableArray *mutableQueryStringComponents = [NSMutableArray array];
     if (value) {
@@ -63,20 +63,20 @@ NSArray * GQAFQueryStringPairsFromKeyAndValue(NSString *key, id value)
             for (id nestedKey in [dictionary.allKeys sortedArrayUsingDescriptors:@[ sortDescriptor ]]) {
                 id nestedValue = [dictionary objectForKey:nestedKey];
                 if (nestedValue) {
-                    [mutableQueryStringComponents addObjectsFromArray:GQAFQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
+                    [mutableQueryStringComponents addObjectsFromArray:GQQueryStringPairsFromKeyAndValue((key ? [NSString stringWithFormat:@"%@[%@]", key, nestedKey] : nestedKey), nestedValue)];
                 }
             }
         }
         else if ([value isKindOfClass:[NSArray class]]) {
             NSArray *array = value;
             for (id nestedValue in array) {
-                [mutableQueryStringComponents addObjectsFromArray:GQAFQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
+                [mutableQueryStringComponents addObjectsFromArray:GQQueryStringPairsFromKeyAndValue([NSString stringWithFormat:@"%@[]", key], nestedValue)];
             }
         }
         else if ([value isKindOfClass:[NSSet class]]) {
             NSSet *set = value;
             for (id obj in set) {
-                [mutableQueryStringComponents addObjectsFromArray:GQAFQueryStringPairsFromKeyAndValue(key, obj)];
+                [mutableQueryStringComponents addObjectsFromArray:GQQueryStringPairsFromKeyAndValue(key, obj)];
             }
         }
         else {

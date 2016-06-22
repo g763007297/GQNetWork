@@ -27,11 +27,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (void)dealloc
 {
+    self.urlOperation = nil;
     self.requestURL = nil;
     self.request = nil;
     self.bodyData = nil;
     self.requestParameters = nil;
-    self.urlOperation = nil;
 }
 
 - (id)init
@@ -39,9 +39,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     self = [super init];
     if (self) {
         _isUploadFile = NO;
+        self.urlOperation = nil;
         self.requestURL = nil;
         self.requestParameters = nil;
         self.request = nil;
+        self.bodyData = nil;
     }
     return self;
 }
@@ -111,7 +113,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 - (NSMutableURLRequest *)generateGETRequest
 {
     if ([[self.requestParameters allKeys] count]) {
-        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
+        NSString *paramString = GQQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
         NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
         self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
     }
@@ -254,7 +256,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     postBodySize =  [self.bodyData length];
     
     if ([newParamsDic count]>0) {
-        NSString *paramString = GQAFQueryStringFromParametersWithEncoding(newParamsDic,self.requestEncoding);
+        NSString *paramString = GQQueryStringFromParametersWithEncoding(newParamsDic,self.requestEncoding);
         NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
         self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
     }
@@ -309,22 +311,26 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             break;
     }
     
+    __weak typeof(self) weakSelf = self;
     self.urlOperation =  [[GQURLOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath progress:^(float progress) {
-        if (_onRequestProgressChangedBlock) {
-            _onRequestProgressChangedBlock(progress);
+        __strong typeof(weakSelf) strongSelf= weakSelf;
+        if (strongSelf->_onRequestProgressChangedBlock) {
+            strongSelf->_onRequestProgressChangedBlock(progress);
         }
     } onRequestStart:^(GQURLOperation *urlConnectionOperation) {
-        if (_onRequestStartBlock) {
-            _onRequestStartBlock();
+        __strong typeof(weakSelf) strongSelf= weakSelf;
+        if (strongSelf->_onRequestStartBlock) {
+            strongSelf->_onRequestStartBlock();
         }
     } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
+        __strong typeof(weakSelf) strongSelf= weakSelf;
         if (requestSuccess) {
-            if (_onRequestFinishBlock) {
-                _onRequestFinishBlock(self.urlOperation.responseData);
+            if (strongSelf->_onRequestFinishBlock) {
+                strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
             }
         }else{
-            if (_onRequestFailedBlock) {
-                _onRequestFailedBlock(error);
+            if (strongSelf->_onRequestFailedBlock) {
+                strongSelf->_onRequestFailedBlock(error);
             }
         }
     }];

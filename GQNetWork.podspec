@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-  s.version = "1.1.5"
+  s.version = "1.1.6"
   s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession,支持链式调用"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"

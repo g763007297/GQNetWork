@@ -53,7 +53,7 @@ NSAssert(!_Chain_, string);\
     if (!_##_key_name_) {\
         _##_key_name_ = ^(_type_ value){\
             __strong typeof(weakSelf) strongSelf = weakSelf;\
-            _##_Chain_ = value;\
+            strongSelf->_##_Chain_ = value;\
             return strongSelf;\
         };\
     }\

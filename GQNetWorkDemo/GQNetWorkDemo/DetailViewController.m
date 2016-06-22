@@ -8,6 +8,10 @@
 
 #import "DetailViewController.h"
 
+#import "DemoHttpRequest.h"
+
+#import "GQDebug.h"
+
 @interface DetailViewController ()
 
 @end
@@ -36,6 +40,21 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     [self configureView];
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
+    [self.view addGestureRecognizer:tap];
+    
+}
+
+- (void)tapAction:(UITapGestureRecognizer *)ges{
+    [TestRequestHandlerHttpRequest prepareRequset]
+    .requestUrlChain(@"http://www.baidu.com")
+    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
+        GQDPRINT(@"%@",result.originalData);
+    })
+    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
+        GQDPRINT(@"%@",error);
+    })
+    .startRequestChain();
 }
 
 - (void)didReceiveMemoryWarning {

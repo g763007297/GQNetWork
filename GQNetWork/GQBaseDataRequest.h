@@ -74,7 +74,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     NSString            *_cancelSubject;
     
-    NSInteger           *_timeOutInterval;
+    NSInteger           _timeOutInterval;
     
     NSString            *_subRequestUrl;
     
