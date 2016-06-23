@@ -319,19 +319,17 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             }
         }
     });
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.operationData appendData:data];
-        if(self.operationProgressBlock) {
-            //If its -1 that means the header does not have the content size value
-            if(self.expectedContentLength != -1) {
-                self.receivedContentLength += data.length;
-                self.operationProgressBlock(self.receivedContentLength/self.expectedContentLength);
-            } else {
-                //we dont know the full size so always return -1 as the progress
-                self.operationProgressBlock(-1);
-            }
+    [self.operationData appendData:data];
+    if(self.operationProgressBlock) {
+        //If its -1 that means the header does not have the content size value
+        if(self.expectedContentLength != -1) {
+            self.receivedContentLength += data.length;
+            self.operationProgressBlock(self.receivedContentLength/self.expectedContentLength);
+        } else {
+            //we dont know the full size so always return -1 as the progress
+            self.operationProgressBlock(-1);
         }
-    });
+    }
 }
 
 -(void)callCompletionBlockWithResponse:(NSData *)response requestSuccess:(BOOL)requestSuccess error:(NSError *)error
