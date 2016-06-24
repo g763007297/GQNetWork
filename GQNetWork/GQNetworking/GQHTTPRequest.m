@@ -68,7 +68,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     [self.requestParameters setObject:data forKey:key];
 }
 
-- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url  saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding  parmaterEncoding:(GQParameterEncoding)parameterEncoding requestMethod:(GQRequestMethod)requestMethod onRequestStart:(void(^)())onStartBlock
+- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url certificateData:(NSData *)certificateData saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding  parmaterEncoding:(GQParameterEncoding)parameterEncoding requestMethod:(GQRequestMethod)requestMethod onRequestStart:(void(^)())onStartBlock
                             onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                             onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                             onRequestCanceled:(void(^)())onCanceledBlock
@@ -78,6 +78,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     if (self) {
         _isUploadFile = NO;
         self.requestURL = url;
+        self.certificateData = certificateData;
         self.requestEncoding = requestEncoding;
         self.parmaterEncoding = parameterEncoding;
         self.requestMethod = requestMethod;
@@ -312,7 +313,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     
     __weak typeof(self) weakSelf = self;
-    self.urlOperation =  [[GQURLOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath progress:^(float progress) {
+    self.urlOperation =  [[GQURLOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath certificateData:self.certificateData progress:^(float progress) {
         __strong typeof(weakSelf) strongSelf= weakSelf;
         if (strongSelf->_onRequestProgressChangedBlock) {
             strongSelf->_onRequestProgressChangedBlock(progress);

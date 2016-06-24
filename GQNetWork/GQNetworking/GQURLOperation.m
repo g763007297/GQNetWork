@@ -10,6 +10,8 @@
 
 #import "GQHttpRequestManager.h"
 
+#import "GQSecurityPolicy.h"
+
 @interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
 
 #if !OS_OBJECT_USE_OBJC
@@ -44,13 +46,16 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 #endif
 }
 
-- (GQURLOperation *)initWithURLRequest:(NSMutableURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock completion:(GQHTTPRequestCompletionHandler)completionBlock;
+
+- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath certificateData:(NSData *)certificateData progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+                            completion:(GQHTTPRequestCompletionHandler)completionBlock;
 {
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
     self.operationCompletionBlock = completionBlock;
     self.operationProgressBlock = progressBlock;
     self.operationRequest = urlRequest;
+    self.certificateData = certificateData;
     self.operationSavePath = savePath;
     self.saveDataDispatchGroup = dispatch_group_create();
     self.saveDataDispatchQueue = dispatch_queue_create("com.ISS.GQHTTPRequest", DISPATCH_QUEUE_SERIAL);
@@ -229,6 +234,21 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
 }
 
+- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+{
+    GQSecurityPolicy *policy = [GQSecurityPolicy defaultSecurityPolicy:_certificateData withChallenge:challenge];
+    if (policy) {
+        [challenge.sender useCredential:policy.credential forAuthenticationChallenge:challenge];
+    }else{
+        if (challenge.previousFailureCount > 0)
+        {
+            [challenge.sender cancelAuthenticationChallenge:challenge];
+        }else{
+            [challenge.sender continueWithoutCredentialForAuthenticationChallenge:challenge];
+        }
+    }
+}
+
 #pragma mark -- NSURLSessionDelegate NSURLSessionTaskDelegate
 
 - (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
@@ -272,7 +292,17 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * credential))completionHandler
 {
     NSURLSessionAuthChallengeDisposition disposition = NSURLSessionAuthChallengePerformDefaultHandling;
-    __block NSURLCredential *credential = nil;
+    NSURLCredential *credential = nil;
+    GQSecurityPolicy *policy = [GQSecurityPolicy defaultSecurityPolicy:_certificateData withChallenge:challenge];
+    if (policy) {
+        credential = policy.credential;
+        disposition = NSURLSessionAuthChallengeUseCredential;
+    }else{
+        if (challenge.previousFailureCount > 0)
+        {
+            disposition = NSURLSessionAuthChallengeCancelAuthenticationChallenge;
+        }
+    }
     if (completionHandler) {
         completionHandler(disposition, credential);
     }

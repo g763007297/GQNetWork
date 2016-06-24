@@ -24,7 +24,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
     void (^_onRequestStartBlock)(GQURLOperation *);
 }
 
-@property (nonatomic, strong) NSMutableURLRequest           *operationRequest;
+@property (nonatomic, strong) NSURLRequest                  *operationRequest;
 @property (nonatomic, strong) NSData                        *responseData;
 @property (nonatomic, strong) NSString                      *responseString;
 @property (nonatomic, strong) NSHTTPURLResponse             *operationURLResponse;
@@ -33,6 +33,8 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 @property (nonatomic, strong) NSFileHandle                  *operationFileHandle;
 
 @property (nonatomic, strong) NSString                      *operationSavePath;
+
+@property (nonatomic, strong) NSData                        *certificateData;
 
 @property (nonatomic, strong) NSURLSession                  *operationSession;
 
@@ -48,7 +50,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 @property (nonatomic, readwrite) float                      receivedContentLength;
 @property (nonatomic, copy) void (^operationProgressBlock)(float progress);
 
-- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath certificateData:(NSData *)certificateData progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
                                        completion:(GQHTTPRequestCompletionHandler)completionBlock;
 
 

@@ -497,6 +497,13 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  */
 - (GQRequestDataHandler *)generateRequestHandler;
 
+/**
+ *  https证书二进制数据
+ *
+ *  @return NSData*
+ */
+- (NSData *)getCertificateData;
+
 #pragma mark - 假数据方法
 - (BOOL)useDumpyData;
 - (NSString*)dumpyResponseString;

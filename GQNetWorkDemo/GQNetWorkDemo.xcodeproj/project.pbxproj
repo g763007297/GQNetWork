@@ -48,9 +48,14 @@
 		B6CB1D441CF83E3B00D485E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D421CF83E3B00D485E3 /* Main.storyboard */; };
 		B6CB1D461CF83E3B00D485E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */; };
 		B6CB1D491CF83E3B00D485E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D471CF83E3B00D485E3 /* LaunchScreen.storyboard */; };
+		D299C0937B5476FFE709E6F9 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4859E1D1F712EB8473AB9E06 /* libPods.a */; };
+		DF976C1E1D1CCB56000217E6 /* GQSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = DF976C1D1D1CCB56000217E6 /* GQSecurityPolicy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0299C065DDD3792B146FB1F5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		4393F5B6E0707A677C268319 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		4859E1D1F712EB8473AB9E06 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6292D831CFE88A100FA12B4 /* ProductModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductModel.h; sourceTree = "<group>"; };
 		B6292D841CFE88A100FA12B4 /* ProductModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductModel.m; sourceTree = "<group>"; };
 		B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoHttpRequest.h; sourceTree = "<group>"; };
@@ -137,6 +142,8 @@
 		B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CB1D481CF83E3B00D485E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B6CB1D4A1CF83E3B00D485E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DF976C1C1D1CCB56000217E6 /* GQSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQSecurityPolicy.h; sourceTree = "<group>"; };
+		DF976C1D1D1CCB56000217E6 /* GQSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQSecurityPolicy.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -144,12 +151,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D299C0937B5476FFE709E6F9 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		30FB41E6D58B49409EF0F8BB /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4393F5B6E0707A677C268319 /* Pods.debug.xcconfig */,
+				0299C065DDD3792B146FB1F5 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		AFDBE8C59B2416713EF9FA49 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4859E1D1F712EB8473AB9E06 /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		B688677B1CFEC86C00850830 /* GQMapping */ = {
 			isa = PBXGroup;
 			children = (
@@ -191,6 +216,7 @@
 		B688679E1CFECB0800850830 /* GQNetWork */ = {
 			isa = PBXGroup;
 			children = (
+				DF976C1B1D1CCB56000217E6 /* GQSecurityPolicy */,
 				B68867ED1CFECB3200850830 /* GQNetworkConsts.h */,
 				B688679F1CFECB0800850830 /* Additions */,
 				B68867A41CFECB0800850830 /* Common */,
@@ -322,6 +348,8 @@
 				B688679E1CFECB0800850830 /* GQNetWork */,
 				B6CB1D351CF83E3B00D485E3 /* GQNetWorkDemo */,
 				B6CB1D341CF83E3B00D485E3 /* Products */,
+				30FB41E6D58B49409EF0F8BB /* Pods */,
+				AFDBE8C59B2416713EF9FA49 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -364,6 +392,15 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		DF976C1B1D1CCB56000217E6 /* GQSecurityPolicy */ = {
+			isa = PBXGroup;
+			children = (
+				DF976C1C1D1CCB56000217E6 /* GQSecurityPolicy.h */,
+				DF976C1D1D1CCB56000217E6 /* GQSecurityPolicy.m */,
+			);
+			path = GQSecurityPolicy;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -371,9 +408,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B6CB1D4D1CF83E3B00D485E3 /* Build configuration list for PBXNativeTarget "GQNetWorkDemo" */;
 			buildPhases = (
+				5762C7FA2EF0C384F455DFD4 /* Check Pods Manifest.lock */,
 				B6CB1D2F1CF83E3B00D485E3 /* Sources */,
 				B6CB1D301CF83E3B00D485E3 /* Frameworks */,
 				B6CB1D311CF83E3B00D485E3 /* Resources */,
+				B0AD0BB9BE40ABC69B721641 /* Embed Pods Frameworks */,
+				2E57EBFB4F67DBB0E241BD5A /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -430,6 +470,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		2E57EBFB4F67DBB0E241BD5A /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5762C7FA2EF0C384F455DFD4 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		B0AD0BB9BE40ABC69B721641 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		B6CB1D2F1CF83E3B00D485E3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -467,6 +555,7 @@
 				B68867991CFEC86C00850830 /* GQPropertyMapping.m in Sources */,
 				B68867DA1CFECB0800850830 /* GQFileCache.m in Sources */,
 				B67C1AEA1CFFE99E006C4918 /* NSString+GQAdditions.m in Sources */,
+				DF976C1E1D1CCB56000217E6 /* GQSecurityPolicy.m in Sources */,
 				B68867E91CFECB0800850830 /* GQRequestParameter.m in Sources */,
 				B68867971CFEC86C00850830 /* GQObjectDataSource.m in Sources */,
 				B68867DB1CFECB0800850830 /* GQUserDefaultCache.m in Sources */,
@@ -583,6 +672,7 @@
 		};
 		B6CB1D4E1CF83E3B00D485E3 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4393F5B6E0707A677C268319 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GQNetWorkDemo/Info.plist;
@@ -594,6 +684,7 @@
 		};
 		B6CB1D4F1CF83E3B00D485E3 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0299C065DDD3792B146FB1F5 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = GQNetWorkDemo/Info.plist;

@@ -124,7 +124,6 @@ GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObje
 GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest);
 GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest);
 
-
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
 GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
 GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled, GQChainBlockRequestCanceled);
@@ -509,6 +508,10 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (GQRequestDataHandler*)generateRequestHandler
 {
     return [[GQRequestJsonDataHandler alloc] init];
+}
+
+- (NSData *)getCertificateData{
+    return nil;
 }
 
 - (BOOL)onReceivedCacheData:(NSObject*)cacheData

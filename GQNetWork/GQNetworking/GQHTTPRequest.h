@@ -27,6 +27,7 @@
 @property (nonatomic, assign) NSStringEncoding          requestEncoding;
 @property (nonatomic, strong) NSString                  *filePath;
 @property (nonatomic, strong) NSString                  *requestURL;
+@property (nonatomic, strong) NSData                    *certificateData;
 @property (nonatomic, strong) NSMutableDictionary       *requestParameters;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
@@ -35,6 +36,7 @@
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
                                          URL:(NSString *)url
+                             certificateData:(NSData *)certificateData
                                   saveToPath:(NSString *)filePath
                              requestEncoding:(NSStringEncoding)requestEncoding
                             parmaterEncoding:(GQParameterEncoding)parameterEncoding
