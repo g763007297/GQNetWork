@@ -607,7 +607,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 {
     __block BOOL success = FALSE;
     __block NSError *errorInfo = nil;
-//    __weak typeof(self) weakSelf = self;
     dispatch_block_t callback = ^{
         @autoreleasepool {
             if (success) {
@@ -615,7 +614,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                 [self notifyDelegateRequestDidSuccess];
             }
             else {
-                GQDERROR(@"parse error %@", errorInfo);
                 [self notifyDelegateRequestDidErrorWithError:errorInfo];
             }
         }
@@ -630,7 +628,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {
-            GQDERROR(@"!empty response error with request:%@", [self class]);
             [self notifyDelegateRequestDidErrorWithError:nil];
         }
         _requestDataHandler = [self generateRequestHandler];
@@ -640,17 +637,12 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             dispatch_async(dispatch_get_main_queue(), callback);
         }
         else {
-            [[GQMappingManager sharedManager]mapWithSourceData:_requestDataHandler?response:rawResultString
+            [[GQMappingManager sharedManager]mapWithSourceData:response
                                                   originalData:self.rawResultData
                                                  objectMapping:_mapping keyPath:_keyPath
                                                completionBlock:^(GQMappingResult *result, NSError *error) {
                 _responseResult = result;
-                if (result) {
-                    success = TRUE;
-                }
-                else {
-                    success = FALSE;
-                }
+                success = result;
                 errorInfo = error;
                 [self processResult];
                 dispatch_async(dispatch_get_main_queue(), callback);

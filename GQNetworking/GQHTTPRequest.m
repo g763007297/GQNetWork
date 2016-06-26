@@ -89,7 +89,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             self.requestParameters = [[NSMutableDictionary alloc] initWithCapacity:0];
         }
         self.bodyData = [[NSMutableData alloc] init];
-        self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.requestURL ]];
+        self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.requestURL]];
         [self.request setTimeoutInterval:60];
         
         if (onStartBlock) {
@@ -172,100 +172,55 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (NSMutableURLRequest *)generateDELETERequest{
     [self parseRequestParameters];
-    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
-    
-    long long putBodySize =  [self.bodyData length];
-    
-    [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBody:self.bodyData];
+    [self generateRequestBody];
     [self.request setHTTPMethod:@"DELETE"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
     return self.request;
 }
 
 - (NSMutableURLRequest *)generatePUTRequest{
     [self parseRequestParameters];
-    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
-    
-    long long putBodySize =  [self.bodyData length];
-    
-    [self.request setValue:[NSString stringWithFormat:@"%llu",putBodySize] forHTTPHeaderField:@"Content-Length"];
-    [self.request setHTTPBody:self.bodyData];
+    [self generateRequestBody];
     [self.request setHTTPMethod:@"PUT"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:putBodySize];
     return self.request;
+}
+
+- (NSMutableURLRequest *)generateJSONPOSTRequest
+{
+    if ([[self.requestParameters allKeys] count]) {
+        NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
+        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        [self.bodyData appendData:jsonData];
+    }
+    [self generateRequestBody];
+    [self.request setHTTPMethod:@"POST"];
+    [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    return  self.request;
 }
 
 - (NSMutableURLRequest *)generatePOSTRequest
 {
     [self parseRequestParameters];
+    [self generateRequestBody];
+    [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField: @"Content-Type"];
+    [self.request setHTTPMethod:@"POST"];
+    return  self.request;
+}
+
+- (NSMutableURLRequest *)generateMultipartPostRequest{
+    [self parseRequestParameters];
+    [self generateRequestBody];
+    NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
+    [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    [self.request setHTTPMethod:@"POST"];
+    return  self.request;
+}
+
+- (void)generateRequestBody{
     [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
-//    if (_isUploadFile) {
-        NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-        [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
-//    }
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
     [self.request setHTTPBody:self.bodyData];
-    [self.request setHTTPMethod:@"POST"];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return  self.request;
-}
-
-- (NSMutableURLRequest *)generateJSONPOSTRequest
-{
-    long long postBodySize;
-    if ([[self.requestParameters allKeys] count]) {
-        NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
-        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
-        [self.bodyData appendData:jsonData];
-        [self.bodyData appendData: [@"\r\n" dataUsingEncoding:self.requestEncoding]];
-        postBodySize =  [self.bodyData length];
-        [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
-        [self.request setHTTPBody:self.bodyData];
-    }
-    
-    [self.request setHTTPMethod:@"POST"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return  self.request;
-}
-
-- (NSMutableURLRequest *)generateURLJSONPOSTRequest{
-    __weak GQHTTPRequest *weakSelf = self;
-    
-    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
-    
-    __block BOOL isExitUplodeFile = NO;
-    NSMutableDictionary *newParamsDic = [NSMutableDictionary new];
-    NSDictionary *paramsDict = (NSDictionary*)self.requestParameters;
-    [paramsDict enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL * stop) {
-        if([value isKindOfClass:[NSData class]] || [value isKindOfClass:[UIImage class]]){
-            [weakSelf addBodyData:key value:value];
-            isExitUplodeFile = YES;
-        }else{
-            [newParamsDic setObject:value forKey:key];
-        }
-    }];
-    long long postBodySize =  [self.bodyData length];
-    
-    if (isExitUplodeFile) {
-        [self.request setHTTPBody:self.bodyData];
-    }else{
-        [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    }
-    
-    postBodySize =  [self.bodyData length];
-    
-    if ([newParamsDic count]>0) {
-        NSString *paramString = GQQueryStringFromParametersWithEncoding(newParamsDic,self.requestEncoding);
-        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
-        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
-    }
-    [self.request setURL:[NSURL URLWithString:self.requestURL]];
-    
-    [self.request setHTTPMethod:@"POST"];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return self.request;
 }
 
 - (void)startRequest
@@ -287,19 +242,12 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                     [self generateJSONPOSTRequest];
                 }
                     break;
-//                    
-//                case GQPropertyListParameterEncoding: {
-//                    
-//                }
-                case GQURLJSONParameterEncoding:{
-                    [self generateURLJSONPOSTRequest];
-                }
-                    break;
+                    
             }
             break;
         }
         case GQRequestMethodMultipartPost:{
-            [self generatePOSTRequest];
+            [self generateMultipartPostRequest];
         }
             break;
         case GQRequestMethodPut:{

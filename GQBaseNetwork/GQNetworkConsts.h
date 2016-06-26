@@ -11,8 +11,7 @@
 
 typedef enum {
     GQURLParameterEncoding,             //常规post请求  可有图片
-    GQJSONParameterEncoding,            //parameter json化 无图片
-    GQURLJSONParameterEncoding          //post请求  但是parameter拼接到url后面  可有图片
+    GQJSONParameterEncoding             //parameter json化 无图片
 } GQParameterEncoding;
 
 typedef enum : NSUInteger{
