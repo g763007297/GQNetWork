@@ -49,12 +49,12 @@
     }];
     
 #pragma mark -- 高级用法  使用mapping
-    
-    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];//配置请求参数
-    
     GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
     
     [map addPropertyMappingsFromDictionary:[ProductModel attributeMapDictionary]];//往我们的map中加映射规则
+    
+    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];//配置请求参数
+    
     parameter.keyPath = @"result/rows";//如果取的数据在字典里面很多层的话需要指定map的层级keyPath
     
     parameter.mapping = map;
@@ -62,7 +62,7 @@
     parameter.subRequestUrl = @"product/list";
     
 #pragma mark -- 链式调用 + 方法调用
-    [[[DemoHttpRequest prepareRequset]
+    [[[DemoHttpRequest1 prepareRequset]
       .requestUrlChain(@"product/list")
       .mappingChain(map)
       .keyPathChain(@"result/rows")
@@ -71,18 +71,8 @@
         GQDPRINT(@"%@",result.array);
     }] startRequest];
     
-    [TestRequestHandlerHttpRequest prepareRequset]
-    .requestUrlChain(@"http://www.baidu.com")
-    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
-        GQDPRINT(@"%@",result.originalData);
-    })
-    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
-        GQDPRINT(@"%@",error);
-    })
-    .startRequestChain();
-    
 #pragma mark -- 全链式调用
-    [DemoHttpRequest prepareRequset]
+    [DemoHttpRequest1 prepareRequset]
     .requestUrlChain(@"product/list")
     .mappingChain(map)
     .keyPathChain(@"result/rows")
@@ -97,7 +87,7 @@
     .startRequestChain();
     
 #pragma mark -- 常规block
-    [DemoHttpRequest requestWithRequestParameter:parameter
+    [DemoHttpRequest1 requestWithRequestParameter:parameter
                                   onRequestStart:nil
                                onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
                                    GQDPRINT(@"%@",result.rawDictionary);
@@ -106,7 +96,6 @@
                                onRequestCanceled:nil
                                  onRequestFailed:nil
                                onProgressChanged:nil];
-    
 }
 
 #pragma mark -- DataRequestDelegate

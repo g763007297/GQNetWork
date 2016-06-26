@@ -50,8 +50,12 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 @property (nonatomic, readwrite) float                      receivedContentLength;
 @property (nonatomic, copy) void (^operationProgressBlock)(float progress);
 
-- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath certificateData:(NSData *)certificateData progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
-                                       completion:(GQHTTPRequestCompletionHandler)completionBlock;
+- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest
+                            saveToPath:(NSString*)savePath
+                       certificateData:(NSData *)certificateData
+                              progress:(void (^)(float progress))progressBlock
+                        onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+                            completion:(GQHTTPRequestCompletionHandler)completionBlock;
 
 
 

@@ -47,7 +47,11 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 }
 
 
-- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest saveToPath:(NSString*)savePath certificateData:(NSData *)certificateData progress:(void (^)(float progress))progressBlock           onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+- (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest
+                            saveToPath:(NSString*)savePath
+                       certificateData:(NSData *)certificateData
+                              progress:(void (^)(float progress))progressBlock
+                        onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
                             completion:(GQHTTPRequestCompletionHandler)completionBlock;
 {
     self = [super init];

@@ -21,19 +21,31 @@ Pod::Spec.new do |s|
 
   s.subspec 'Mapping' do |ss|
     ss.ios.source_files = [
-      'GQMapping/**/*.{h,m}',
-      'GQNetWork/Additions/NSString+GQAdditions.h',
-      'GQNetWork/Additions/NSString+GQAdditions.m',
+      'GQMapping/*.{h,m}',
+      'GQMapping/GQBaseModel/*.{h,m}',
+      'GQBaseNetwork/Additions/NSString+GQAdditions.h',
+      'GQBaseNetwork/Additions/NSString+GQAdditions.m',
     ]
 
     ss.public_header_files = "GQMapping/**/*.h"
   end
   
-  s.subspec 'NetWork' do |ss|
-    ss.ios.source_files  = "GQNetWork/**/*.{h,m}"
+  s.subspec 'GQNetworking' do |ss|
+    ss.ios.source_files  = [
+      "GQNetworking/*.{h,m}",
+      "GQBaseNetwork/*.{h,m}",
+      "GQBaseNetwork/Additions/*.{h,m}",
+      "GQBaseNetwork/Common/*.{h,m}",
+      "GQBaseNetwork/Common/DataCache/*.{h,m}",
+      "GQBaseNetwork/Common/DataHandler/*.{h,m}",
+      "GQBaseNetwork/GQMaskActivityView/*.{h,m}",
+      "GQBaseNetwork/GQSecurityPolicy/*.{h,m}",
+      "GQBaseNetwork/GQUtils/XIBUtils/*.{h,m}",
+      "GQBaseNetwork/Reachability/*.{h,m}",
+    ]
     ss.dependency 'GQNetWork/Mapping'
   end
   
-  s.default_subspec = 'NetWork'
+  s.default_subspec = 'GQNetworking'
 
 end

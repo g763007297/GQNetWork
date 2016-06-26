@@ -42,8 +42,7 @@ return nil;                                    \
 }                                                  \
 
 #define GQVariableAssert(_Chain_)\
-NSString  *string = [NSString stringWithFormat:@"The %s has initialization",#_Chain_];\
-NSAssert(!_Chain_, @"%@",string);\
+NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization",#_Chain_]);\
 
 #define GQChainRequestDefine(_key_name_,_Chain_, _type_ , _block_type_)\
 - (_block_type_)_key_name_{\

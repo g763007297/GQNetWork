@@ -640,9 +640,15 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             [[GQMappingManager sharedManager]mapWithSourceData:response
                                                   originalData:self.rawResultData
                                                  objectMapping:_mapping keyPath:_keyPath
-                                               completionBlock:^(GQMappingResult *result, NSError *error) {
+                                               completionBlock:^(GQMappingResult *result, NSError *error)
+            {
                 _responseResult = result;
-                success = result;
+                if (result) {
+                    success = TRUE;
+                }
+                else {
+                    success = FALSE;
+                }
                 errorInfo = error;
                 [self processResult];
                 dispatch_async(dispatch_get_main_queue(), callback);

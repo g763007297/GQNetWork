@@ -14,16 +14,29 @@
 
 - (NSString*)getRequestUrl
 {
-    return @"";
+    return @"product/list";
 }
 
 - (NSString *)getBaseUrl{
     return GQHttpReuqestURL;
 }
 
--(GQParameterEncoding)getParameterEncoding
+- (GQRequestMethod)getRequestMethod
 {
-    return GQURLJSONParameterEncoding;
+    return GQRequestMethodPost;
+}
+
+@end
+
+@implementation DemoHttpRequest1 : GQDataRequest
+
+- (NSString*)getRequestUrl
+{
+    return @"";
+}
+
+- (NSString *)getBaseUrl{
+    return GQHttpReuqestURL;
 }
 
 - (GQRequestMethod)getRequestMethod
