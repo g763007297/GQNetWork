@@ -1,6 +1,6 @@
 [![License MIT](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://raw.githubusercontent.com/angelcs1990/GQImageViewer/master/LICENSE)&nbsp;
 [![](https://img.shields.io/badge/platform-iOS-brightgreen.svg)](http://cocoapods.org/?q=GQImageViewer)&nbsp;
-[![support](https://img.shields.io/badge/support-iOS5.0%2B-blue.svg)](https://www.apple.com/nl/ios/)&nbsp;
+[![support](https://img.shields.io/badge/support-iOS6.0%2B-blue.svg)](https://www.apple.com/nl/ios/)&nbsp;
 
 # GQNetWork
 

@@ -47,7 +47,7 @@
 
 - (void)tapAction:(UITapGestureRecognizer *)ges{
     [TestRequestHandlerHttpRequest prepareRequset]
-    .requestUrlChain(@"https://www.baidu.com")
+    .requestUrlChain(@"http://www.baidu.com")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         NSString *string = [[NSString alloc] initWithData:result.originalData encoding:NSUTF8StringEncoding];
         GQDPRINT(@"%@",string);
@@ -56,6 +56,8 @@
         GQDPRINT(@"%@",error);
     })
     .startRequestChain();
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

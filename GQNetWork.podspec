@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-  s.version = "1.1.7"
+  s.version = "1.1.8"
   s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession,支持链式调用"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios
 
-  s.ios.deployment_target = '5.0'
+  s.ios.deployment_target = '6.0'
 
   s.source       = { :git => "https://github.com/g763007297/GQNetWork.git", :tag => s.version }
 
@@ -21,31 +21,25 @@ Pod::Spec.new do |s|
 
   s.subspec 'Mapping' do |ss|
     ss.ios.source_files = [
-      'GQMapping/*.{h,m}',
-      'GQMapping/GQBaseModel/*.{h,m}',
+      'GQMapping/**/*.{h,m}',
       'GQBaseNetwork/Additions/NSString+GQAdditions.h',
       'GQBaseNetwork/Additions/NSString+GQAdditions.m',
     ]
-
-    ss.public_header_files = "GQMapping/**/*.h"
+    ss.public_header_files = [
+      'GQMapping/**/*.h',
+      'GQBaseNetwork/Additions/NSString+GQAdditions.h',
+    ]
   end
-  
+
   s.subspec 'GQNetworking' do |ss|
     ss.ios.source_files  = [
-      "GQNetworking/*.{h,m}",
-      "GQBaseNetwork/*.{h,m}",
-      "GQBaseNetwork/Additions/*.{h,m}",
-      "GQBaseNetwork/Common/*.{h,m}",
-      "GQBaseNetwork/Common/DataCache/*.{h,m}",
-      "GQBaseNetwork/Common/DataHandler/*.{h,m}",
-      "GQBaseNetwork/GQMaskActivityView/*.{h,m}",
-      "GQBaseNetwork/GQSecurityPolicy/*.{h,m}",
-      "GQBaseNetwork/GQUtils/XIBUtils/*.{h,m}",
-      "GQBaseNetwork/Reachability/*.{h,m}",
+      "GQNetworking/**/*.{h,m}",
+      "GQBaseNetwork/**/*.{h,m}",
     ]
+    ss.ios.resource = 'GQBaseNetwork/GQMaskActivityView/GQMaskActivityView.xib'
     ss.dependency 'GQNetWork/Mapping'
   end
-  
+
   s.default_subspec = 'GQNetworking'
 
 end
