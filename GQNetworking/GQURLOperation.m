@@ -199,13 +199,14 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
         [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
         [self.operationConnection start];
+        
+        if(inBackgroundAndInOperationQueue) {
+            self.operationRunLoop = CFRunLoopGetCurrent();
+            BOOL isWaiting = CFRunLoopIsWaiting(self.operationRunLoop);
+            isWaiting?CFRunLoopWakeUp(self.operationRunLoop):CFRunLoopRun();
+        }
     }
     dispatch_async(dispatch_get_main_queue(), callStart);
-    
-    if(inBackgroundAndInOperationQueue) {
-        self.operationRunLoop = CFRunLoopGetCurrent();
-        CFRunLoopRun();
-    }
 }
 
 #pragma mark - NSURLConnectionDelegate
@@ -323,6 +324,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
+    NSThread *currentThread = [NSThread currentThread];
+    NSLog(@"%@---%@---%p",currentThread,self.operationSessionTask,self.operationData);
     [self handleResponseData:data];
 }
 
@@ -350,7 +353,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             }
         }
     });
+    
     [self.operationData appendData:data];
+    
     if(self.operationProgressBlock) {
         //If its -1 that means the header does not have the content size value
         if(self.expectedContentLength != -1) {
@@ -369,9 +374,7 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         CFRunLoopStop(self.operationRunLoop);
     }
     dispatch_async(dispatch_get_main_queue(), ^{
-        
         self.responseData = self.operationData;
-        
         NSError *serverError = error;
         if(!serverError) {
             serverError = [NSError errorWithDomain:NSURLErrorDomain

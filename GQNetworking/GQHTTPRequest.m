@@ -285,6 +285,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                           } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
                               if (requestSuccess) {
+                                  [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
                                   if (strongSelf->_onRequestFinishBlock) {
                                       strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
                                   }
