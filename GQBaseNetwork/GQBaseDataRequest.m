@@ -576,7 +576,29 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     }
 }
 
-- (void)notifyDelegateRequestDidSuccess
+- (void)notifyRequestDidStart
+{
+    if (_onRequestStart) {
+        _onRequestStart(self);
+    }else if (self.delegate) {
+        if([self.delegate respondsToSelector:@selector(requestDidStartLoad:)]){
+            [self.delegate requestDidStartLoad:self];
+        }
+    }
+}
+
+- (void)notifyRequestDidChange:(float)progress
+{
+    if (_onProgressChanged) {
+        _onProgressChanged(self,progress);
+    }else if (self.delegate) {
+        if([self.delegate respondsToSelector:@selector(request:progressChanged:)]){
+            [self.delegate request:self progressChanged:progress];
+        }
+    }
+}
+
+- (void)notifyRequestDidSuccess
 {
     if (_onRequestFinished) {
         _onRequestFinished(self, _responseResult);
@@ -587,13 +609,24 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     }
 }
 
-- (void)notifyDelegateRequestDidErrorWithError:(NSError*)error
+- (void)notifyRequestDidErrorWithError:(NSError*)error
 {
     if (_onRequestFailed) {
         _onRequestFailed(self, error);
     }else if (self.delegate) {
         if([self.delegate respondsToSelector:@selector(request:didFailLoadWithError:)]){
             [self.delegate request:self didFailLoadWithError:error];
+        }
+    }
+}
+
+- (void)notifyRequestDidCancel
+{
+    if (_onRequestCanceled) {
+        _onRequestCanceled(self);
+    }else if (self.delegate) {
+        if([self.delegate respondsToSelector:@selector(requestDidCancelLoad:)]){
+            [self.delegate requestDidCancelLoad:self];
         }
     }
 }
@@ -611,10 +644,10 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         @autoreleasepool {
             if (success) {
                 [self cacheResult];
-                [self notifyDelegateRequestDidSuccess];
+                [self notifyRequestDidSuccess];
             }
             else {
-                [self notifyDelegateRequestDidErrorWithError:errorInfo];
+                [self notifyRequestDidErrorWithError:errorInfo];
             }
         }
     };
@@ -628,7 +661,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {
-            [self notifyDelegateRequestDidErrorWithError:nil];
+            [self notifyRequestDidErrorWithError:nil];
         }
         _requestDataHandler = [self generateRequestHandler];
         id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];

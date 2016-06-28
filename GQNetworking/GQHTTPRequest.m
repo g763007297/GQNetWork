@@ -68,7 +68,14 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     [self.requestParameters setObject:data forKey:key];
 }
 
-- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters URL:(NSString *)url certificateData:(NSData *)certificateData saveToPath:(NSString *)filePath requestEncoding:(NSStringEncoding)requestEncoding  parmaterEncoding:(GQParameterEncoding)parameterEncoding requestMethod:(GQRequestMethod)requestMethod onRequestStart:(void(^)())onStartBlock
+- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
+                                         URL:(NSString *)url
+                             certificateData:(NSData *)certificateData
+                                  saveToPath:(NSString *)filePath
+                             requestEncoding:(NSStringEncoding)requestEncoding
+                            parmaterEncoding:(GQParameterEncoding)parameterEncoding
+                               requestMethod:(GQRequestMethod)requestMethod
+                              onRequestStart:(void(^)())onStartBlock
                             onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                             onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                             onRequestCanceled:(void(^)())onCanceledBlock
@@ -261,28 +268,32 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     
     __weak typeof(self) weakSelf = self;
-    self.urlOperation =  [[GQURLOperation alloc] initWithURLRequest:self.request saveToPath:self.filePath certificateData:self.certificateData progress:^(float progress) {
-        __strong typeof(weakSelf) strongSelf= weakSelf;
-        if (strongSelf->_onRequestProgressChangedBlock) {
-            strongSelf->_onRequestProgressChangedBlock(progress);
-        }
-    } onRequestStart:^(GQURLOperation *urlConnectionOperation) {
-        __strong typeof(weakSelf) strongSelf= weakSelf;
-        if (strongSelf->_onRequestStartBlock) {
-            strongSelf->_onRequestStartBlock();
-        }
-    } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
-        __strong typeof(weakSelf) strongSelf= weakSelf;
-        if (requestSuccess) {
-            if (strongSelf->_onRequestFinishBlock) {
-                strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
-            }
-        }else{
-            if (strongSelf->_onRequestFailedBlock) {
-                strongSelf->_onRequestFailedBlock(error);
-            }
-        }
-    }];
+    self.urlOperation =  [[GQURLOperation alloc]
+                          initWithURLRequest:self.request
+                          saveToPath:self.filePath
+                          certificateData:self.certificateData
+                          progress:^(float progress) {
+                              __strong typeof(weakSelf) strongSelf= weakSelf;
+                              if (strongSelf->_onRequestProgressChangedBlock) {
+                                  strongSelf->_onRequestProgressChangedBlock(progress);
+                              }
+                          } onRequestStart:^(GQURLOperation *urlConnectionOperation) {
+                              __strong typeof(weakSelf) strongSelf= weakSelf;
+                              if (strongSelf->_onRequestStartBlock) {
+                                  strongSelf->_onRequestStartBlock();
+                              }
+                          } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
+                              __strong typeof(weakSelf) strongSelf= weakSelf;
+                              if (requestSuccess) {
+                                  if (strongSelf->_onRequestFinishBlock) {
+                                      strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
+                                  }
+                              }else{
+                                  if (strongSelf->_onRequestFailedBlock) {
+                                      strongSelf->_onRequestFailedBlock(error);
+                                  }
+                              }
+                          }];
     [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlOperation];
 }
 

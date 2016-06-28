@@ -380,8 +380,11 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
           onProgressChanged:(void(^)(GQBaseDataRequest *request,CGFloat progress))onProgressChangedBlock;
 
 #pragma mark - subclass not override method
-- (void)notifyDelegateRequestDidErrorWithError:(NSError*)error;
-- (void)notifyDelegateRequestDidSuccess;
+- (void)notifyRequestDidStart;
+- (void)notifyRequestDidChange:(float)progress;
+- (void)notifyRequestDidSuccess;
+- (void)notifyRequestDidErrorWithError:(NSError*)error;
+- (void)notifyRequestDidCancel;
 - (void)doRelease;
 
 #pragma mark - subclass can  override method

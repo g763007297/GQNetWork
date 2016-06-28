@@ -24,30 +24,29 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
     void (^_onRequestStartBlock)(GQURLOperation *);
 }
 
-@property (nonatomic, strong) NSURLRequest                  *operationRequest;
-@property (nonatomic, strong) NSData                        *responseData;
-@property (nonatomic, strong) NSString                      *responseString;
-@property (nonatomic, strong) NSHTTPURLResponse             *operationURLResponse;
-@property (nonatomic, readwrite) NSUInteger                 timeoutInterval;
-@property (nonatomic, copy) GQHTTPRequestCompletionHandler operationCompletionBlock;
-@property (nonatomic, strong) NSFileHandle                  *operationFileHandle;
+@property (nonatomic, strong) NSURLRequest                      *operationRequest;
+@property (nonatomic, strong) NSData                            *responseData;
+@property (nonatomic, strong) NSHTTPURLResponse                 *operationURLResponse;
+@property (nonatomic, readwrite) NSUInteger                     timeoutInterval;
+@property (nonatomic, copy) GQHTTPRequestCompletionHandler      operationCompletionBlock;
+@property (nonatomic, strong) NSFileHandle                      *operationFileHandle;
 
-@property (nonatomic, strong) NSString                      *operationSavePath;
+@property (nonatomic, strong) NSString                          *operationSavePath;
 
-@property (nonatomic, strong) NSData                        *certificateData;
+@property (nonatomic, strong) NSData                            *certificateData;
 
-@property (nonatomic, strong) NSURLSession                  *operationSession;
+@property (nonatomic, strong) NSURLSession                      *operationSession;
 
-@property (nonatomic, strong) NSURLSessionDataTask          *operationSessionTask;
+@property (nonatomic, strong) NSURLSessionDataTask              *operationSessionTask;
 
-@property (nonatomic, strong) NSURLConnection               *operationConnection;
-@property (nonatomic, strong) NSMutableData                 *operationData;
-@property (nonatomic, assign) CFRunLoopRef                  operationRunLoop;
-@property (nonatomic, readwrite) UIBackgroundTaskIdentifier backgroundTaskIdentifier;
+@property (nonatomic, strong) NSURLConnection                   *operationConnection;
+@property (nonatomic, strong) NSMutableData                     *operationData;
+@property (nonatomic, assign) CFRunLoopRef                      operationRunLoop;
+@property (nonatomic, readwrite) UIBackgroundTaskIdentifier     backgroundTaskIdentifier;
 
-@property (nonatomic, readwrite) GQURLState        state;
-@property (nonatomic, readwrite) float                      expectedContentLength;
-@property (nonatomic, readwrite) float                      receivedContentLength;
+@property (nonatomic, readwrite) GQURLState                     state;
+@property (nonatomic, readwrite) float                          expectedContentLength;
+@property (nonatomic, readwrite) float                          receivedContentLength;
 @property (nonatomic, copy) void (^operationProgressBlock)(float progress);
 
 - (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest

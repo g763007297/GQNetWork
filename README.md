@@ -4,7 +4,7 @@
 
 # GQNetWork
 
-继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，支持https请求，请求数据缓存机制,支持链式调用。
+继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，支持https请求，请求数据缓存机制,支持链式调用 支持block，delegate返回请求数据。
 
 # Simple Use
 
@@ -18,20 +18,6 @@
 
 *注:如果只是需要单独的mapping类的话可以在podfile里面单独添加 pod 'GQNetWork/Mapping'
 
-## Configure File
-
-GQCommonMacros中有配置文件
-
-1.  配置默认请求地址:GQHttpReuqestURL   
-
-2.  默认请求host:REQUEST_HOST  
-
-3. 是否使用maskview: GQUSE_MaskView
-
-4. 是否使用假数据:GQUSE_DUMPY_DATA
-
-5. 加载默认提示文字:DEFAULT_LOADING_MESSAGE
-
 ## Basic Usage
 
 1.将GQNetWork文件夹加入到工程中。(详见demo)
@@ -42,10 +28,12 @@ GQCommonMacros中有配置文件
 
   //请求的url
   - (NSString*)getRequestUrl;
+	
+  //host
+  - (NSString *)getBaseUrl;
+  
   //请求方法
   - (GQRequestMethod)getRequestMethod;
-  //使用假数据
-  - (BOOL)useDumpyData;
   
 ``` 
 
@@ -171,7 +159,23 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
 )
 
 ```
-
+ 
+## 链式调用 全程点语法支持
+ 
+ [DemoHttpRequest1 prepareRequset]
+ .requestUrlChain(@"product/list")
+ .mappingChain(map)
+ .keyPathChain(@"result/rows")
+ .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
+     GQDPRINT(@"%@",result.rawDictionary);
+     GQDPRINT(@"%@",result.array);
+ })
+ .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
+    
+ })
+ .parametersChain(@{})
+ .startRequestChain();
+ 
 #waning
 
 在iOS9以上的系统需要添加plist字段，否则无法发起请求:

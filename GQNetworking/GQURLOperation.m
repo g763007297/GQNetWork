@@ -38,7 +38,6 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self.operationFileHandle = nil;
     self.operationData = nil;
     self.responseData = nil;
-    self.responseString = nil;
     
 #if !OS_OBJECT_USE_OBJC
     dispatch_release(_saveDataDispatchGroup);
@@ -346,8 +345,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
             @try {
                 [self.operationFileHandle writeData:data];
             }@catch (NSException *exception) {
-                self.operationSessionTask?[self.operationSessionTask cancel]:nil;
-                self.operationConnection?[self.operationConnection cancel]:nil;
                 NSError *writeError = [NSError errorWithDomain:@"GQHTTPRequestWriteError" code:0 userInfo:exception.userInfo];
                 [self callCompletionBlockWithResponse:nil requestSuccess:NO error:writeError];
             }
@@ -374,7 +371,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     dispatch_async(dispatch_get_main_queue(), ^{
         
         self.responseData = self.operationData;
-        self.responseString = [[NSString alloc] initWithData:self.operationData encoding:NSUTF8StringEncoding];
         
         NSError *serverError = error;
         if(!serverError) {
