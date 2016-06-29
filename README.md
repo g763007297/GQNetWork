@@ -163,17 +163,24 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
 ## 链式调用 全程点语法支持
  
  [DemoHttpRequest1 prepareRequset]
+ 
  .requestUrlChain(@"product/list")
+ 
  .mappingChain(map)
+ 
  .keyPathChain(@"result/rows")
+ 
  .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
      GQDPRINT(@"%@",result.rawDictionary);
      GQDPRINT(@"%@",result.array);
  })
+ 
  .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
     
  })
+ 
  .parametersChain(@{})
+ 
  .startRequestChain();
  
 #waning
