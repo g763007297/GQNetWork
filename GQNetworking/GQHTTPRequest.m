@@ -97,7 +97,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         }
         self.bodyData = [[NSMutableData alloc] init];
         self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.requestURL]];
-        [self.request setTimeoutInterval:60];
+        [self.request setTimeoutInterval:30];
         
         if (onStartBlock) {
             _onRequestStartBlock = [onStartBlock copy];
