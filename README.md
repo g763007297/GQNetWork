@@ -164,24 +164,17 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
  
  ```objc
  [DemoHttpRequest1 prepareRequset]
- 
  .requestUrlChain(@"product/list")
- 
  .mappingChain(map)
- 
  .keyPathChain(@"result/rows")
- 
  .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
      GQDPRINT(@"%@",result.rawDictionary);
      GQDPRINT(@"%@",result.array);
  })
- 
  .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
     
  })
- 
  .parametersChain(@{})
- 
  .startRequestChain();
  
  ```
