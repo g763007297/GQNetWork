@@ -162,6 +162,7 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
  
 ## 链式调用 全程点语法支持
  
+ ```objc
  [DemoHttpRequest1 prepareRequset]
  
  .requestUrlChain(@"product/list")
@@ -183,6 +184,7 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
  
  .startRequestChain();
  
+ ```
 #waning
 
 在iOS9以上的系统需要添加plist字段，否则无法发起请求:
