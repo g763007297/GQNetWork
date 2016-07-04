@@ -324,8 +324,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
-    NSThread *currentThread = [NSThread currentThread];
-    NSLog(@"%@---%@---%p",currentThread,self.operationSessionTask,self.operationData);
     [self handleResponseData:data];
 }
 
