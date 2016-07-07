@@ -30,6 +30,16 @@
 
 - (NSData*)getArchivedData;
 
+/**
+ *  <#Description#>
+ *
+ *  @param ChangeProperties e.g: change Once:  last version property: "key"
+ *                                              new  version property: "keys"
+ *                                              needString: "key->keys"
+ * if your Properties change too many times, you should give me all changes  e.g: key->keys-keyss->keysss->keyssss->key
+ */
++ (void)setVersionChangeProperties:(NSArray *)ChangeProperties;
+
 - (NSDictionary*)propertiesAndValuesDictionary;
 
 - (NSDictionary*)propertiesAndValuesAttributeMapDictionary;

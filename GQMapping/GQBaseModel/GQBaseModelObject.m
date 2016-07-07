@@ -10,6 +10,21 @@
 #import <objc/runtime.h>
 #import "GQDebug.h"
 
+NSComparator cmptr = ^(id obj1, id obj2){
+    if ([obj1 integerValue] > [obj2 integerValue]) {
+        return (NSComparisonResult)NSOrderedDescending;
+    }
+    
+    if ([obj1 integerValue] < [obj2 integerValue]) {
+        return (NSComparisonResult)NSOrderedAscending;
+    }
+    return (NSComparisonResult)NSOrderedSame;
+};
+
+static NSArray * changePropertyKeys = nil;
+
+static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMapDictionaryKey";
+
 @interface GQBaseModelObject()
 
 - (void)setAttributes:(NSDictionary*)dataDic;
@@ -68,6 +83,8 @@
     return desc;
 }
 
+
+
 -(id)initWithDataDic:(NSDictionary*)data
 {
     if (self = [super init]) {
@@ -112,16 +129,40 @@
         if (attrMapDic == nil) {
             return self;
         }
+        NSMutableArray *changeOldPropertys = [[NSMutableArray alloc] initWithCapacity:0];
+        NSMutableArray *changeNewPropertys = [[NSMutableArray alloc] initWithCapacity:0];
+        if (changePropertyKeys&&[changePropertyKeys count]) {
+            NSDictionary *oldPropertyVersionAndVlues = [decoder decodeObjectForKey:versionAttributeMapDictionaryKey];
+            NSInteger version = [decoder versionForClassName:NSStringFromClass([self class])];
+            
+            if (!oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]]) {
+                for (NSString *currentProperty in changePropertyKeys) {
+                    NSArray *lastCurrentPropertys = [currentProperty componentsSeparatedByString:@"->"];
+                    
+                    NSArray *lastOldPropertys = oldPropertyVersionAndVlues[[[[oldPropertyVersionAndVlues allKeys] sortedArrayUsingComparator:cmptr] firstObject]];
+                    
+                    for (NSString *oldProperty in lastOldPropertys) {
+                        if ([currentProperty rangeOfString:oldProperty].location == 0&&[currentProperty rangeOfString:oldProperty].length == [oldProperty length]) {
+                            NSString *lastOldProperty = [[oldProperty componentsSeparatedByString:@"->"] lastObject];
+                            [changeOldPropertys addObject:lastOldProperty];
+                            [changeNewPropertys addObject:lastCurrentPropertys];
+                            continue;
+                        }
+                    }
+                }
+            }
+        }
         NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
         id attributeName;
         while ((attributeName = [keyEnum nextObject])) {
             SEL sel = [self getSetterSelWithAttibuteName:attributeName];
             if ([self respondsToSelector:sel]) {
-                id obj = [decoder decodeObjectForKey:attributeName];
+                id obj = [decoder decodeObjectForKey:[changeNewPropertys containsObject:attributeName]?changeOldPropertys[[changeNewPropertys indexOfObject:attributeName]]:attributeName];
                 [self performSelectorOnMainThread:sel withObject:obj waitUntilDone:[NSThread isMainThread]];
             }
         }
     }
+    
     return self;
 }
 
@@ -210,6 +251,24 @@
     free(properties);
     return propertyNames;
 }
+
++ (void)setVersionChangeProperties:(NSArray *)ChangeProperties
+{
+    changePropertyKeys = ChangeProperties;
+}
+
+/*
+ NSDictionary *attributeMapDictionary = [GQBaseModelObject attributeMapDictionary];
+ NSInteger version = [GQBaseModelObject version];
+ 
+ NSDictionary *currentAttributeMapDictionary = [self getVersionAttributeMapDictionary];
+ if (![currentAttributeMapDictionary objectForKey:[NSString stringWithFormat:@"%ld",(long)version]]) {
+ NSMutableDictionary *versionAttributeMapDictionary = [[NSMutableDictionary alloc] initWithObjects:@[attributeMapDictionary] forKeys:@[[NSString stringWithFormat:@"%ld",(long)version]]];
+ [versionAttributeMapDictionary addEntriesFromDictionary:currentAttributeMapDictionary];
+ [self setVersionAttributeMapDictionary:versionAttributeMapDictionary];
+ [encoder encodeObject:versionAttributeMapDictionary forKey:versionAttributeMapDictionaryKey];
+ }
+ */
 
 /*!
  *	\returns a dictionary Key-Value pair by property and corresponding value.
