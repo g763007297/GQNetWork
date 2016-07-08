@@ -13,9 +13,9 @@
 + (NSDictionary *)attributeMapDictionary{
     return @{@"course":@"course",
              @"createTime":@"createTime",
-             @"pDescription":@"description",
+             @"pDescriptionnn":@"description",
              @"enumId":@"enumId",
-             @"pId":@"id",
+             @"pIdddddd":@"id",
              @"likes":@"likes",
              @"name":@"name",
              @"picUrl":@"picUrl",
@@ -45,5 +45,11 @@
  }
  
  **/
+
+- (NSArray *)versionChangeProperties
+{
+//    return nil;
+    return @[@"pId->pIdd->pIddd->pIdddd->pIddddd->pIdddddd",@"pDescription->pDescriptionn->pDescriptionnn"];
+}
 
 @end

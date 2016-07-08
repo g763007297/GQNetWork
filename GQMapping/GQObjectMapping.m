@@ -39,13 +39,13 @@
     for (NSString *key in mappingDictionary) {
         id object = mappingDictionary[key];
         if ([object isKindOfClass:[NSNumber class]]) {
-            propertyMapping = [GQPropertyMapping propertyMapping:key propertyName:mappingDictionary[key] propertyObjectClass:[NSNumber class]];
+            propertyMapping = [GQPropertyMapping propertyMapping:mappingDictionary[key] propertyName:key propertyObjectClass:[NSNumber class]];
         }
         else if([object isKindOfClass:[NSValue class]]) {
-            propertyMapping = [GQPropertyMapping propertyMapping:key propertyName:mappingDictionary[key] propertyObjectClass:[NSValue class]];
+            propertyMapping = [GQPropertyMapping propertyMapping:mappingDictionary[key] propertyName:key propertyObjectClass:[NSValue class]];
         }
         else if([object isKindOfClass:[NSString class]]) {
-            propertyMapping = [GQPropertyMapping propertyMapping:key propertyName:mappingDictionary[key] propertyObjectClass:[NSString class]];
+            propertyMapping = [GQPropertyMapping propertyMapping:mappingDictionary[key] propertyName:key propertyObjectClass:[NSString class]];
         }
         else {
             NSAssert(TRUE, @"unsupported property type");

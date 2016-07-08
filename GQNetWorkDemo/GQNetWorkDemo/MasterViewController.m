@@ -62,23 +62,25 @@
     parameter.subRequestUrl = @"product/list";
     
 #pragma mark -- 链式调用 + 方法调用
-    [[[DemoHttpRequest1 prepareRequset]
-      .requestUrlChain(@"product/list")
-      .mappingChain(map)
-      .keyPathChain(@"result/rows")
-      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        GQDPRINT(@"%@",result.rawDictionary);
-        GQDPRINT(@"%@",result.array);
-    }] startRequest];
-    
+//    [[[DemoHttpRequest1 prepareRequset]
+//      .requestUrlChain(@"product/list")
+//      .mappingChain(map)
+//      .keyPathChain(@"result/rows")
+//      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+//        GQDPRINT(@"%@",result.rawDictionary);
+//        GQDPRINT(@"%@",result.array);
+//    }] startRequest];
+//    
 #pragma mark -- 全链式调用
+    
+    __weak typeof(self) weakSelf = self;
     [DemoHttpRequest1 prepareRequset]
     .requestUrlChain(@"product/list")
     .mappingChain(map)
     .keyPathChain(@"result/rows")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
-        GQDPRINT(@"%@",result.rawDictionary);
-        GQDPRINT(@"%@",result.array);
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf saveModel:result.array];
     })
     .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
         
@@ -86,16 +88,19 @@
     .parametersChain(@{})
     .startRequestChain();
     
+    NSArray *array = [self getModel];
+    NSLog(@"%@",array);
+    
 #pragma mark -- 常规block
-    [DemoHttpRequest1 requestWithRequestParameter:parameter
-                                  onRequestStart:nil
-                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
-                                   GQDPRINT(@"%@",result.rawDictionary);
-                                   GQDPRINT(@"%@",result.array);
-                               }
-                               onRequestCanceled:nil
-                                 onRequestFailed:nil
-                               onProgressChanged:nil];
+//    [DemoHttpRequest1 requestWithRequestParameter:parameter
+//                                  onRequestStart:nil
+//                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
+//                                   GQDPRINT(@"%@",result.rawDictionary);
+//                                   GQDPRINT(@"%@",result.array);
+//                               }
+//                               onRequestCanceled:nil
+//                                 onRequestFailed:nil
+//                               onProgressChanged:nil];
 }
 
 #pragma mark -- DataRequestDelegate
@@ -121,6 +126,28 @@
 
 - (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error{
     
+}
+
+#pragma mark -- Test Archiver Model Version Control
+
+-(NSString *)HomePathArchiver
+{
+    NSString *homedictionatry = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex: 0];
+    return [homedictionatry stringByAppendingPathComponent:@"productMode.archiver"];
+}
+
+- (void)saveModel:(id)model{
+    NSFileManager *manager =[NSFileManager defaultManager];
+    BOOL exist=[manager fileExistsAtPath:[self HomePathArchiver]];
+    NSError *error =nil;
+    if (exist) {
+        [manager removeItemAtPath:[self HomePathArchiver] error:&error];
+    }
+    [NSKeyedArchiver archiveRootObject:model toFile:[self HomePathArchiver]];
+}
+
+- (id)getModel{
+    return [NSKeyedUnarchiver unarchiveObjectWithFile:[self HomePathArchiver]];
 }
 
 - (void)didReceiveMemoryWarning {

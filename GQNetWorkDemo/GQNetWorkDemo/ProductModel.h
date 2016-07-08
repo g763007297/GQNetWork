@@ -14,11 +14,11 @@
 
 @property (nonatomic, copy) NSString *createTime;
 
-@property (nonatomic, copy) NSString *pDescription;
+@property (nonatomic, copy) NSString *pDescriptionnn;
 
 @property (nonatomic, copy) NSString *enumId;
 
-@property (nonatomic, copy) NSString *pId;
+@property (nonatomic, copy) NSString *pIdddddd;
 
 @property (nonatomic, copy) NSString *likes;
 

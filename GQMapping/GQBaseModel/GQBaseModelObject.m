@@ -21,11 +21,17 @@ NSComparator cmptr = ^(id obj1, id obj2){
     return (NSComparisonResult)NSOrderedSame;
 };
 
-static NSArray * changePropertyKeys = nil;
-
 static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMapDictionaryKey";
 
-@interface GQBaseModelObject()
+static NSString * const versionPropertykey = @"versionPropertykey";
+
+static NSDictionary * oldPropertyVersionAndVlues = nil;
+
+static NSInteger version = 0;
+
+@interface GQBaseModelObject(){
+    NSRecursiveLock *lock;
+}
 
 - (void)setAttributes:(NSDictionary*)dataDic;
 
@@ -34,7 +40,7 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
 @implementation GQBaseModelObject
 
 + (NSDictionary *)attributeMapDictionary{
-    return [[[[self class] alloc] init] propertiesAndValuesAttributeMapDictionary];
+    return [[[[self class] alloc] init] propertiesAttributeMapDictionary];
 }
 
 - (NSString *)customDescription
@@ -54,22 +60,12 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
     NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
     id attributeName;
     while ((attributeName = [keyEnum nextObject])) {
-        SEL getSel = NSSelectorFromString(attributeName);
-        if ([self respondsToSelector:getSel]) {
-            NSMethodSignature *signature = nil;
-            signature = [self methodSignatureForSelector:getSel];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-            [invocation setTarget:self];
-            [invocation setSelector:getSel];
-            NSObject *__unsafe_unretained valueObj = nil;
-            [invocation invoke];
-            [invocation getReturnValue:&valueObj];
-            if (valueObj) {
-                [attrsDesc appendFormat:@" [%@=%@] ",attributeName,valueObj];
-                //[valueObj release];
-            }else {
-                [attrsDesc appendFormat:@" [%@=nil] ",attributeName];
-            }
+        NSObject *valueObj = [self getValue:attributeName];
+        if (valueObj) {
+            [attrsDesc appendFormat:@" [%@=%@] ",attributeName,valueObj];
+            //[valueObj release];
+        }else {
+            [attrsDesc appendFormat:@" [%@=nil] ",attributeName];
         }
     }
     NSString *customDesc = [self customDescription];
@@ -104,16 +100,7 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
         SEL sel = [object getSetterSelWithAttibuteName:attributeName];
         if ([self respondsToSelector:sel] &&
             [self respondsToSelector:getSel]) {
-            
-            NSMethodSignature *signature = nil;
-            signature = [self methodSignatureForSelector:getSel];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-            [invocation setTarget:self];
-            [invocation setSelector:getSel];
-            NSObject * __unsafe_unretained valueObj = nil;
-            [invocation invoke];
-            [invocation getReturnValue:&valueObj];
-            
+            NSObject *valueObj = [self getValue:attributeName];
             [object performSelectorOnMainThread:sel
                                      withObject:valueObj
                                   waitUntilDone:TRUE];
@@ -131,24 +118,54 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
         }
         NSMutableArray *changeOldPropertys = [[NSMutableArray alloc] initWithCapacity:0];
         NSMutableArray *changeNewPropertys = [[NSMutableArray alloc] initWithCapacity:0];
-        if (changePropertyKeys&&[changePropertyKeys count]) {
-            NSDictionary *oldPropertyVersionAndVlues = [decoder decodeObjectForKey:versionAttributeMapDictionaryKey];
-            NSInteger version = [decoder versionForClassName:NSStringFromClass([self class])];
+        NSArray *currentChangePropertys = [self versionChangeProperties];
+        
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            oldPropertyVersionAndVlues = [decoder decodeObjectForKey:versionAttributeMapDictionaryKey];
+            version = [decoder decodeIntegerForKey:versionPropertykey];
+        });
+        
+        NSMutableArray *lastOldPropertys = [[NSMutableArray alloc] initWithArray:oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]]];
+        
+        if (currentChangePropertys&&[currentChangePropertys count]&&![lastOldPropertys isEqualToArray:currentChangePropertys]) {
             
-            if (!oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]]) {
-                for (NSString *currentProperty in changePropertyKeys) {
-                    NSArray *lastCurrentPropertys = [currentProperty componentsSeparatedByString:@"->"];
-                    
-                    NSArray *lastOldPropertys = oldPropertyVersionAndVlues[[[[oldPropertyVersionAndVlues allKeys] sortedArrayUsingComparator:cmptr] firstObject]];
-                    
-                    for (NSString *oldProperty in lastOldPropertys) {
+            for (NSString *currentProperty in currentChangePropertys) {
+                NSArray *lastCurrentPropertys = [currentProperty componentsSeparatedByString:@"->"];
+                // oldChangePropertys hadn't this version changePropertys, we should use last changePropertys
+                if (!lastOldPropertys) {
+                    lastOldPropertys = oldPropertyVersionAndVlues[[[[oldPropertyVersionAndVlues allKeys] sortedArrayUsingComparator:cmptr] firstObject]];
+                }
+                
+                //whether use current changePropertys
+                BOOL curruntPropertysHasNotOldProperty = NO;
+                
+                //if never save changePropertys or,wo use current changePropertys
+                if (!oldPropertyVersionAndVlues||![lastOldPropertys count]||!lastOldPropertys) {
+                    curruntPropertysHasNotOldProperty = YES;
+                }else{
+                    int index = 0;
+                    //Start from the tail ，Traverse the success of a delete one
+                    for (int i = (int)[lastOldPropertys count]-1; i >= 0; i--) {
+                        NSString *oldProperty = lastOldPropertys[i];
                         if ([currentProperty rangeOfString:oldProperty].location == 0&&[currentProperty rangeOfString:oldProperty].length == [oldProperty length]) {
                             NSString *lastOldProperty = [[oldProperty componentsSeparatedByString:@"->"] lastObject];
                             [changeOldPropertys addObject:lastOldProperty];
-                            [changeNewPropertys addObject:lastCurrentPropertys];
+                            [changeNewPropertys addObject:[lastCurrentPropertys lastObject]];
+                            [lastOldPropertys removeObject:oldProperty];
+                            index--;
                             continue;
+                        }else{
+                            index++;
                         }
                     }
+                    if (index != 0&&index == [lastOldPropertys count]) {
+                        curruntPropertysHasNotOldProperty = YES;
+                    }
+                }
+                if (curruntPropertysHasNotOldProperty) {
+                    [changeOldPropertys addObject:[lastCurrentPropertys firstObject]];
+                    [changeNewPropertys addObject:[lastCurrentPropertys lastObject]];
                 }
             }
         }
@@ -157,12 +174,14 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
         while ((attributeName = [keyEnum nextObject])) {
             SEL sel = [self getSetterSelWithAttibuteName:attributeName];
             if ([self respondsToSelector:sel]) {
-                id obj = [decoder decodeObjectForKey:[changeNewPropertys containsObject:attributeName]?changeOldPropertys[[changeNewPropertys indexOfObject:attributeName]]:attributeName];
+                if ([changeNewPropertys containsObject:attributeName]) {
+                    attributeName = changeOldPropertys[[changeNewPropertys indexOfObject:attributeName]];
+                }
+                id obj = [decoder decodeObjectForKey:attributeName];
                 [self performSelectorOnMainThread:sel withObject:obj waitUntilDone:[NSThread isMainThread]];
             }
         }
     }
-    
     return self;
 }
 
@@ -172,27 +191,29 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
     if (attrMapDic == nil) {
         return;
     }
-    
     NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
     id attributeName;
-    
     while ((attributeName = [keyEnum nextObject])) {
-        
-        SEL getSel = NSSelectorFromString(attributeName);
-        
-        if ([self respondsToSelector:getSel]) {
-            
-            NSMethodSignature *signature = nil;
-            signature = [self methodSignatureForSelector:getSel];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-            [invocation setTarget:self];
-            [invocation setSelector:getSel];
-            NSObject * __unsafe_unretained valueObj = nil;
-            [invocation invoke];
-            [invocation getReturnValue:&valueObj];
-            
-            if (valueObj) {
-                [encoder encodeObject:valueObj forKey:attributeName];
+        NSObject *valueObj = [self getValue:attributeName];
+        if (valueObj) {
+            [encoder encodeObject:valueObj forKey:attributeName];
+        }
+    }
+    NSArray *versionChangePropertys = [self versionChangeProperties];
+    if (versionChangePropertys) {
+        NSMutableDictionary *newPropertyVersionAndVlues = [[NSMutableDictionary alloc] initWithDictionary:oldPropertyVersionAndVlues?oldPropertyVersionAndVlues:@{}];
+        NSArray *propertys = oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]];
+        //if encode dictionary not include this version change propertys, we should save new change propertys;
+        if (!propertys) {
+            [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%ld",version]];
+            [encoder encodeObject:newPropertyVersionAndVlues forKey:versionAttributeMapDictionaryKey];
+            [encoder encodeInteger:version forKey:versionPropertykey];
+        }else{
+            //if encode dictionary include this version change propertyes, we should increment our class version, and encode this version change propertys
+            if (![propertys isEqualToArray:versionChangePropertys]) {
+                [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%ld",(version+1)]];
+                [encoder encodeObject:newPropertyVersionAndVlues forKey:versionAttributeMapDictionaryKey];
+                [encoder encodeInteger:(version+1) forKey:versionPropertykey];
             }
         }
     }
@@ -252,23 +273,10 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
     return propertyNames;
 }
 
-+ (void)setVersionChangeProperties:(NSArray *)ChangeProperties
+- (NSArray *)versionChangeProperties
 {
-    changePropertyKeys = ChangeProperties;
+    return nil;
 }
-
-/*
- NSDictionary *attributeMapDictionary = [GQBaseModelObject attributeMapDictionary];
- NSInteger version = [GQBaseModelObject version];
- 
- NSDictionary *currentAttributeMapDictionary = [self getVersionAttributeMapDictionary];
- if (![currentAttributeMapDictionary objectForKey:[NSString stringWithFormat:@"%ld",(long)version]]) {
- NSMutableDictionary *versionAttributeMapDictionary = [[NSMutableDictionary alloc] initWithObjects:@[attributeMapDictionary] forKeys:@[[NSString stringWithFormat:@"%ld",(long)version]]];
- [versionAttributeMapDictionary addEntriesFromDictionary:currentAttributeMapDictionary];
- [self setVersionAttributeMapDictionary:versionAttributeMapDictionary];
- [encoder encodeObject:versionAttributeMapDictionary forKey:versionAttributeMapDictionaryKey];
- }
- */
 
 /*!
  *	\returns a dictionary Key-Value pair by property and corresponding value.
@@ -278,30 +286,34 @@ static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMap
     NSMutableDictionary *propertiesValuesDic = [NSMutableDictionary dictionary];
     NSArray *properties = [self propertyNames];
     for (NSString *property in properties) {
-        SEL getSel = NSSelectorFromString(property);
-        if ([self respondsToSelector:getSel]) {
-            NSMethodSignature *signature = nil;
-            signature = [self methodSignatureForSelector:getSel];
-            NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-            [invocation setTarget:self];
-            [invocation setSelector:getSel];
-            NSObject * __unsafe_unretained valueObj = nil;
-            [invocation invoke];
-            [invocation getReturnValue:&valueObj];
-            //assign to @"" string
-            if (!valueObj) {
-                valueObj = @"";
-            }
-            propertiesValuesDic[property] = valueObj;
-        }
+        NSObject *object = [self getValue:property]?[self getValue:property]:@"";
+        propertiesValuesDic[property] = object;
     }
     return propertiesValuesDic;
 }
 
-/*!
- *	\returns a dictionary Key-Value pair by property and corresponding value.
- */
-- (NSDictionary*)propertiesAndValuesAttributeMapDictionary
+- (NSObject *)getValue:(NSString *)property{
+    if (!lock) {
+        lock = [[NSRecursiveLock alloc] init];
+    }
+    [lock lock];
+    SEL getSel = NSSelectorFromString(property);
+    NSObject * __unsafe_unretained valueObj = nil;
+    if ([self respondsToSelector:getSel]) {
+        NSMethodSignature *signature = nil;
+        signature = [self methodSignatureForSelector:getSel];
+        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
+        [invocation setTarget:self];
+        [invocation setSelector:getSel];
+        [invocation invoke];
+        [invocation getReturnValue:&valueObj];
+    }
+    [lock unlock];
+    return valueObj;
+}
+
+// default AttributeMapDictionary
+- (NSDictionary*)propertiesAttributeMapDictionary
 {
     NSMutableDictionary *attributeMapDictionary = [NSMutableDictionary dictionary];
     NSArray *properties = [self propertyNames];
