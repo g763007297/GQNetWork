@@ -4,7 +4,7 @@
 
 # GQNetWork
 
-继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，支持https请求，请求数据缓存机制,支持链式调用 支持block，delegate返回请求数据。
+继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，支持https请求，请求数据缓存机制,支持链式调用,支持model版本控制, 支持block，delegate返回请求数据。
 
 # Simple Use
 
@@ -178,6 +178,47 @@ GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class
  .startRequestChain();
  
  ```
+## Model版本控制
+在开发过程中，对于model中的property修改名称有时候是一件很普遍的事情，但是修改名称之后对于以前版本的兼容有时候就会出现无法映射的现象，所有我们要对model进行版本控制，GQBaseModelObject支持设置修改过的属性名，可以支持不同版本的升级。
+
+###E.g
+app1.0版本的一个model中的属性名叫a,升级到1.1之后这个属性名修改为b，这时候我们做版本维护还是很容易的，只要将旧值映射到新的里面就行了；
+
+但是如果升级到1.2之后又修改为c，升级到1.3版本又修改为d的时候，这个中间做版本控制的话就会存在很多种问题，从1.0->1.3,1.0->1.2,1.1->1.3还有好多种情况；
+
+这时候一个合适的版本控制方案就必须要出来了，这时候我们可以通过在继承GQBaseModelObject的model中继承实现一个方法就可以很完美的解决这个问题。
+
+ ```objc
+- (NSArray *)versionChangeProperties；
+
+上面那个例子中我们就可以这样做:
+
+1.3版本就实现：
+
+- (NSArray *)versionChangeProperties{
+	return @[@"a->b->c->d"];
+}
+
+1.2版本就实现：
+
+- (NSArray *)versionChangeProperties{
+	return @[@"a->b->c"];
+}
+
+1.1版本就实现：
+
+- (NSArray *)versionChangeProperties{
+	return @[@"a->b"];
+}
+
+ ```
+###Tips
+1.如果存在多个property名的修改，那就只需要在数组中添加多条就行了。
+2.如果中间某个版本删了字段，那就在这个版本中把property变化的干掉.
+ 
+###Final
+ 到这里我们就完美的实现了每个版本升级对model的version控制，无论多少个版本更改都可以完美适配。
+ 
 #waning
 
 在iOS9以上的系统需要添加plist字段，否则无法发起请求:
