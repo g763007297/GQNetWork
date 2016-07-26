@@ -661,31 +661,33 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {
-            [self notifyRequestDidErrorWithError:nil];
-        }
-        _requestDataHandler = [self generateRequestHandler];
-        id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
-        if (errorInfo) {
-            success = FALSE;
+            errorInfo = [NSError errorWithDomain:@"empty data" code:0 userInfo:nil];
             dispatch_async(dispatch_get_main_queue(), callback);
-        }
-        else {
-            [[GQMappingManager sharedManager]mapWithSourceData:response
-                                                  originalData:self.rawResultData
-                                                 objectMapping:_mapping keyPath:_keyPath
-                                               completionBlock:^(GQMappingResult *result, NSError *error)
-            {
-                _responseResult = result;
-                if (result) {
-                    success = TRUE;
-                }
-                else {
-                    success = FALSE;
-                }
-                errorInfo = error;
-                [self processResult];
+        }else{
+            _requestDataHandler = [self generateRequestHandler];
+            id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
+            if (errorInfo) {
+                success = FALSE;
                 dispatch_async(dispatch_get_main_queue(), callback);
-            }];
+            }
+            else {
+                [[GQMappingManager sharedManager]mapWithSourceData:response
+                                                      originalData:self.rawResultData
+                                                     objectMapping:_mapping keyPath:_keyPath
+                                                   completionBlock:^(GQMappingResult *result, NSError *error)
+                 {
+                     _responseResult = result;
+                     if (result) {
+                         success = TRUE;
+                     }
+                     else {
+                         success = FALSE;
+                     }
+                     errorInfo = error;
+                     [self processResult];
+                     dispatch_async(dispatch_get_main_queue(), callback);
+                 }];
+            }
         }
     }
 }
