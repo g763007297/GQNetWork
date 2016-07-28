@@ -21,6 +21,8 @@ NSComparator cmptr = ^(id obj1, id obj2){
     return (NSComparisonResult)NSOrderedSame;
 };
 
+typedef void(^GQEnumerateSuper)(Class c , BOOL *stop);
+
 static NSString * const versionAttributeMapDictionaryKey = @"versionAttributeMapDictionaryKey";
 
 static NSString * const versionPropertykey = @"versionPropertykey";
@@ -262,15 +264,34 @@ static NSInteger version = 0;
 - (NSArray*)propertyNames
 {
     NSMutableArray *propertyNames = [[NSMutableArray alloc] init];
-    unsigned int propertyCount = 0;
-    objc_property_t *properties = class_copyPropertyList([self class], &propertyCount);
-    for (unsigned int i = 0; i < propertyCount; ++i) {
-        objc_property_t property = properties[i];
-        const char * name = property_getName(property);
-        [propertyNames addObject:[NSString stringWithUTF8String:name]];
-    }
-    free(properties);
+    [[self class] enumerateCustomClass:^(__unsafe_unretained Class c, BOOL *stop) {
+        unsigned int propertyCount = 0;
+        objc_property_t *properties = class_copyPropertyList(c, &propertyCount);
+        for (unsigned int i = 0; i < propertyCount; ++i) {
+            objc_property_t property = properties[i];
+            const char * name = property_getName(property);
+            [propertyNames addObject:[NSString stringWithUTF8String:name]];
+        }
+        free(properties);
+    }];
     return propertyNames;
+}
+
++ (void)enumerateCustomClass:(GQEnumerateSuper)block{
+    if (block == nil) {
+        return;
+    }
+    BOOL stop = NO;
+    
+    Class c = self;
+    
+    while (c &&!stop) {
+        block(c, &stop);
+        
+        c = class_getSuperclass(c);
+        
+        if (![c isSubclassOfClass:[GQBaseModelObject class]]) break;
+    }
 }
 
 - (NSArray *)versionChangeProperties
