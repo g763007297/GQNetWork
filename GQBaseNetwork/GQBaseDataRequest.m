@@ -193,7 +193,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         if (!useCurrentCache) {
             _usingCacheData = NO;
             [self doRequestWithParams:_userInfo];
-            GQDINFO(@"request %@ is created", [self class]);
+            GQDINFO(@"request %@ is created , url is \"%@\"", [self class],_requestUrl);
         }else{
             _usingCacheData = YES;
             [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
