@@ -177,7 +177,6 @@ BOOL CheckTypeMatching(id *valueObject, Class objClass, GQPropertyMapping *prope
                 else {
                     reason = [NSString stringWithFormat:@"The actual type of field %@ is %@, but the type of property %@ in %@ is declared as %@, not matched. Please see %@ declaration", propertyMapping.sourceName, NSStringFromClass([*valueObject class]), propertyName, NSStringFromClass(objClass), propertyStringFromType(declarePropertyType), NSStringFromClass(objClass)];
                 }
-                GQDERROR(@"%@", reason);
             }
         }
     }

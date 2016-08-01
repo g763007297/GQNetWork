@@ -696,7 +696,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (void)doRequestWithParams:(NSDictionary*)params
 {
     SHOULDOVERRIDE(@"GQBaseDataRequest", NSStringFromClass([self class]));
-    GQDERROR(@"should implement request logic here!");
 }
 
 - (NSStringEncoding)getResponseEncoding
