@@ -551,7 +551,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     _loading = bshow;
     if (bshow && _indicatorView) {
         if (!_maskActivityView) {
-            _maskActivityView = [GQMaskActivityView loadFromXib];
+            _maskActivityView = [GQMaskActivityView loadView];
             [_maskActivityView showInView:_indicatorView withHintMessage:[self getLoadingMessage] onCancleRequest:^(GQMaskActivityView *hintView){
                 [self cancelRequest];
             }];
@@ -736,7 +736,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (NSString *)getLoadingMessage
 {
-    return @"";
+    return @"加载中...";
 }
 
 - (GQObjectMapping *)getMapping{

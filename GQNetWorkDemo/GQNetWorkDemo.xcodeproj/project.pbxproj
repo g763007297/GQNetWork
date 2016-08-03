@@ -38,12 +38,9 @@
 		DF9C7A921D1F9B6F006B0D18 /* GQBaseDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A671D1F9B6F006B0D18 /* GQBaseDataRequest.m */; };
 		DF9C7A931D1F9B6F006B0D18 /* GQDataRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A691D1F9B6F006B0D18 /* GQDataRequestManager.m */; };
 		DF9C7A941D1F9B6F006B0D18 /* GQMaskActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A6C1D1F9B6F006B0D18 /* GQMaskActivityView.m */; };
-		DF9C7A951D1F9B6F006B0D18 /* GQMaskActivityView.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF9C7A6D1D1F9B6F006B0D18 /* GQMaskActivityView.xib */; };
 		DF9C7A961D1F9B6F006B0D18 /* GQNetworkTrafficManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A701D1F9B6F006B0D18 /* GQNetworkTrafficManager.m */; };
 		DF9C7A971D1F9B6F006B0D18 /* GQRequestParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A721D1F9B6F006B0D18 /* GQRequestParameter.m */; };
 		DF9C7A981D1F9B6F006B0D18 /* GQSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A751D1F9B6F006B0D18 /* GQSecurityPolicy.m */; };
-		DF9C7A991D1F9B6F006B0D18 /* GQXibView.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A791D1F9B6F006B0D18 /* GQXibView.m */; };
-		DF9C7A9A1D1F9B6F006B0D18 /* GQXibViewUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A7B1D1F9B6F006B0D18 /* GQXibViewUtils.m */; };
 		DF9C7A9B1D1F9B6F006B0D18 /* GQReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A7E1D1F9B6F006B0D18 /* GQReachability.m */; };
 		DF9C7A9C1D1F9B6F006B0D18 /* GQDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A811D1F9B6F006B0D18 /* GQDataRequest.m */; };
 		DF9C7A9D1D1F9B6F006B0D18 /* GQHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A831D1F9B6F006B0D18 /* GQHTTPRequest.m */; };
@@ -121,7 +118,6 @@
 		DF9C7A691D1F9B6F006B0D18 /* GQDataRequestManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDataRequestManager.m; sourceTree = "<group>"; };
 		DF9C7A6B1D1F9B6F006B0D18 /* GQMaskActivityView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQMaskActivityView.h; sourceTree = "<group>"; };
 		DF9C7A6C1D1F9B6F006B0D18 /* GQMaskActivityView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQMaskActivityView.m; sourceTree = "<group>"; };
-		DF9C7A6D1D1F9B6F006B0D18 /* GQMaskActivityView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GQMaskActivityView.xib; sourceTree = "<group>"; };
 		DF9C7A6E1D1F9B6F006B0D18 /* GQNetworkConsts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQNetworkConsts.h; sourceTree = "<group>"; };
 		DF9C7A6F1D1F9B6F006B0D18 /* GQNetworkTrafficManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQNetworkTrafficManager.h; sourceTree = "<group>"; };
 		DF9C7A701D1F9B6F006B0D18 /* GQNetworkTrafficManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQNetworkTrafficManager.m; sourceTree = "<group>"; };
@@ -129,10 +125,6 @@
 		DF9C7A721D1F9B6F006B0D18 /* GQRequestParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQRequestParameter.m; sourceTree = "<group>"; };
 		DF9C7A741D1F9B6F006B0D18 /* GQSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQSecurityPolicy.h; sourceTree = "<group>"; };
 		DF9C7A751D1F9B6F006B0D18 /* GQSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQSecurityPolicy.m; sourceTree = "<group>"; };
-		DF9C7A781D1F9B6F006B0D18 /* GQXibView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQXibView.h; sourceTree = "<group>"; };
-		DF9C7A791D1F9B6F006B0D18 /* GQXibView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQXibView.m; sourceTree = "<group>"; };
-		DF9C7A7A1D1F9B6F006B0D18 /* GQXibViewUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQXibViewUtils.h; sourceTree = "<group>"; };
-		DF9C7A7B1D1F9B6F006B0D18 /* GQXibViewUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQXibViewUtils.m; sourceTree = "<group>"; };
 		DF9C7A7D1D1F9B6F006B0D18 /* GQReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQReachability.h; sourceTree = "<group>"; };
 		DF9C7A7E1D1F9B6F006B0D18 /* GQReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQReachability.m; sourceTree = "<group>"; };
 		DF9C7A801D1F9B6F006B0D18 /* GQDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataRequest.h; sourceTree = "<group>"; };
@@ -269,7 +261,6 @@
 				DF9C7A711D1F9B6F006B0D18 /* GQRequestParameter.h */,
 				DF9C7A721D1F9B6F006B0D18 /* GQRequestParameter.m */,
 				DF9C7A731D1F9B6F006B0D18 /* GQSecurityPolicy */,
-				DF9C7A761D1F9B6F006B0D18 /* GQUtils */,
 				DF9C7A7C1D1F9B6F006B0D18 /* Reachability */,
 			);
 			name = GQBaseNetwork;
@@ -332,7 +323,6 @@
 			children = (
 				DF9C7A6B1D1F9B6F006B0D18 /* GQMaskActivityView.h */,
 				DF9C7A6C1D1F9B6F006B0D18 /* GQMaskActivityView.m */,
-				DF9C7A6D1D1F9B6F006B0D18 /* GQMaskActivityView.xib */,
 			);
 			path = GQMaskActivityView;
 			sourceTree = "<group>";
@@ -344,25 +334,6 @@
 				DF9C7A751D1F9B6F006B0D18 /* GQSecurityPolicy.m */,
 			);
 			path = GQSecurityPolicy;
-			sourceTree = "<group>";
-		};
-		DF9C7A761D1F9B6F006B0D18 /* GQUtils */ = {
-			isa = PBXGroup;
-			children = (
-				DF9C7A771D1F9B6F006B0D18 /* XIBUtils */,
-			);
-			path = GQUtils;
-			sourceTree = "<group>";
-		};
-		DF9C7A771D1F9B6F006B0D18 /* XIBUtils */ = {
-			isa = PBXGroup;
-			children = (
-				DF9C7A781D1F9B6F006B0D18 /* GQXibView.h */,
-				DF9C7A791D1F9B6F006B0D18 /* GQXibView.m */,
-				DF9C7A7A1D1F9B6F006B0D18 /* GQXibViewUtils.h */,
-				DF9C7A7B1D1F9B6F006B0D18 /* GQXibViewUtils.m */,
-			);
-			path = XIBUtils;
 			sourceTree = "<group>";
 		};
 		DF9C7A7C1D1F9B6F006B0D18 /* Reachability */ = {
@@ -449,7 +420,6 @@
 				B6CB1D491CF83E3B00D485E3 /* LaunchScreen.storyboard in Resources */,
 				B6CB1D461CF83E3B00D485E3 /* Assets.xcassets in Resources */,
 				B6CB1D441CF83E3B00D485E3 /* Main.storyboard in Resources */,
-				DF9C7A951D1F9B6F006B0D18 /* GQMaskActivityView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -493,10 +463,8 @@
 				DF9C7A9B1D1F9B6F006B0D18 /* GQReachability.m in Sources */,
 				DF9C7A971D1F9B6F006B0D18 /* GQRequestParameter.m in Sources */,
 				B68867971CFEC86C00850830 /* GQObjectDataSource.m in Sources */,
-				DF9C7A991D1F9B6F006B0D18 /* GQXibView.m in Sources */,
 				DF9C7A8D1D1F9B6F006B0D18 /* GQUserDefaultCache.m in Sources */,
 				B6CB1D381CF83E3B00D485E3 /* main.m in Sources */,
-				DF9C7A9A1D1F9B6F006B0D18 /* GQXibViewUtils.m in Sources */,
 				B6CB1D411CF83E3B00D485E3 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

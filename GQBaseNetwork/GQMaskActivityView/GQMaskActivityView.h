@@ -6,12 +6,14 @@
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#import "GQXibView.h"
+#import <UIKit/UIKit.h>
 
-@interface GQMaskActivityView : GQXibView
+@interface GQMaskActivityView : UIView
 {
     void (^_onRequestCanceled)(GQMaskActivityView *);
 }
+
++ (instancetype)loadView;
 
 - (void)showInView:(UIView*)view;
 - (void)showInView:(UIView *)view withHintMessage:(NSString *)message;

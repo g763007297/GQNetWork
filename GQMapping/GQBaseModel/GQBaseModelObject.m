@@ -128,7 +128,7 @@ static NSInteger version = 0;
             version = [decoder decodeIntegerForKey:versionPropertykey];
         });
         
-        NSMutableArray *lastOldPropertys = [[NSMutableArray alloc] initWithArray:oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]]];
+        NSMutableArray *lastOldPropertys = [[NSMutableArray alloc] initWithArray:oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%zd",version]]];
         
         if (currentChangePropertys&&[currentChangePropertys count]&&![lastOldPropertys isEqualToArray:currentChangePropertys]) {
             
@@ -204,16 +204,16 @@ static NSInteger version = 0;
     NSArray *versionChangePropertys = [self versionChangeProperties];
     if (versionChangePropertys) {
         NSMutableDictionary *newPropertyVersionAndVlues = [[NSMutableDictionary alloc] initWithDictionary:oldPropertyVersionAndVlues?oldPropertyVersionAndVlues:@{}];
-        NSArray *propertys = oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%ld",version]];
+        NSArray *propertys = oldPropertyVersionAndVlues[[NSString stringWithFormat:@"%zd",version]];
         //if encode dictionary not include this version change propertys, we should save new change propertys;
         if (!propertys) {
-            [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%ld",version]];
+            [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%zd",version]];
             [encoder encodeObject:newPropertyVersionAndVlues forKey:versionAttributeMapDictionaryKey];
             [encoder encodeInteger:version forKey:versionPropertykey];
         }else{
             //if encode dictionary include this version change propertyes, we should increment our class version, and encode this version change propertys
             if (![propertys isEqualToArray:versionChangePropertys]) {
-                [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%ld",(version+1)]];
+                [newPropertyVersionAndVlues setObject:versionChangePropertys forKey:[NSString stringWithFormat:@"%zd",(version+1)]];
                 [encoder encodeObject:newPropertyVersionAndVlues forKey:versionAttributeMapDictionaryKey];
                 [encoder encodeInteger:(version+1) forKey:versionPropertykey];
             }

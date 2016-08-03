@@ -10,20 +10,32 @@
 
 @interface GQMaskActivityView()
 
-@property (strong, nonatomic) IBOutlet UIView *bgMaskView;
-@property (strong, nonatomic) IBOutlet UILabel *hintLabel;
-@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *maskViewIndicator;
-@property (strong, nonatomic) IBOutlet UIButton *cancleBtn;
+@property (strong, nonatomic) UIView *bgMaskView;
+@property (strong, nonatomic) UILabel *hintLabel;
+@property (strong, nonatomic) UIActivityIndicatorView *maskViewIndicator;
+@property (strong, nonatomic) UIButton *cancleBtn;
 
 @end
 
 @implementation GQMaskActivityView
 
-- (void)awakeFromNib
-{
-    [super awakeFromNib];
-    _bgMaskView.layer.masksToBounds = YES;
-    _bgMaskView.layer.cornerRadius = 5;
++ (instancetype)loadView{
+    return [[[self class] alloc] init];
+}
+
+- (instancetype)init{
+    self =  [super init];
+    if (self) {
+        self.bounds = CGRectMake(0, 0, 154, 110);
+        [self addSubview:self.bgMaskView];
+       
+        [_bgMaskView addSubview:self.hintLabel];
+        
+        [_bgMaskView addSubview:self.maskViewIndicator];
+        
+        [_bgMaskView addSubview:self.cancleBtn];
+    }
+    return self;
 }
 
 - (UIView*)keyboardView
@@ -96,16 +108,59 @@
                          self.alpha = 0;
                      }
                      completion:^(BOOL finished) {
+                         [_maskViewIndicator stopAnimating];
                          [self removeFromSuperview];
                      }];
 }
 
-- (IBAction)onCancelBtnTouched:(id)sender
+- (void)onCancelBtnTouched:(id)sender
 {
     if (_onRequestCanceled) {
         _onRequestCanceled(self);
     }
 }
 
+- (UIView *)bgMaskView{
+    if (!_bgMaskView) {
+        _bgMaskView = [[UIView alloc] initWithFrame:self.bounds];
+        _bgMaskView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6666];
+        _bgMaskView.layer.masksToBounds = YES;
+        _bgMaskView.layer.cornerRadius = 5;
+    }
+    return _bgMaskView;
+}
+
+- (UILabel *)hintLabel{
+    if (!_hintLabel) {
+        _hintLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 154, 35)];
+        _hintLabel.font = [UIFont systemFontOfSize:17];
+        _hintLabel.textAlignment = NSTextAlignmentCenter;
+        _hintLabel.textColor = [UIColor whiteColor];
+        _hintLabel.backgroundColor = [UIColor clearColor];
+        _hintLabel.hidden = YES;
+    }
+    return _hintLabel;
+}
+
+- (UIActivityIndicatorView *)maskViewIndicator{
+    if (!_maskViewIndicator) {
+        _maskViewIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(67, 45, 20, 20)];
+        _maskViewIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+        [_maskViewIndicator startAnimating];
+    }
+    return _maskViewIndicator;
+}
+
+- (UIButton *)cancleBtn{
+    if (!_cancleBtn) {
+        _cancleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        _cancleBtn.titleLabel.font = [UIFont systemFontOfSize:17];
+        _cancleBtn.frame = CGRectMake(0, 72, 154, 40);
+        [_cancleBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [_cancleBtn setTitle:@"取消" forState:UIControlStateNormal];
+        [_cancleBtn addTarget:self action:@selector(onCancelBtnTouched:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _cancleBtn;
+}
 
 @end

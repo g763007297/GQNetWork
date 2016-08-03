@@ -77,6 +77,7 @@
     [DemoHttpRequest1 prepareRequset]
     .requestUrlChain(@"product/list")
     .mappingChain(map)
+    .indicatorViewChain(self.view)
     .keyPathChain(@"result/rows")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         __strong typeof(weakSelf) strongSelf = weakSelf;
