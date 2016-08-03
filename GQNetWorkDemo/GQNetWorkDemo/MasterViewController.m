@@ -93,15 +93,15 @@
     NSLog(@"%@",array);
     
 #pragma mark -- 常规block
-//    [DemoHttpRequest1 requestWithRequestParameter:parameter
-//                                  onRequestStart:nil
-//                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
-//                                   GQDPRINT(@"%@",result.rawDictionary);
-//                                   GQDPRINT(@"%@",result.array);
-//                               }
-//                               onRequestCanceled:nil
-//                                 onRequestFailed:nil
-//                               onProgressChanged:nil];
+    [DemoHttpRequest1 requestWithRequestParameter:parameter
+                                  onRequestStart:nil
+                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
+                                   GQDPRINT(@"%@",result.rawDictionary);
+                                   GQDPRINT(@"%@",result.array);
+                               }
+                               onRequestCanceled:nil
+                                 onRequestFailed:nil
+                               onProgressChanged:nil];
 }
 
 #pragma mark -- DataRequestDelegate
