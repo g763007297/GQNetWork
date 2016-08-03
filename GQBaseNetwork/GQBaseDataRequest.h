@@ -412,7 +412,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param cacheData 缓存数据
  *
- *  @return 是否适用缓存数据
+ *  @return 是否使用缓存数据
  */
 - (BOOL)onReceivedCacheData:(NSObject*)cacheData;
 

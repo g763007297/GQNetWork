@@ -708,11 +708,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return nil;
 }
 
-- (NSInteger)getTimeOutInterval{
+- (NSInteger)getTimeOutInterval
+{
     return 30;
 }
 
-- (GQParameterEncoding)getParameterEncoding{
+- (GQParameterEncoding)getParameterEncoding
+{
     return GQURLParameterEncoding;
 }
 
@@ -728,7 +730,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return @"";
 }
 
-- (NSString *)getBaseUrl{
+- (NSString *)getBaseUrl
+{
     NSString *reason = [NSString stringWithFormat:@"This is a abstract method. You should subclass of GQBaseDataRequest and override it!"];
     @throw [NSException exceptionWithName:@"Logic Error" reason:reason userInfo:nil];
     return @"";
@@ -739,7 +742,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return @"加载中...";
 }
 
-- (GQObjectMapping *)getMapping{
+- (GQObjectMapping *)getMapping
+{
     return nil;
 }
 
@@ -753,10 +757,10 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (void)dumpyRequestDone
 {
     [self showIndicator:FALSE];
-    NSData *jsonData = [[self dumpyResponseString] dataUsingEncoding:[self getResponseEncoding]];
-    [self handleResponseString:jsonData];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(rand()/(double)RAND_MAX * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        NSData *jsonData = [[self dumpyResponseString] dataUsingEncoding:[self getResponseEncoding]];
+        [self handleResponseString:jsonData];
+    });
 }
-
-
 
 @end
