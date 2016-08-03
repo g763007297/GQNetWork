@@ -75,10 +75,10 @@
     
     __weak typeof(self) weakSelf = self;
     [DemoHttpRequest1 prepareRequset]
-    .requestUrlChain(@"product/list")
-    .mappingChain(map)
-    .indicatorViewChain(self.view)
-    .keyPathChain(@"result/rows")
+    .requestUrlChain(@"product/list")/*请求地址*/
+    .mappingChain(map)/*映射关系*/
+    .indicatorViewChain(self.view)/*显示的view*/
+    .keyPathChain(@"result/rows")/*映射层级*/
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         __strong typeof(weakSelf) strongSelf = weakSelf;
         [strongSelf saveModel:result.array];
@@ -86,8 +86,8 @@
     .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
         
     })
-    .parametersChain(@{})
-    .startRequestChain();
+    .parametersChain(@{})/*请求参数*/
+    .startRequestChain();/**开始请求*/
     
     NSArray *array = [self getModel];
     NSLog(@"%@",array);
