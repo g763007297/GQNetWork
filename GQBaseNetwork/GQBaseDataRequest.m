@@ -667,7 +667,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             _requestDataHandler = [self generateRequestHandler];
             id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
             if (errorInfo) {
-                errorInfo = [NSError errorWithDomain:errorInfo.domain code:GQRequestErrorParse userInfo:errorInfo.userInfo];
+                errorInfo = [NSError errorWithDomain:errorInfo?errorInfo.domain:@"" code:GQRequestErrorParse userInfo:errorInfo?errorInfo.userInfo:@{}];
                 success = FALSE;
                 dispatch_async(dispatch_get_main_queue(), callback);
             }
@@ -684,7 +684,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                      else {
                          success = FALSE;
                      }
-                     errorInfo = [NSError errorWithDomain:error.domain code:GQRequestErrorMap userInfo:error.userInfo];
+                     errorInfo = [NSError errorWithDomain:error?error.domain:@"" code:GQRequestErrorMap userInfo:error?error.userInfo:@{}];
                      [self processResult];
                      dispatch_async(dispatch_get_main_queue(), callback);
                  }];
