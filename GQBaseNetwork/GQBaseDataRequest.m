@@ -684,7 +684,9 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                      else {
                          success = FALSE;
                      }
-                     errorInfo = [NSError errorWithDomain:error?error.domain:@"" code:GQRequestErrorMap userInfo:error?error.userInfo:@{}];
+                     if (error) {
+                         errorInfo = [NSError errorWithDomain:error.domain code:GQRequestErrorMap userInfo:error.userInfo];
+                     }
                      [self processResult];
                      dispatch_async(dispatch_get_main_queue(), callback);
                  }];
