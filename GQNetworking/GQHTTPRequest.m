@@ -232,6 +232,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (void)startRequest
 {
+    if (![GQNetworkTrafficManager sharedManager].isReachability) {
+        NSError *error = [NSError errorWithDomain:@"" code:GQRequestErrorNoNetWork userInfo:@{}];
+        _onRequestFailedBlock(error);
+        return;
+    }
     switch (self.requestMethod) {
         case GQRequestMethodGet:{
             [self generateGETRequest];

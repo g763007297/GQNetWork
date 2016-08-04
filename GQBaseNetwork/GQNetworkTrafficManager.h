@@ -64,4 +64,6 @@
 -(void)setAlertStatus:(BOOL)isAlert;
 -(BOOL)getAlertStatus;
 
+- (BOOL)isReachability;
+
 @end

@@ -96,6 +96,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
 - (void) updateNetwordStatus:(GQNetworkStatus)status
 {
+    _networkStatus = status;
     _isUsing3GNetwork = FALSE;
     switch (status)
     {
@@ -399,6 +400,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     GQDINFO(@"wifi out:%fmb", [self getWifiTrafficOut]);
     GQDINFO(@"wifi total:%fmb", [self getWifiTraffic]);
     GQDINFO(@"==================================================\n");
+}
+
+- (BOOL)isReachability{
+    return _networkStatus != GQNotReachable;
 }
 
 @end

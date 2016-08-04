@@ -22,6 +22,14 @@ typedef enum : NSUInteger{
     GQRequestMethodDelete
 } GQRequestMethod;
 
+typedef enum:NSInteger {
+    GQRequestErrorDefualt = 10000,  //默认错误
+    GQRequestErrorNoNetWork,        //无网络
+    GQRequestErrorNoData,           //无数据
+    GQRequestErrorParse,            //解析错误
+    GQRequestErrorMap               //映射错误
+}GQRequestError;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #pragma mark - shortcuts

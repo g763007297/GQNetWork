@@ -661,12 +661,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {
-            errorInfo = [NSError errorWithDomain:@"empty data" code:0 userInfo:nil];
+            errorInfo = [NSError errorWithDomain:@"empty data" code:GQRequestErrorNoData userInfo:nil];
             dispatch_async(dispatch_get_main_queue(), callback);
         }else{
             _requestDataHandler = [self generateRequestHandler];
             id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
             if (errorInfo) {
+                errorInfo = [NSError errorWithDomain:errorInfo.domain code:GQRequestErrorParse userInfo:errorInfo.userInfo];
                 success = FALSE;
                 dispatch_async(dispatch_get_main_queue(), callback);
             }
@@ -683,7 +684,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                      else {
                          success = FALSE;
                      }
-                     errorInfo = error;
+                     errorInfo = [NSError errorWithDomain:error.domain code:GQRequestErrorMap userInfo:error.userInfo];
                      [self processResult];
                      dispatch_async(dispatch_get_main_queue(), callback);
                  }];
