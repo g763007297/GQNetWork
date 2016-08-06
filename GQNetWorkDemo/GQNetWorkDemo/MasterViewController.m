@@ -62,15 +62,15 @@
     parameter.subRequestUrl = @"product/list";
     
 #pragma mark -- 链式调用 + 方法调用
-//    [[[DemoHttpRequest1 prepareRequset]
-//      .requestUrlChain(@"product/list")
-//      .mappingChain(map)
-//      .keyPathChain(@"result/rows")
-//      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-//        GQDPRINT(@"%@",result.rawDictionary);
-//        GQDPRINT(@"%@",result.array);
-//    }] startRequest];
-//    
+    [[[DemoHttpRequest1 prepareRequset]
+      .requestUrlChain(@"product/list")
+      .mappingChain(map)
+      .keyPathChain(@"result/rows")
+      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+        GQDPRINT(@"%@",result.rawDictionary);
+        GQDPRINT(@"%@",result.array);
+    }] startRequest];
+    
 #pragma mark -- 全链式调用
     
     __weak typeof(self) weakSelf = self;

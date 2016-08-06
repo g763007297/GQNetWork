@@ -99,7 +99,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     GQObjectMapping     *_mapping;
 }
 
-@property (nonatomic, strong) id<DataRequestDelegate> delegate;
+@property (nonatomic, weak) id<DataRequestDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL loading;
 @property (nonatomic, assign) CGFloat currentProgress;
 @property (nonatomic, assign) GQParameterEncoding parmaterEncoding;
