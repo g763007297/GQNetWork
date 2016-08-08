@@ -16,7 +16,7 @@
 
 @property (nonatomic, copy) NSString *pDescriptionnn;
 
-@property (nonatomic, copy) NSString *enumId;
+@property (nonatomic, assign) int enumId;
 
 @property (nonatomic, copy) NSString *pIdddddd;
 

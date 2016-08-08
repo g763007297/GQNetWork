@@ -10,6 +10,72 @@
 #import <objc/runtime.h>
 #import "GQDebug.h"
 
+/**
+ *  Given a scalar or struct value, wraps it in NSValue
+ *  Based on EXPObjectify: https://github.com/specta/expecta
+ */
+static inline id _GQBoxValue(const char *type, ...) {
+    va_list v;
+    va_start(v, type);
+    id obj = nil;
+    if (strcmp(type, @encode(id)) == 0) {
+        id actual = va_arg(v, id);
+        obj = actual;
+    } else if (strcmp(type, @encode(CGPoint)) == 0) {
+        CGPoint actual = (CGPoint)va_arg(v, CGPoint);
+        obj = [NSValue value:&actual withObjCType:type];
+    } else if (strcmp(type, @encode(CGSize)) == 0) {
+        CGSize actual = (CGSize)va_arg(v, CGSize);
+        obj = [NSValue value:&actual withObjCType:type];
+    } else if (strcmp(type, @encode(UIEdgeInsets)) == 0) {
+        UIEdgeInsets actual = (UIEdgeInsets)va_arg(v, UIEdgeInsets);
+        obj = [NSValue value:&actual withObjCType:type];
+    } else if (strcmp(type, @encode(double)) == 0) {
+        double actual = (double)va_arg(v, double);
+        obj = [NSNumber numberWithDouble:actual];
+    } else if (strcmp(type, @encode(float)) == 0) {
+        float actual = (float)va_arg(v, double);
+        obj = [NSNumber numberWithFloat:actual];
+    } else if (strcmp(type, @encode(int)) == 0) {
+        int actual = (int)va_arg(v, int);
+        obj = [NSNumber numberWithInt:actual];
+    } else if (strcmp(type, @encode(long)) == 0) {
+        long actual = (long)va_arg(v, long);
+        obj = [NSNumber numberWithLong:actual];
+    } else if (strcmp(type, @encode(long long)) == 0) {
+        long long actual = (long long)va_arg(v, long long);
+        obj = [NSNumber numberWithLongLong:actual];
+    } else if (strcmp(type, @encode(short)) == 0) {
+        short actual = (short)va_arg(v, int);
+        obj = [NSNumber numberWithShort:actual];
+    } else if (strcmp(type, @encode(char)) == 0) {
+        char actual = (char)va_arg(v, int);
+        obj = [NSNumber numberWithChar:actual];
+    } else if (strcmp(type, @encode(bool)) == 0) {
+        bool actual = (bool)va_arg(v, int);
+        obj = [NSNumber numberWithBool:actual];
+    } else if (strcmp(type, @encode(unsigned char)) == 0) {
+        unsigned char actual = (unsigned char)va_arg(v, unsigned int);
+        obj = [NSNumber numberWithUnsignedChar:actual];
+    } else if (strcmp(type, @encode(unsigned int)) == 0) {
+        unsigned int actual = (unsigned int)va_arg(v, unsigned int);
+        obj = [NSNumber numberWithUnsignedInt:actual];
+    } else if (strcmp(type, @encode(unsigned long)) == 0) {
+        unsigned long actual = (unsigned long)va_arg(v, unsigned long);
+        obj = [NSNumber numberWithUnsignedLong:actual];
+    } else if (strcmp(type, @encode(unsigned long long)) == 0) {
+        unsigned long long actual = (unsigned long long)va_arg(v, unsigned long long);
+        obj = [NSNumber numberWithUnsignedLongLong:actual];
+    } else if (strcmp(type, @encode(unsigned short)) == 0) {
+        unsigned short actual = (unsigned short)va_arg(v, unsigned int);
+        obj = [NSNumber numberWithUnsignedShort:actual];
+    }
+    va_end(v);
+    return obj;
+}
+
+#define GQBoxValue(value) _GQBoxValue(@encode(__typeof__((value))), (value))
+
 NSComparator cmptr = ^(id obj1, id obj2){
     if ([obj1 integerValue] > [obj2 integerValue]) {
         return (NSComparisonResult)NSOrderedDescending;
@@ -31,9 +97,7 @@ static NSDictionary * oldPropertyVersionAndVlues = nil;
 
 static NSInteger version = 0;
 
-@interface GQBaseModelObject(){
-    NSRecursiveLock *lock;
-}
+@interface GQBaseModelObject()
 
 - (void)setAttributes:(NSDictionary*)dataDic;
 
@@ -62,7 +126,7 @@ static NSInteger version = 0;
     NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
     id attributeName;
     while ((attributeName = [keyEnum nextObject])) {
-        NSObject *valueObj = [self getValue:attributeName];
+        id valueObj = [self getValue:attributeName];
         if (valueObj) {
             [attrsDesc appendFormat:@" [%@=%@] ",attributeName,valueObj];
             //[valueObj release];
@@ -102,7 +166,7 @@ static NSInteger version = 0;
         SEL sel = [object getSetterSelWithAttibuteName:attributeName];
         if ([self respondsToSelector:sel] &&
             [self respondsToSelector:getSel]) {
-            NSObject *valueObj = [self getValue:attributeName];
+            id valueObj = [self getValue:attributeName];
             [object performSelectorOnMainThread:sel
                                      withObject:valueObj
                                   waitUntilDone:TRUE];
@@ -189,18 +253,6 @@ static NSInteger version = 0;
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
-    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
-    if (attrMapDic == nil) {
-        return;
-    }
-    NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
-    id attributeName;
-    while ((attributeName = [keyEnum nextObject])) {
-        NSObject *valueObj = [self getValue:attributeName];
-        if (valueObj) {
-            [encoder encodeObject:valueObj forKey:attributeName];
-        }
-    }
     NSArray *versionChangePropertys = [self versionChangeProperties];
     if (versionChangePropertys) {
         NSMutableDictionary *newPropertyVersionAndVlues = [[NSMutableDictionary alloc] initWithDictionary:oldPropertyVersionAndVlues?oldPropertyVersionAndVlues:@{}];
@@ -217,6 +269,18 @@ static NSInteger version = 0;
                 [encoder encodeObject:newPropertyVersionAndVlues forKey:versionAttributeMapDictionaryKey];
                 [encoder encodeInteger:(version+1) forKey:versionPropertykey];
             }
+        }
+    }
+    NSDictionary *attrMapDic = [[self class] attributeMapDictionary];
+    if (attrMapDic == nil) {
+        return;
+    }
+    NSEnumerator *keyEnum = [attrMapDic keyEnumerator];
+    id attributeName;
+    while ((attributeName = [keyEnum nextObject])) {
+        id valueObj = [self getValue:attributeName];
+        if (valueObj) {
+            [encoder encodeObject:valueObj forKey:attributeName];
         }
     }
 }
@@ -307,30 +371,19 @@ static NSInteger version = 0;
     NSMutableDictionary *propertiesValuesDic = [NSMutableDictionary dictionary];
     NSArray *properties = [self propertyNames];
     for (NSString *property in properties) {
-        NSObject *object = [self getValue:property]?[self getValue:property]:@"";
+        id object = [self getValue:property]?[self getValue:property]:@"";
         propertiesValuesDic[property] = object;
     }
     return propertiesValuesDic;
 }
 
-- (NSObject *)getValue:(NSString *)property{
-    if (!lock) {
-        lock = [[NSRecursiveLock alloc] init];
-    }
-    [lock lock];
+- (id)getValue:(NSString *)property{
     SEL getSel = NSSelectorFromString(property);
-    NSObject * __unsafe_unretained valueObj = nil;
+    id valueObj = nil;
     if ([self respondsToSelector:getSel]) {
-        NSMethodSignature *signature = nil;
-        signature = [self methodSignatureForSelector:getSel];
-        NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-        [invocation setTarget:self];
-        [invocation setSelector:getSel];
-        [invocation invoke];
-        [invocation getReturnValue:&valueObj];
+        valueObj =[self valueForKey:property];
     }
-    [lock unlock];
-    return valueObj;
+    return GQBoxValue(valueObj);
 }
 
 // default AttributeMapDictionary
