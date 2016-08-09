@@ -15,16 +15,14 @@
 
 @interface GQNetworkTrafficManager()
 {
-    BOOL        _isUsing3GNetwork;
+    BOOL        _isUsingGPRSNetwork;
     BOOL        _isAlert;
     double      _wifiInBytes;
     double      _wifiOutBytes;
-    double      _3gInBytes;
-    double      _3gOutBytes;
-    double      _2gInBytes;
-    double      _2gOutBytes;
+    double      _gprsInBytes;
+    double      _gprsOutBytes;
     int         _resetDayInMonth;
-    int         _max3gMegaBytes;     // this is MB not byte
+    int         _maxgprsMegaBytes;     // this is MB not byte
     
     GQNetworkStatus _networkStatus;
     
@@ -55,31 +53,26 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     return self;
 }
 
-
 #pragma mark - private methods
 - (void)inGQrafficData
 {
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    _max3gMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_3G] intValue];
-    if (!_max3gMegaBytes) {
+    _maxgprsMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
+    if (!_maxgprsMegaBytes) {
         _wifiInBytes = 0;
         _wifiOutBytes = 0;
-        _2gInBytes = 0;
-        _2gOutBytes = 0;
-        _3gInBytes = 0;
-        _3gOutBytes = 0;
+        _gprsInBytes = 0;
+        _gprsOutBytes = 0;
         _resetDayInMonth = 1;
-        _max3gMegaBytes = 999;
+        _maxgprsMegaBytes = 999;
     }
     else {
         _wifiInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_WIFI_IN] doubleValue];
         _wifiOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_WIFI_OUT] doubleValue];
-        _3gInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_3G_IN] doubleValue];
-        _3gOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_3G_OUT] doubleValue];
-        _2gInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_2G_IN] doubleValue];
-        _2gOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_2G_OUT] doubleValue];
+        _gprsInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_IN] doubleValue];
+        _gprsOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_OUT] doubleValue];
         _resetDayInMonth = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH] intValue];
-        _max3gMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_3G] intValue];
+        _maxgprsMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
     }
     _lastResetDate =(NSDate*)[userinfo objectForKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
     _isAlert = [userinfo boolForKey:GQ_NETWORK_TRAFFIC_IS_ALERT];
@@ -97,18 +90,15 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 - (void) updateNetwordStatus:(GQNetworkStatus)status
 {
     _networkStatus = status;
-    _isUsing3GNetwork = FALSE;
+    _isUsingGPRSNetwork = FALSE;
     switch (status)
     {
         case GQReachableViaWiFi:
             _networkType = @"wifi";
             break;
-        case GQReachableVia3G:
-            _networkType = @"3g";
-            _isUsing3GNetwork = TRUE;
-            break;
-        case GQReachableVia2G:
-            _networkType = @"2g";
+        case GQReachableViaWWAN:
+            _networkType = @"gprs";
+            _isUsingGPRSNetwork = TRUE;
             break;
         case GQNotReachable:
             _networkType = @"unavailable";
@@ -129,6 +119,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     _reachability = [GQReachability reachabilityForInternetConnection];
     [self updateNetwordStatus:_reachability.currentReachabilityStatus];
     [_reachability startNotifier];
+}
+
+- (NSString *)networkType{
+    return _networkType;
 }
 
 -(void)checkIsResetDay
@@ -176,12 +170,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     [userinfo setObject:@(_wifiInBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_IN];
     [userinfo setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
-    [userinfo setObject:@(_3gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_IN];
-    [userinfo setObject:@(_3gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_OUT];
-    [userinfo setObject:@(_2gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_IN];
-    [userinfo setObject:@(_2gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_OUT];
+    [userinfo setObject:@(_gprsInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_IN];
+    [userinfo setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
     [userinfo setObject:@(_resetDayInMonth) forKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH];
-    [userinfo setObject:@(_max3gMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_3G];
+    [userinfo setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
     [userinfo synchronize];
 }
 
@@ -190,20 +182,12 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 {
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     switch (_networkStatus) {
-        case GQReachableVia2G:
-            _2gInBytes = _2gInBytes + bytes;
-            [userinfo setObject:@(_2gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_IN];
+        case GQReachableViaWWAN:
+            _gprsInBytes = _gprsInBytes + bytes;
+            [userinfo setObject:@(_gprsInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_IN];
             [userinfo synchronize];
             if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"2g trafic in :%lf bytes", _2gInBytes);
-            }
-            break;
-        case GQReachableVia3G:
-            _3gInBytes = _3gInBytes + bytes;
-            [userinfo setObject:@(_3gInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_IN];
-            [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"3g trafic in :%lf bytes", _3gInBytes);
+                GQDINFO(@"gprs trafic in :%lf bytes", _gprsInBytes);
             }
             break;
         case GQReachableViaWiFi:
@@ -217,14 +201,14 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
         default:
             break;
     }
-    if ([self hasExceedMax3GTraffic]) {
+    if ([self hasExceedMaxGPRSTraffic]) {
         NSDate *now = [NSDate date];
         BOOL shouldShowAlert = NO;
-        if (!_lastAlertTime || [now timeIntervalSinceDate:_lastAlertTime]/100 > GQ_NETWORK_TRAFFIC_MAX_3G_ALERT_INTERVAL) {
+        if (!_lastAlertTime || [now timeIntervalSinceDate:_lastAlertTime]/100 > GQ_NETWORK_TRAFFIC_MAX_GPRS_ALERT_INTERVAL) {
             shouldShowAlert = YES;
         }
         if (shouldShowAlert) {
-            NSString *alertMsg = [NSString stringWithFormat:@"您目前的GPRS/3g流量(%4.2fM)已超过您所设定的上限(%dM)",[self get3GTraffic],[self getMax3GTraffic] ];
+            NSString *alertMsg = [NSString stringWithFormat:@"您目前的GPRS流量(%4.2fM)已超过您所设定的上限(%dM)",[self getGPRSTraffic],[self getMaxGPRSTraffic] ];
             
 //            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"流量提示" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
 //            [alertController addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
@@ -246,20 +230,12 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 {
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     switch (_networkStatus) {
-        case GQReachableVia2G:
-            _2gOutBytes = _2gOutBytes + bytes;
-            [userinfo setObject:@(_2gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_2G_OUT];
+        case GQReachableViaWWAN:
+            _gprsOutBytes = _gprsOutBytes + bytes;
+            [userinfo setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
             [userinfo synchronize];
             if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"2g trafic in :%lf bytes", _2gInBytes);
-            }
-            break;
-        case GQReachableVia3G:
-            _3gOutBytes = _3gOutBytes + bytes;
-            [userinfo setObject:@(_3gOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_3G_OUT];
-            [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"3g trafic in :%lf bytes", _3gInBytes);
+                GQDINFO(@"gprs trafic in :%lf bytes", _gprsInBytes);
             }
             break;
         case GQReachableViaWiFi:
@@ -290,26 +266,26 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 }
 
 // alert user
-- (void)setMax3GTraffic:(int)megabyte
+- (void)setMaxGPRSTraffic:(int)megabyte
 {
-    _max3gMegaBytes = megabyte;
+    _maxgprsMegaBytes = megabyte;
     NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    [userinfo setObject:@(_max3gMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_3G];
+    [userinfo setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
     [userinfo synchronize];
 }
 
-- (int)getMax3GTraffic
+- (int)getMaxGPRSTraffic
 {
-    return _max3gMegaBytes;
+    return _maxgprsMegaBytes;
 }
 
-- (BOOL)hasExceedMax3GTraffic
+- (BOOL)hasExceedMaxGPRSTraffic
 {
-    if (_max3gMegaBytes <= 0 || !_isAlert) {
+    if (_maxgprsMegaBytes <= 0 || !_isAlert) {
         return NO;
     }
     else{
-        return ([self get3GTraffic] > _max3gMegaBytes) ;
+        return ([self getGPRSTraffic] > _maxgprsMegaBytes) ;
     }
 }
 
@@ -329,46 +305,28 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 // reset
 - (void)resetData
 {
-    _2gInBytes = 0;
-    _2gOutBytes = 0;
     _wifiInBytes = 0;
     _wifiOutBytes = 0;
-    _3gOutBytes = 0;
-    _3gInBytes = 0;
+    _gprsOutBytes = 0;
+    _gprsInBytes = 0;
     [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
     [self doSave];
 }
 
 // get traffic data, return megabytes
-- (double)get3GTrafficIn
+- (double)getGPRSTrafficIn
 {
-    return [self getMegabytesFromBytes:_3gInBytes];
+    return [self getMegabytesFromBytes:_gprsInBytes];
 }
 
-- (double)get3GTrafficOut
+- (double)getGPRSTrafficOut
 {
-    return [self getMegabytesFromBytes:_3gOutBytes];
+    return [self getMegabytesFromBytes:_gprsOutBytes];
 }
 
-- (double)get3GTraffic
+- (double)getGPRSTraffic
 {
-    return [self getMegabytesFromBytes:(_3gInBytes + _3gOutBytes)];
-}
-
-// get traffic data, return megabytes
-- (double)get2GTrafficIn
-{
-    return [self getMegabytesFromBytes:_2gInBytes];
-}
-
-- (double)get2GTrafficOut
-{
-    return [self getMegabytesFromBytes:_2gOutBytes];
-}
-
-- (double)get2GTraffic
-{
-    return [self getMegabytesFromBytes:(_2gInBytes + _2gOutBytes)];
+    return [self getMegabytesFromBytes:(_gprsInBytes + _gprsOutBytes)];
 }
 
 - (double)getWifiTrafficIn
@@ -390,12 +348,9 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 - (void)consoleDeviceNetworkTrafficInfo
 {
     GQDINFO(@"==============current network traffic=============\n");
-    GQDINFO(@"2g in:%fmb", [self get2GTrafficIn]);
-    GQDINFO(@"2g out:%fmb", [self get2GTrafficOut]);
-    GQDINFO(@"2g total:%fmb", [self get2GTraffic]);
-    GQDINFO(@"3g in:%fmb", [self get3GTrafficIn]);
-    GQDINFO(@"3g out:%fmb", [self get3GTrafficOut]);
-    GQDINFO(@"3g total:%fmb", [self get3GTraffic]);
+    GQDINFO(@"gprs in:%fmb", [self getGPRSTrafficIn]);
+    GQDINFO(@"gprs out:%fmb", [self getGPRSTrafficOut]);
+    GQDINFO(@"gprs total:%fmb", [self getGPRSTraffic]);
     GQDINFO(@"wifi in:%fmb", [self getWifiTrafficIn]);
     GQDINFO(@"wifi out:%fmb", [self getWifiTrafficOut]);
     GQDINFO(@"wifi total:%fmb", [self getWifiTraffic]);
@@ -404,6 +359,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
 - (BOOL)isReachability{
     return _networkStatus != GQNotReachable;
+}
+
+- (BOOL)isUseGPRSNetwork{
+    return _networkStatus == GQReachableViaWWAN;
 }
 
 @end
