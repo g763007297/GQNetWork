@@ -14,6 +14,5 @@
 - (BOOL)isEndWithString:(NSString*)end;
 
 - (NSString*)encodeUrl;
-- (BOOL)canConvertToNumber;
 
 @end

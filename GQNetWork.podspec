@@ -40,6 +40,11 @@ Pod::Spec.new do |s|
     ss.dependency 'GQMapping'
   end
 
+  s.public_header_files = [
+    'GQNetworking/**/*.h',
+    'GQBaseNetwork/**/*.h',
+  ]
+
   s.default_subspec = 'GQNetworking'
 
 end

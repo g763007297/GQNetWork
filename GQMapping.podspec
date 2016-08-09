@@ -19,10 +19,8 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  s.source_files  = [
-    'GQMapping/**/*.{h,m}',
-    'GQBaseNetwork/Additions/NSString+GQAdditions.h',
-    'GQBaseNetwork/Additions/NSString+GQAdditions.m',
-  ]
+  s.source_files  = 'GQMapping/**/*.{h,m}'
+  
+  s.public_header_files = 'GQMapping/**/*.h'
   
   end

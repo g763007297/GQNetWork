@@ -12,8 +12,22 @@
 #import "GQPropertyMapping.h"
 #import "GQBaseModelObject.h"
 #import "GQObjectMapping.h"
-#import "NSString+GQAdditions.h"
 #import "GQDebug.h"
+
+BOOL canConvertToNumber(NSString *string){
+    BOOL can = FALSE;
+    if (string && [string length]) {
+        can = TRUE;
+        NSInteger len = string.length;
+        for (NSInteger i = 0; i < len; i++) {
+            if (!([string characterAtIndex:i] >= '0' && [string characterAtIndex:i] <= '9')) {
+                can = FALSE;
+                break;
+            }
+        }
+    }
+    return can;
+}
 
 NSString* propertyStringFromType(GQORMPropertyType type)
 {
@@ -162,7 +176,7 @@ BOOL CheckTypeMatching(id *valueObject, Class objClass, GQPropertyMapping *prope
                 matched = TRUE;
             }
             else if(GQORMPropertyTypeNSString == valueAccutallyType &&  declarePropertyTypeCanConvertToNumber) {
-                if ([*valueObject canConvertToNumber]) {
+                if (canConvertToNumber(*valueObject)) {
                     *valueObject = @([*valueObject integerValue]);
                 }
                 else {

@@ -24,9 +24,9 @@
 		B6CB1D441CF83E3B00D485E3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D421CF83E3B00D485E3 /* Main.storyboard */; };
 		B6CB1D461CF83E3B00D485E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */; };
 		B6CB1D491CF83E3B00D485E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D471CF83E3B00D485E3 /* LaunchScreen.storyboard */; };
+		B6FA3F011D59866B001118E1 /* NSString+GQAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B6FA3F001D59866B001118E1 /* NSString+GQAdditions.m */; };
 		DF9C7A4B1D1F96A3006B0D18 /* GQBaseModelObject.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A4A1D1F96A3006B0D18 /* GQBaseModelObject.m */; };
 		DF9C7A881D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A4F1D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.m */; };
-		DF9C7A891D1F9B6F006B0D18 /* NSString+GQAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A511D1F9B6F006B0D18 /* NSString+GQAdditions.m */; };
 		DF9C7A8A1D1F9B6F006B0D18 /* GQBaseCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A551D1F9B6F006B0D18 /* GQBaseCache.m */; };
 		DF9C7A8B1D1F9B6F006B0D18 /* GQDataCacheManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A571D1F9B6F006B0D18 /* GQDataCacheManager.m */; };
 		DF9C7A8C1D1F9B6F006B0D18 /* GQFileCache.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A591D1F9B6F006B0D18 /* GQFileCache.m */; };
@@ -89,12 +89,12 @@
 		B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CB1D481CF83E3B00D485E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B6CB1D4A1CF83E3B00D485E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B6FA3EFF1D59866B001118E1 /* NSString+GQAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GQAdditions.h"; sourceTree = "<group>"; };
+		B6FA3F001D59866B001118E1 /* NSString+GQAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GQAdditions.m"; sourceTree = "<group>"; };
 		DF9C7A491D1F96A3006B0D18 /* GQBaseModelObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQBaseModelObject.h; sourceTree = "<group>"; };
 		DF9C7A4A1D1F96A3006B0D18 /* GQBaseModelObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQBaseModelObject.m; sourceTree = "<group>"; };
 		DF9C7A4E1D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSJSONSerialization+GQAdditions.h"; sourceTree = "<group>"; };
 		DF9C7A4F1D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSJSONSerialization+GQAdditions.m"; sourceTree = "<group>"; };
-		DF9C7A501D1F9B6F006B0D18 /* NSString+GQAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+GQAdditions.h"; sourceTree = "<group>"; };
-		DF9C7A511D1F9B6F006B0D18 /* NSString+GQAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+GQAdditions.m"; sourceTree = "<group>"; };
 		DF9C7A541D1F9B6F006B0D18 /* GQBaseCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQBaseCache.h; sourceTree = "<group>"; };
 		DF9C7A551D1F9B6F006B0D18 /* GQBaseCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQBaseCache.m; sourceTree = "<group>"; };
 		DF9C7A561D1F9B6F006B0D18 /* GQDataCacheManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataCacheManager.h; sourceTree = "<group>"; };
@@ -270,10 +270,10 @@
 		DF9C7A4D1D1F9B6F006B0D18 /* Additions */ = {
 			isa = PBXGroup;
 			children = (
+				B6FA3EFF1D59866B001118E1 /* NSString+GQAdditions.h */,
+				B6FA3F001D59866B001118E1 /* NSString+GQAdditions.m */,
 				DF9C7A4E1D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.h */,
 				DF9C7A4F1D1F9B6F006B0D18 /* NSJSONSerialization+GQAdditions.m */,
-				DF9C7A501D1F9B6F006B0D18 /* NSString+GQAdditions.h */,
-				DF9C7A511D1F9B6F006B0D18 /* NSString+GQAdditions.m */,
 			);
 			path = Additions;
 			sourceTree = "<group>";
@@ -433,7 +433,7 @@
 				DF9C7A921D1F9B6F006B0D18 /* GQBaseDataRequest.m in Sources */,
 				DF9C7A901D1F9B6F006B0D18 /* GQRequestJsonDataHandler.m in Sources */,
 				DF9C7A9C1D1F9B6F006B0D18 /* GQDataRequest.m in Sources */,
-				DF9C7A891D1F9B6F006B0D18 /* NSString+GQAdditions.m in Sources */,
+				B6FA3F011D59866B001118E1 /* NSString+GQAdditions.m in Sources */,
 				DF9C7A8B1D1F9B6F006B0D18 /* GQDataCacheManager.m in Sources */,
 				B68867921CFEC86C00850830 /* GQMappingManager.m in Sources */,
 				DF9C7A8E1D1F9B6F006B0D18 /* GQQueryStringPair.m in Sources */,

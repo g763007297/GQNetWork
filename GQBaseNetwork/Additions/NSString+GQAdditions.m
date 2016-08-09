@@ -54,21 +54,5 @@
     return @"";
 }
 
-- (BOOL)canConvertToNumber
-{
-    BOOL can = FALSE;
-    if (self && [self length]) {
-        can = TRUE;
-        NSInteger len = self.length;
-        for (NSInteger i = 0; i < len; i++) {
-            if (!([self characterAtIndex:i] >= '0' && [self characterAtIndex:i] <= '9')) {
-                can = FALSE;
-                break;
-            }
-        }
-    }
-    return can;
-}
-
 @end
 
