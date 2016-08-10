@@ -24,7 +24,7 @@
     void (^_onRequestProgressChangedBlock)(float);
 }
 
-@property (nonatomic, assign) GQRequestMethod          requestMethod;
+@property (nonatomic, assign) GQRequestMethod           requestMethod;
 @property (nonatomic, assign) NSStringEncoding          requestEncoding;
 @property (nonatomic, strong) NSString                  *filePath;
 @property (nonatomic, strong) NSString                  *requestURL;
@@ -32,8 +32,8 @@
 @property (nonatomic, strong) NSMutableDictionary       *requestParameters;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, strong) GQURLOperation *urlOperation;
-@property (nonatomic, assign) GQParameterEncoding      parmaterEncoding;
+@property (nonatomic, strong) GQURLOperation            *urlOperation;
+@property (nonatomic, assign) GQParameterEncoding       parmaterEncoding;
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
                                          URL:(NSString *)url
