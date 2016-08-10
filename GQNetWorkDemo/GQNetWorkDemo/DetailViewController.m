@@ -42,12 +42,15 @@
     [self configureView];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapAction:)];
     [self.view addGestureRecognizer:tap];
-    
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)ges{
     [TestRequestHandlerHttpRequest prepareRequset]
-    .requestUrlChain(@"http://www.baidu.com")
+    .requestUrlChain(@"http://www.hao123.com")
+    .onRechiveResponseBlockChain(^NSURLSessionResponseDisposition(GQBaseDataRequest *request, NSURLResponse *response){
+        GQDPRINT(@"%@",response);
+        return NSURLSessionResponseAllow;
+    })
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         NSString *string = [[NSString alloc] initWithData:result.originalData encoding:NSUTF8StringEncoding];
         GQDPRINT(@"%@",string);
@@ -56,8 +59,6 @@
         GQDPRINT(@"%@",error);
     })
     .startRequestChain();
-    
-    
 }
 
 - (void)didReceiveMemoryWarning {

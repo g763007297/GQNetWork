@@ -76,6 +76,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                             parmaterEncoding:(GQParameterEncoding)parameterEncoding
                                requestMethod:(GQRequestMethod)requestMethod
                               onRequestStart:(void(^)())onStartBlock
+                           onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                             onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                             onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                             onRequestCanceled:(void(^)())onCanceledBlock
@@ -101,6 +102,9 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         
         if (onStartBlock) {
             _onRequestStartBlock = [onStartBlock copy];
+        }
+        if (onRechiveResponseBlock) {
+            _onRechiveResponseBlock = [onRechiveResponseBlock copy];
         }
         if (onProgressChangedBlock) {
             _onRequestProgressChangedBlock = [onProgressChangedBlock copy];
@@ -282,12 +286,21 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                               if (strongSelf->_onRequestProgressChangedBlock) {
                                   strongSelf->_onRequestProgressChangedBlock(progress);
                               }
-                          } onRequestStart:^(GQURLOperation *urlConnectionOperation) {
+                          }
+                          onRequestStart:^(GQURLOperation *urlConnectionOperation) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
                               if (strongSelf->_onRequestStartBlock) {
                                   strongSelf->_onRequestStartBlock();
                               }
-                          } completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
+                          }
+                          onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
+                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                              if (strongSelf->_onRechiveResponseBlock) {
+                                  return strongSelf->_onRechiveResponseBlock(response);
+                              }
+                              return NSURLSessionResponseAllow;
+                          }
+                          completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
                               if (requestSuccess) {
                                   [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];

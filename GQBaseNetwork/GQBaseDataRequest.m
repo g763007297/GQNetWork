@@ -30,6 +30,7 @@
  *  @param cacheType              缓存类型
  *  @param localFilePath          下载到什么文件位置
  *  @param onStartBlock           请求开始block
+ *  @param onRechiveResponse      收到请求头block
  *  @param onFinishedBlock        请求完成block
  *  @param onCanceledBlock        请求取消block
  *  @param onFailedBlock          请求失败block
@@ -46,11 +47,12 @@
             withCacheKey:(NSString*)cache
            withCacheType:(GQDataCacheManagerType)cacheType
             withFilePath:(NSString*)localFilePath
-          onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-       onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-       onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-         onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-       onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock;
+          onRequestStart:(GQRequestCanceled)onStartBlock
+       onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+       onRequestFinished:(GQRequestFinished)onFinishedBlock
+       onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+         onRequestFailed:(GQRequestFailed)onFailedBlock
+       onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
 
 /**
  *  代理实例方法
@@ -97,6 +99,7 @@
 @synthesize cacheTypeChain = _cacheTypeChain;
 @synthesize localFilePathChain = _localFilePathChain;
 @synthesize onStartBlockChain = _onStartBlockChain;
+@synthesize onRechiveResponseBlockChain = _onRechiveResponseBlockChain;
 @synthesize onFinishedBlockChain = _onFinishedBlockChain;
 @synthesize onCanceledBlockChain = _onCanceledBlockChain;
 @synthesize onFailedBlockChain = _onFailedBlockChain;
@@ -125,6 +128,7 @@ GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest)
 GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest);
 
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
+GQChainRequestDefine(onRechiveResponseBlockChain, onRequestRechiveResponse, GQRequestRechiveResponse, GQChainBlockRequestRechiveResponse);
 GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
 GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled, GQChainBlockRequestCanceled);
 GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQChainBlockRequestFailed);
@@ -142,6 +146,7 @@ GQChainRequestDefine(onProgressChangedBlockChain, onProgressChanged, GQProgressC
 }
 
 GQMethodRequestDefine(onRequestStart,GQRequestStart);
+GQMethodRequestDefine(onRequestRechiveResponse, GQRequestRechiveResponse);
 GQMethodRequestDefine(onRequestFinished,GQRequestFinished);
 GQMethodRequestDefine(onRequestCanceled,GQRequestCanceled);
 GQMethodRequestDefine(onRequestFailed,GQRequestFailed);
@@ -298,16 +303,25 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     self = [super init];
     if(self) {
         _keyPath = keyPath;
+        
         _mapping = mapping;
+        
         _delegate = delegate;
         
         _subRequestUrl = subUrl;
+        
         _indicatorView = indiView;
+        
         _cacheKey = cache;
+        
         _cacheType = cacheType;
+        
         _cancelSubject = cancelSubject;
+        
         _localFilePath = localFilePath;
+        
         _parameters = params;
+        
         [self startRequest];
     }
     return self;
@@ -315,8 +329,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 #pragma mark - class methods using block
 
-+ (id)requestWithOnRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock{
++ (id)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
+                   onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:nil
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
@@ -327,6 +341,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                             withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
+                                                        onRechiveResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -336,8 +351,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 }
 
 + (id)requestWithWithParameters:(NSDictionary*)params
-              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock{
+              onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
@@ -348,6 +363,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                             withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
+                                                        onRechiveResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -358,8 +374,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 + (id)requestWithWithParameters:(NSDictionary*)params
               withSubRequestUrl:(NSString*)subUrl
-              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock{
+              onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
@@ -370,6 +386,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                             withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:nil
                                                            onRequestStart:nil
+                                                        onRechiveResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -379,11 +396,12 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 }
 
 + (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                   onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-                onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-                  onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat progress))onProgressChangedBlock{
+                   onRequestStart:(GQRequestStart)onStartBlock
+                onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+                  onRequestFailed:(GQRequestFailed)onFailedBlock
+                onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:parameterBody.parameters
                                                         withSubRequestUrl:parameterBody.subRequestUrl
                                                         withIndicatorView:parameterBody.indicatorView
@@ -394,6 +412,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                             withCacheType:parameterBody.cacheType
                                                              withFilePath:parameterBody.localFilePath
                                                            onRequestStart:onStartBlock
+                                                        onRechiveResponse:onRechiveResponse
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:onCanceledBlock
                                                           onRequestFailed:onFailedBlock
@@ -406,9 +425,9 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
           withSubRequestUrl:(NSString*)subUrl
           withCancelSubject:(NSString*)cancelSubject
                withFilePath:(NSString*)localFilePath
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-            onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-          onProgressChanged:(void(^)(GQBaseDataRequest *request,CGFloat progress))onProgressChangedBlock{
+          onRequestFinished:(GQRequestFinished)onFinishedBlock
+            onRequestFailed:(GQRequestFailed)onFailedBlock
+          onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
@@ -419,6 +438,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                             withCacheType:GQDataCacheManagerMemory
                                                              withFilePath:localFilePath
                                                            onRequestStart:nil
+                                                        onRechiveResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -436,39 +456,57 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             withCacheKey:(NSString*)cache
            withCacheType:(GQDataCacheManagerType)cacheType
             withFilePath:(NSString*)localFilePath
-          onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-       onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-       onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-         onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-       onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat))onProgressChangedBlock
+          onRequestStart:(GQRequestStart)onStartBlock
+          onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+       onRequestFinished:(GQRequestFinished)onFinishedBlock
+       onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+         onRequestFailed:(GQRequestFailed)onFailedBlock
+       onProgressChanged:(GQProgressChanged)onProgressChangedBlock
 {
     self = [super init];
     if(self) {
         _keyPath = keyPath;
+        
         _mapping = mapping;
         
         _subRequestUrl = subUrl;
+        
         _indicatorView = indiView;
+        
         _cacheKey = cache;
+        
         _cacheType = cacheType;
+        
         _cancelSubject = cancelSubject;
+        
         _localFilePath = localFilePath;
+        
         _parameters = params;
+        
         if (onStartBlock) {
             _onRequestStart = [onStartBlock copy];
         }
+        
+        if (onRechiveResponse) {
+            _onRequestRechiveResponse = [onRechiveResponse copy];
+        }
+        
         if (onFinishedBlock) {
             _onRequestFinished = [onFinishedBlock copy];
         }
+        
         if (onCanceledBlock) {
             _onRequestCanceled = [onCanceledBlock copy];
         }
+        
         if (onFailedBlock) {
             _onRequestFailed = [onFailedBlock copy];
         }
+        
         if (onProgressChangedBlock) {
             _onProgressChanged = [onProgressChangedBlock copy];
         }
+        
         [self startRequest];
     }
     return self;
@@ -596,6 +634,19 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             [self.delegate request:self progressChanged:progress];
         }
     }
+}
+
+- (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response
+{
+    NSURLSessionResponseDisposition  disposition = NSURLSessionResponseAllow;
+    if (_onRequestRechiveResponse) {
+       disposition = _onRequestRechiveResponse(self, response);
+    }else if (self.delegate){
+        if ([self.delegate respondsToSelector:@selector(requestRechiveResponse:urlResponse:)]) {
+            disposition =[self.delegate requestRechiveResponse:self urlResponse:response];
+        }
+    }
+    return disposition;
 }
 
 - (void)notifyRequestDidSuccess

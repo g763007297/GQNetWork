@@ -51,6 +51,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
                        certificateData:(NSData *)certificateData
                               progress:(void (^)(float progress))progressBlock
                         onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+                     onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                             completion:(GQHTTPRequestCompletionHandler)completionBlock;
 {
     self = [super init];
@@ -65,6 +66,9 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     
     if (onStartBlock) {
         _onRequestStartBlock = [onStartBlock copy];
+    }
+    if (onRechiveResponseBlock) {
+        _onRechiveResponseBlock = [onRechiveResponseBlock copy];
     }
     return self;
 }
@@ -218,6 +222,9 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
 {
+    if (_onRechiveResponseBlock) {
+        _onRechiveResponseBlock(response);
+    }
     self.expectedContentLength = response.expectedContentLength;
     self.receivedContentLength = 0;
     self.operationURLResponse = (NSHTTPURLResponse *)response;
@@ -255,7 +262,8 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 #pragma mark -- NSURLSessionDelegate NSURLSessionTaskDelegate
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
 didCompleteWithError:(NSError *)error
 {
     if (error) {
@@ -265,7 +273,8 @@ didCompleteWithError:(NSError *)error
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
  completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
 {
@@ -276,6 +285,11 @@ didReceiveResponse:(NSURLResponse *)response
     self.operationURLResponse = (NSHTTPURLResponse *)response;
     
     NSURLSessionResponseDisposition disposition = NSURLSessionResponseAllow;
+    
+    if (_onRechiveResponseBlock) {
+        disposition = _onRechiveResponseBlock(response);
+    }
+    
     if (completionHandler) {
         completionHandler(disposition);
     }

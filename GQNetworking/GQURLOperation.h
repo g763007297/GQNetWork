@@ -22,6 +22,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 @interface GQURLOperation : NSOperation
 {
     void (^_onRequestStartBlock)(GQURLOperation *);
+    NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
 }
 
 @property (nonatomic, strong) NSURLRequest                      *operationRequest;
@@ -54,6 +55,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
                        certificateData:(NSData *)certificateData
                               progress:(void (^)(float progress))progressBlock
                         onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
+                     onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                             completion:(GQHTTPRequestCompletionHandler)completionBlock;
 
 

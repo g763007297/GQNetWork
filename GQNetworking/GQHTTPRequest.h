@@ -17,6 +17,7 @@
 @interface GQHTTPRequest : NSObject
 {
     void (^_onRequestStartBlock)();
+    NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
     void (^_onRequestFinishBlock)(NSData *);
     void (^_onRequestCanceled)();
     void (^_onRequestFailedBlock)(NSError *);
@@ -42,6 +43,7 @@
                             parmaterEncoding:(GQParameterEncoding)parameterEncoding
                                requestMethod:(GQRequestMethod)requestMethod
                                onRequestStart:(void(^)())onStartBlock
+                           onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                             onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                             onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                             onRequestCanceled:(void(^)())onCanceledBlock

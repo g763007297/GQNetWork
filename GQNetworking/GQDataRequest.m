@@ -32,6 +32,10 @@
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             [strongSelf notifyRequestDidStart];
                         }
+                        onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
+                            __strong typeof(weakSelf) strongSelf = weakSelf;
+                            return [strongSelf notifyRequestRechiveResponse:response];
+                        }
                         onProgressChanged:^(float progress) {
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             [strongSelf notifyRequestDidChange:progress];

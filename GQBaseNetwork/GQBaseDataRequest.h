@@ -23,6 +23,7 @@
 #pragma mark -- blockTypedef  普通函数式block
 
 typedef void (^GQRequestStart)(GQBaseDataRequest * request);//请求开始block
+typedef NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRequest * request,NSURLResponse *response);//收到请求头block
 typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);//请求完成block
 typedef void (^GQRequestCanceled)(GQBaseDataRequest * request);//请求取消block
 typedef void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error);//请求失败block
@@ -36,6 +37,7 @@ typedef GQBaseDataRequest *(^GQChainStuctRequest)(NSInteger value);   //enum blo
 typedef void(^GQChainBlockStartRequest)();//发送请求block
 
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
+typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//请求完成block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFinished)(GQRequestFinished);//请求完成block
 typedef GQBaseDataRequest * (^GQChainBlockRequestCanceled)(GQRequestCanceled);//请求取消block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFailed)(GQRequestFailed);//请求失败block
@@ -47,6 +49,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 
 @optional
 - (void)requestDidStartLoad:(GQBaseDataRequest*)request;//请求开始代理
+- (NSURLSessionResponseDisposition )requestRechiveResponse:(GQBaseDataRequest *)request urlResponse:(NSURLResponse *)response;
 - (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
 - (void)requestDidCancelLoad:(GQBaseDataRequest*)request;//请求取消代理
 - (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress;//请求数据变化代理
@@ -89,6 +92,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     //callback stuffs
     GQRequestStart      _onRequestStart;
+    GQRequestRechiveResponse _onRequestRechiveResponse;
     GQRequestFinished   _onRequestFinished;
     GQRequestCanceled   _onRequestCanceled;
     GQRequestFailed     _onRequestFailed;
@@ -182,6 +186,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  */
 @property (nonatomic, copy , readonly) GQChainBlockRequestStart onStartBlockChain;
 
+@property  (nonatomic, copy , readonly) GQChainBlockRequestRechiveResponse onRechiveResponseBlockChain;
+
 /**
  *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);
  */
@@ -216,6 +222,16 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return self
  */
 - (instancetype)onRequestStart:(GQRequestStart)onRequestStart;
+
+/**
+ *  收到请求头
+ *
+ *  @param onRechiveResponse 收到请求头block
+ *
+ *  @return self
+ */
+- (instancetype)onRequestRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse;
+
 /**
  *  请求完成
  *
@@ -320,8 +336,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @return self
  */
-+ (id)requestWithOnRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                   onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
++ (id)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
+                   onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  添加请求体的request
@@ -333,8 +349,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return self
  */
 + (id)requestWithWithParameters:(NSDictionary*)params
-              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
+              onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  添加请求体的request
@@ -348,8 +364,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  */
 + (id)requestWithWithParameters:(NSDictionary*)params
               withSubRequestUrl:(NSString*)subUrl
-              onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock;
+              onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
@@ -364,23 +380,25 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return GQBaseDataRequest
  */
 + (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                   onRequestStart:(void(^)(GQBaseDataRequest *request))onStartBlock
-                onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-                onRequestCanceled:(void(^)(GQBaseDataRequest *request))onCanceledBlock
-                  onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-                onProgressChanged:(void(^)(GQBaseDataRequest *request, CGFloat progress))onProgressChangedBlock;
+                   onRequestStart:(GQRequestStart)onStartBlock
+                onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                onRequestFinished:(GQRequestFinished)onFinishedBlock
+                onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+                  onRequestFailed:(GQRequestFailed)onFailedBlock
+                onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
 
 #pragma mark -  file download class method using block
 + (id)requestWithParameters:(NSDictionary*)params
           withSubRequestUrl:(NSString*)subUrl
           withCancelSubject:(NSString*)cancelSubject
                withFilePath:(NSString*)localFilePath
-          onRequestFinished:(void(^)(GQBaseDataRequest *request, GQMappingResult *result))onFinishedBlock
-            onRequestFailed:(void(^)(GQBaseDataRequest *request, NSError *error))onFailedBlock
-          onProgressChanged:(void(^)(GQBaseDataRequest *request,CGFloat progress))onProgressChangedBlock;
+          onRequestFinished:(GQRequestFinished)onFinishedBlock
+            onRequestFailed:(GQRequestFailed)onFailedBlock
+          onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
 
 #pragma mark - subclass not override method
 - (void)notifyRequestDidStart;
+- (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response;
 - (void)notifyRequestDidChange:(float)progress;
 - (void)notifyRequestDidSuccess;
 - (void)notifyRequestDidErrorWithError:(NSError*)error;
