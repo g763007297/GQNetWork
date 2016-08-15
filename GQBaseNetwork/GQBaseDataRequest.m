@@ -15,6 +15,9 @@
 #import "GQDebug.h"
 
 @interface GQBaseDataRequest()
+{
+    
+}
 
 /**
  *  Block实例方法
@@ -71,7 +74,7 @@
  *
  *  @return GQBaseDataRequest
  */
-- (id)initWithDelegate:(id<DataRequestDelegate>)delegate
+- (id)initWithDelegate:(id<GQDataRequestDelegate>)delegate
      withSubRequestUrl:(NSString*)subUrl
                keyPath:(NSString*)keyPath
                mapping:(GQObjectMapping*)mapping
@@ -152,63 +155,9 @@ GQMethodRequestDefine(onRequestCanceled,GQRequestCanceled);
 GQMethodRequestDefine(onRequestFailed,GQRequestFailed);
 GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
-- (void)startRequest{
-    
-    NSAssert(!_loading, @"The request has already begun");
-    
-    _parmaterEncoding = [self getParameterEncoding];
-    _loading = NO;
-    
-    if (_requestMethod == 0) {
-        _requestMethod = [self getRequestMethod];
-    }
-    
-    if (!_requestUrl || ![_requestUrl length]) {
-        _requestUrl = [self getRequestUrl];
-    }
-    
-    if ([self getBaseUrl]) {
-        _requestUrl = [NSString stringWithFormat:@"%@%@",[self getBaseUrl],_requestUrl];
-    }
-    
-    if (_subRequestUrl) {
-        _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,_subRequestUrl];
-    }
-    NSAssert(_requestUrl != nil || [_requestUrl length] > 0, @"invalid request url");
-    if (_cacheKey && [_cacheKey length] > 0) {
-        _usingCacheData = YES;
-    }
-    if (_cancelSubject && _cancelSubject.length >0) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelRequest) name:_cancelSubject object:nil];
-    }
-    _requestStartDate = [NSDate date];
-    _userInfo = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
-    if ([self getStaticParams]) {
-        [_userInfo addEntriesFromDictionary:[self getStaticParams]];
-    }
-    if ([self useDumpyData]) {
-        [self processDumpyRequest];
-    }
-    else {
-        BOOL useCurrentCache = NO;
-        NSObject *cacheData = [[GQDataCacheManager sharedManager] getCachedObjectByKey:_cacheKey];
-        if (cacheData) {
-            useCurrentCache = [self onReceivedCacheData:cacheData];
-        }
-        if (!useCurrentCache) {
-            _usingCacheData = NO;
-            [self doRequestWithParams:_userInfo];
-            GQDINFO(@"request %@ is created , url is \"%@\"", [self class],_requestUrl);
-        }else{
-            _usingCacheData = YES;
-            [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
-        }
-    }
-}
-
 #pragma mark - class methods using delegate
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
 {
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
@@ -224,7 +173,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return request;
 }
 
-+ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody withDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody withDelegate:(id<GQDataRequestDelegate>)delegate
 {
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:parameterBody.subRequestUrl
@@ -240,7 +189,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return request;
 }
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
            withParameters:(NSDictionary*)params{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
@@ -256,7 +205,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return request;
 }
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
         withSubRequestUrl:(NSString*)subUrl{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:subUrl
@@ -272,7 +221,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return request;
 }
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
         withSubRequestUrl:(NSString*)subUrl
         withCancelSubject:(NSString*)cancelSubject{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
@@ -289,7 +238,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return request;
 }
 
-- (id)initWithDelegate:(id<DataRequestDelegate>)delegate
+- (id)initWithDelegate:(id<GQDataRequestDelegate>)delegate
      withSubRequestUrl:(NSString*)subUrl
                keyPath:(NSString*)keyPath
                mapping:(GQObjectMapping*)mapping
@@ -512,6 +461,69 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return self;
 }
 
+- (void)startRequest{
+    NSAssert(!_loading, @"The request has already begun");
+    
+    _parmaterEncoding = [self getParameterEncoding];
+    _loading = NO;
+    
+    if (_requestMethod == 0) {
+        _requestMethod = [self getRequestMethod];
+    }
+    
+    if (!_requestUrl || ![_requestUrl length]) {
+        _requestUrl = [self getRequestUrl];
+    }
+    
+    if ([self getBaseUrl]) {
+        _requestUrl = [NSString stringWithFormat:@"%@%@",[self getBaseUrl],_requestUrl];
+    }
+    
+    if (_subRequestUrl) {
+        _requestUrl = [NSString stringWithFormat:@"%@%@",_requestUrl,_subRequestUrl];
+    }
+    
+    NSAssert(_requestUrl != nil || [_requestUrl length] > 0, @"invalid request url");
+    
+    if (_cacheKey && [_cacheKey length] > 0) {
+        _usingCacheData = YES;
+    }
+    
+    if (_cancelSubject && _cancelSubject.length >0) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(cancelRequest) name:_cancelSubject object:nil];
+    }
+    
+    _requestStartDate = [NSDate date];
+    _userInfo = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
+    
+    if ([self getStaticParams]) {
+        [_userInfo addEntriesFromDictionary:[self getStaticParams]];
+    }
+    
+    //是否使用假数据
+    if ([self useDumpyData]) {
+        //处理假数据
+        [self processDumpyRequest];
+    }else {
+        BOOL useCurrentCache = NO;
+        
+        NSObject *cacheData = [[GQDataCacheManager sharedManager] getCachedObjectByKey:_cacheKey];
+        
+        if (cacheData){
+            useCurrentCache = [self onReceivedCacheData:cacheData];
+        }
+        
+        if (!useCurrentCache) {
+            _usingCacheData = NO;
+            [self doRequestWithParams:_userInfo];
+            GQDINFO(@"request %@ is created , url is \"%@\"", [self class],_requestUrl);
+        }else{
+            _usingCacheData = YES;
+            [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
+        }
+    }
+}
+
 #pragma mark - lifecycle methods
 
 - (void)doRelease
@@ -548,7 +560,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return [[GQRequestJsonDataHandler alloc] init];
 }
 
-- (NSData *)getCertificateData{
+- (NSData *)getCertificateData
+{
     return nil;
 }
 
@@ -639,10 +652,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 - (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response
 {
     NSURLSessionResponseDisposition  disposition = NSURLSessionResponseAllow;
-    if (_onRequestRechiveResponse) {
+    if (_onRequestRechiveResponse)
+    {
        disposition = _onRequestRechiveResponse(self, response);
-    }else if (self.delegate){
-        if ([self.delegate respondsToSelector:@selector(requestRechiveResponse:urlResponse:)]) {
+    }else if (self.delegate)
+    {
+        if ([self.delegate respondsToSelector:@selector(requestRechiveResponse:urlResponse:)])
+        {
             disposition =[self.delegate requestRechiveResponse:self urlResponse:response];
         }
     }
@@ -651,10 +667,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (void)notifyRequestDidSuccess
 {
-    if (_onRequestFinished) {
+    if (_onRequestFinished)
+    {
         _onRequestFinished(self, _responseResult);
-    }else if (self.delegate) {
-        if([self.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)]){
+    }else if (self.delegate)
+    {
+        if([self.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)])
+        {
             [self.delegate requestDidFinishLoad:self mappingResult:_responseResult];
         }
     }
@@ -662,10 +681,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (void)notifyRequestDidErrorWithError:(NSError*)error
 {
-    if (_onRequestFailed) {
+    if (_onRequestFailed)
+    {
         _onRequestFailed(self, error);
-    }else if (self.delegate) {
-        if([self.delegate respondsToSelector:@selector(request:didFailLoadWithError:)]){
+    }else if (self.delegate)
+    {
+        if([self.delegate respondsToSelector:@selector(request:didFailLoadWithError:)])
+        {
             [self.delegate request:self didFailLoadWithError:error];
         }
     }
@@ -673,10 +695,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 
 - (void)notifyRequestDidCancel
 {
-    if (_onRequestCanceled) {
+    if (_onRequestCanceled)
+    {
         _onRequestCanceled(self);
-    }else if (self.delegate) {
-        if([self.delegate respondsToSelector:@selector(requestDidCancelLoad:)]){
+    }else if (self.delegate)
+    {
+        if([self.delegate respondsToSelector:@selector(requestDidCancelLoad:)])
+        {
             [self.delegate requestDidCancelLoad:self];
         }
     }
@@ -702,13 +727,14 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             }
         }
     };
+    
     if([self isDownloadFileRequest]) {
         success = [self processDownloadFile];
         [self processResult];
         dispatch_async(dispatch_get_main_queue(), callback);
     }
     else {
-        self.rawResultData = result;
+        _rawResultData = result;
         NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
         //add callback here
         if (!rawResultString|| ![rawResultString length]) {

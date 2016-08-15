@@ -13,7 +13,7 @@
 #import "GQDebug.h"
 #import "GQObjectMapping.h"
 
-@interface MasterViewController ()<DataRequestDelegate>
+@interface MasterViewController ()<GQDataRequestDelegate>
 
 @property NSMutableArray *objects;
 
@@ -64,6 +64,7 @@
 #pragma mark -- 链式调用 + 方法调用
     [[[DemoHttpRequest1 prepareRequset]
       .requestUrlChain(@"product/list")
+      .mappingChain(map)
       .mappingChain(map)
       .keyPathChain(@"result/rows")
       onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {

@@ -31,21 +31,21 @@ typedef void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress)
 
 #pragma mark -- ChainBlockTypedef 链式写法block
 
-typedef GQBaseDataRequest *(^GQChainObjectRequest)(id value);//nsobject block
-typedef GQBaseDataRequest *(^GQChainStuctRequest)(NSInteger value);   //enum block
+typedef GQBaseDataRequest *(^GQChainObjectRequest)(id value);//NSObject block
+typedef GQBaseDataRequest *(^GQChainStuctRequest)(NSInteger value);   //NSInteger block
 
 typedef void(^GQChainBlockStartRequest)();//发送请求block
 
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
-typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//请求完成block
+typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//收到请求头block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFinished)(GQRequestFinished);//请求完成block
 typedef GQBaseDataRequest * (^GQChainBlockRequestCanceled)(GQRequestCanceled);//请求取消block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFailed)(GQRequestFailed);//请求失败block
 typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//请求进度改变block
 
-#pragma mark -- DataRequestDelegate
+#pragma mark -- GQDataRequestDelegate
 
-@protocol DataRequestDelegate <NSObject>
+@protocol GQDataRequestDelegate <NSObject>
 
 @optional
 - (void)requestDidStartLoad:(GQBaseDataRequest*)request;//请求开始代理
@@ -66,14 +66,14 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     GQRequestMethod     _requestMethod;
     
+    GQParameterEncoding _parmaterEncoding;
+    
     GQMaskActivityView  *_maskActivityView;
     
     //progress related
     long long           _totalData;
     
     long long           _downloadedData;
-    
-    CGFloat             _currentProgress;
     
     NSString            *_cancelSubject;
     
@@ -103,11 +103,10 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     GQObjectMapping     *_mapping;
 }
 
-@property (nonatomic, weak) id<DataRequestDelegate> delegate;
+@property (nonatomic, weak) id<GQDataRequestDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL loading;
 @property (nonatomic, assign) CGFloat currentProgress;
-@property (nonatomic, assign) GQParameterEncoding parmaterEncoding;
-@property (nonatomic, copy) NSData *rawResultData;
+@property (nonatomic, copy, readonly) NSData *rawResultData;
 @property (nonatomic, copy, readonly) NSString *requestUrl;
 @property (nonatomic, copy, readonly) NSMutableDictionary *userInfo;
 @property (nonatomic, copy, readonly) GQRequestDataHandler *requestDataHandler;
@@ -186,6 +185,9 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  */
 @property (nonatomic, copy , readonly) GQChainBlockRequestStart onStartBlockChain;
 
+/**
+ *  收到请求头block   type : NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRequest * request,NSURLResponse *response)
+ */
 @property  (nonatomic, copy , readonly) GQChainBlockRequestRechiveResponse onRechiveResponseBlockChain;
 
 /**
@@ -264,6 +266,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return self
  */
 - (instancetype)onProgressChanged:(GQProgressChanged)onProgressChanged;
+
 /**
  *  发起请求
  */
@@ -278,7 +281,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @return  GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate;
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate;
 
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
@@ -289,7 +292,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return GQBaseDataRequest
  */
 + (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                     withDelegate:(id<DataRequestDelegate>)delegate;
+                     withDelegate:(id<GQDataRequestDelegate>)delegate;
 
 /**
  *  请求方法
@@ -299,7 +302,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
            withParameters:(NSDictionary*)params;
 /**
  *  请求方法
@@ -309,7 +312,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
         withSubRequestUrl:(NSString*)subUrl;
 
 /**
@@ -322,7 +325,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  @return GQBaseDataRequest
  */
 
-+ (id)requestWithDelegate:(id<DataRequestDelegate>)delegate
++ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
         withSubRequestUrl:(NSString*)subUrl
         withCancelSubject:(NSString*)cancelSubject;
 
