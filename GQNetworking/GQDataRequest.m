@@ -66,14 +66,6 @@
                             [strongSelf doRelease];
                         }];
     
-    [self generateRequestData];
-    
-    [self.httpRequest startRequest];
-    [self showIndicator:YES];
-}
-
-- (void)generateRequestData
-{
     if (_headerParameters) {
         [_headerParameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
             if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
@@ -82,6 +74,9 @@
         }];
     }
     [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
+    
+    [self.httpRequest startRequest];
+    [self showIndicator:YES];
 }
 
 - (NSDictionary*)getStaticParams
