@@ -36,6 +36,10 @@
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             return [strongSelf notifyRequestRechiveResponse:response];
                         }
+                        onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
+                            __strong typeof(weakSelf) strongSelf = weakSelf;
+                            return [strongSelf notifyRequestWillRedirection:request response:response];
+                        }
                         onProgressChanged:^(float progress) {
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             [strongSelf notifyRequestDidChange:progress];
@@ -62,9 +66,22 @@
                             [strongSelf doRelease];
                         }];
     
-    [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
+    [self generateRequestData];
+    
     [self.httpRequest startRequest];
     [self showIndicator:YES];
+}
+
+- (void)generateRequestData
+{
+    if (_headerParameters) {
+        [_headerParameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
+                [self.httpRequest setRequestHeaderField:key value:obj];
+            }
+        }];
+    }
+    [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
 }
 
 - (NSDictionary*)getStaticParams

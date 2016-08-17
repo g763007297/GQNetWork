@@ -42,6 +42,7 @@
  *  @return GQBaseDataRequest
  */
 - (id)initWithParameters:(NSDictionary*)params
+    withHeaderParameters:(NSDictionary *)headerParameters
        withSubRequestUrl:(NSString*)subUrl
        withIndicatorView:(UIView*)indiView
                  keyPath:(NSString*)keyPath
@@ -52,6 +53,7 @@
             withFilePath:(NSString*)localFilePath
           onRequestStart:(GQRequestCanceled)onStartBlock
        onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+       onWillRedirection:(GQRequestWillRedirection)onWillRedirection
        onRequestFinished:(GQRequestFinished)onFinishedBlock
        onRequestCanceled:(GQRequestCanceled)onCanceledBlock
          onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -79,6 +81,7 @@
                keyPath:(NSString*)keyPath
                mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
+  withHeaderParameters:(NSDictionary *)headerParameters
      withIndicatorView:(UIView*)indiView
      withCancelSubject:(NSString*)cancelSubject
           withCacheKey:(NSString*)cache
@@ -96,6 +99,7 @@
 @synthesize cancelSubjectChain = _cancelSubjectChain;
 @synthesize keyPathChain = _keyPathChain;
 @synthesize mappingChain = _mappingChain;
+@synthesize headerParametersChain = _headerParametersChain;
 @synthesize parametersChain = _parametersChain;
 @synthesize indicatorViewChain = _indicatorViewChain;
 @synthesize cacheKeyChain = _cacheKeyChain;
@@ -103,6 +107,7 @@
 @synthesize localFilePathChain = _localFilePathChain;
 @synthesize onStartBlockChain = _onStartBlockChain;
 @synthesize onRechiveResponseBlockChain = _onRechiveResponseBlockChain;
+@synthesize onWillRedirectionBlockChain = _onWillRedirectionBlockChain;
 @synthesize onFinishedBlockChain = _onFinishedBlockChain;
 @synthesize onCanceledBlockChain = _onCanceledBlockChain;
 @synthesize onFailedBlockChain = _onFailedBlockChain;
@@ -124,6 +129,7 @@ GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjec
 GQChainRequestDefine(keyPathChain, keyPath, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(timeOutIntervalChain, timeOutInterval, NSInteger, GQChainStuctRequest);
 GQChainRequestDefine(mappingChain, mapping, GQObjectMapping *, GQChainObjectRequest);
+GQChainRequestDefine(headerParametersChain, headerParameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectRequest);
 GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObjectRequest);
@@ -132,6 +138,7 @@ GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest)
 
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
 GQChainRequestDefine(onRechiveResponseBlockChain, onRequestRechiveResponse, GQRequestRechiveResponse, GQChainBlockRequestRechiveResponse);
+GQChainRequestDefine(onWillRedirectionBlockChain, onRequestWillRedirection, GQRequestWillRedirection, GQChainBlockRequestWillRedirection);
 GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
 GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled, GQChainBlockRequestCanceled);
 GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQChainBlockRequestFailed);
@@ -164,6 +171,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                                 keyPath:nil
                                                                 mapping:nil
                                                          withParameters:nil
+                                                   withHeaderParameters:nil
                                                       withIndicatorView:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
@@ -180,6 +188,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                                 keyPath:parameterBody.keyPath
                                                                 mapping:parameterBody.mapping
                                                          withParameters:parameterBody.parameters
+                                                   withHeaderParameters:parameterBody.headerParameters
                                                       withIndicatorView:parameterBody.indicatorView
                                                       withCancelSubject:parameterBody.cancelSubject
                                                            withCacheKey:parameterBody.cacheKey
@@ -196,6 +205,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                                 keyPath:nil
                                                                 mapping:nil
                                                          withParameters:params
+                                                   withHeaderParameters:nil
                                                       withIndicatorView:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
@@ -212,6 +222,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                                 keyPath:nil
                                                                 mapping:nil
                                                          withParameters:nil
+                                                   withHeaderParameters:nil
                                                       withIndicatorView:nil
                                                       withCancelSubject:nil
                                                            withCacheKey:nil
@@ -229,6 +240,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                                 keyPath:nil
                                                                 mapping:nil
                                                          withParameters:nil
+                                                   withHeaderParameters:nil
                                                       withIndicatorView:nil
                                                       withCancelSubject:cancelSubject
                                                            withCacheKey:nil
@@ -243,6 +255,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                keyPath:(NSString*)keyPath
                mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
+  withHeaderParameters:(NSDictionary *)headerParameters
      withIndicatorView:(UIView*)indiView
      withCancelSubject:(NSString*)cancelSubject
           withCacheKey:(NSString*)cache
@@ -281,6 +294,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 + (id)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
                    onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:nil
+                                                     withHeaderParameters:nil
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
                                                                   keyPath:nil
@@ -291,6 +305,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
+                                                        onWillRedirection:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -303,6 +318,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
               onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
+                                                     withHeaderParameters:nil
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
                                                                   keyPath:nil
@@ -313,6 +329,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
+                                                        onWillRedirection:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -326,6 +343,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
               onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestFailed:(GQRequestFailed)onFailedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
+                                                     withHeaderParameters:nil
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
                                                                   keyPath:nil
@@ -336,6 +354,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                              withFilePath:nil
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
+                                                        onWillRedirection:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -347,11 +366,13 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 + (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
                    onRequestStart:(GQRequestStart)onStartBlock
                 onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                onWillRedirection:(GQRequestWillRedirection)onWillRedirection
                 onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestCanceled:(GQRequestCanceled)onCanceledBlock
                   onRequestFailed:(GQRequestFailed)onFailedBlock
                 onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:parameterBody.parameters
+                                                     withHeaderParameters:parameterBody.headerParameters
                                                         withSubRequestUrl:parameterBody.subRequestUrl
                                                         withIndicatorView:parameterBody.indicatorView
                                                                   keyPath:parameterBody.keyPath
@@ -362,6 +383,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                              withFilePath:parameterBody.localFilePath
                                                            onRequestStart:onStartBlock
                                                         onRechiveResponse:onRechiveResponse
+                                                        onWillRedirection:onWillRedirection
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:onCanceledBlock
                                                           onRequestFailed:onFailedBlock
@@ -371,6 +393,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 }
 
 + (id)requestWithParameters:(NSDictionary*)params
+       withHeaderParameters:(NSDictionary *)headerParameters
           withSubRequestUrl:(NSString*)subUrl
           withCancelSubject:(NSString*)cancelSubject
                withFilePath:(NSString*)localFilePath
@@ -378,6 +401,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             onRequestFailed:(GQRequestFailed)onFailedBlock
           onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
     GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
+                                                     withHeaderParameters:headerParameters
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
                                                                   keyPath:nil
@@ -388,6 +412,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                              withFilePath:localFilePath
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
+                                                        onWillRedirection:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -397,6 +422,7 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 }
 
 - (id)initWithParameters:(NSDictionary*)params
+    withHeaderParameters:(NSDictionary *)headerParameters
        withSubRequestUrl:(NSString*)subUrl
        withIndicatorView:(UIView*)indiView
                  keyPath:(NSString*)keyPath
@@ -406,7 +432,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
            withCacheType:(GQDataCacheManagerType)cacheType
             withFilePath:(NSString*)localFilePath
           onRequestStart:(GQRequestStart)onStartBlock
-          onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+       onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+       onWillRedirection:(GQRequestWillRedirection)onWillRedirection
        onRequestFinished:(GQRequestFinished)onFinishedBlock
        onRequestCanceled:(GQRequestCanceled)onCanceledBlock
          onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -438,6 +465,10 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         
         if (onRechiveResponse) {
             _onRequestRechiveResponse = [onRechiveResponse copy];
+        }
+        
+        if (onWillRedirection) {
+            _onRequestWillRedirection = [onWillRedirection copy];
         }
         
         if (onFinishedBlock) {
@@ -663,6 +694,20 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         }
     }
     return disposition;
+}
+
+- (NSURLRequest *)notifyRequestWillRedirection:(NSURLRequest *)request response:(NSURLResponse *)response
+{
+    NSURLRequest *redirectionRequest = request;
+    if (_onRequestWillRedirection) {
+        redirectionRequest = _onRequestWillRedirection(self,request,response);
+    }else if (self.delegate)
+    {
+        if ([self.delegate respondsToSelector:@selector(requestWillRedirection:urlRequset:urlResponse:)]) {
+            redirectionRequest = [self.delegate requestWillRedirection:self urlRequset:request urlResponse:response];
+        }
+    }
+    return redirectionRequest;
 }
 
 - (void)notifyRequestDidSuccess

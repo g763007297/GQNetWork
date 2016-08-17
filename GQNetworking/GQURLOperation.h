@@ -23,6 +23,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
 {
     void (^_onRequestStartBlock)(GQURLOperation *);
     NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
+    NSURLRequest *(^_onWillHttpRedirectionBlock)(NSURLRequest *request, NSURLResponse *response);
 }
 
 @property (nonatomic, strong) NSURLRequest                      *operationRequest;
@@ -56,6 +57,7 @@ typedef void (^GQHTTPRequestCompletionHandler)(GQURLOperation *urlOperation,BOOL
                               progress:(void (^)(float progress))progressBlock
                         onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
                      onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
+          onWillHttpRedirection:(NSURLRequest *(^)(NSURLRequest *request, NSURLResponse *response))onWillHttpRedirectionBlock
                             completion:(GQHTTPRequestCompletionHandler)completionBlock;
 
 

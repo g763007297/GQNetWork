@@ -52,6 +52,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
                               progress:(void (^)(float progress))progressBlock
                         onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
                      onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
+                     onWillHttpRedirection:(NSURLRequest *(^)(NSURLRequest *request, NSURLResponse *response))onWillHttpRedirectionBlock
                             completion:(GQHTTPRequestCompletionHandler)completionBlock;
 {
     self = [super init];
@@ -69,6 +70,9 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     }
     if (onRechiveResponseBlock) {
         _onRechiveResponseBlock = [onRechiveResponseBlock copy];
+    }
+    if (onWillHttpRedirectionBlock) {
+        _onWillHttpRedirectionBlock = onWillHttpRedirectionBlock;
     }
     return self;
 }
@@ -217,6 +221,12 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response
 {
+    NSURLRequest *redirectionRequest = request;
+    
+    if (_onWillHttpRedirectionBlock) {
+        redirectionRequest = _onWillHttpRedirectionBlock(request,response);
+    }
+    
     return request;
 }
 
@@ -300,8 +310,14 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         newRequest:(NSURLRequest *)request
  completionHandler:(void (^)(NSURLRequest *))completionHandler
 {
+    NSURLRequest *redirectionRequest = request;
+    
+    if (_onWillHttpRedirectionBlock) {
+        redirectionRequest = _onWillHttpRedirectionBlock(request,response);
+    }
+    
     if (completionHandler) {
-        completionHandler(request);
+        completionHandler(redirectionRequest);
     }
 }
 

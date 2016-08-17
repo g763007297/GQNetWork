@@ -24,6 +24,7 @@
 
 typedef void (^GQRequestStart)(GQBaseDataRequest * request);//请求开始block
 typedef NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRequest * request,NSURLResponse *response);//收到请求头block
+typedef NSURLRequest *(^GQRequestWillRedirection)(GQBaseDataRequest * request,NSURLRequest *urlRequest,NSURLResponse *response);//HTTP重定向block
 typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);//请求完成block
 typedef void (^GQRequestCanceled)(GQBaseDataRequest * request);//请求取消block
 typedef void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error);//请求失败block
@@ -38,6 +39,7 @@ typedef void(^GQChainBlockStartRequest)();//发送请求block
 
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
 typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//收到请求头block
+typedef GQBaseDataRequest * (^GQChainBlockRequestWillRedirection)(GQRequestWillRedirection);//HTTP重定向block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFinished)(GQRequestFinished);//请求完成block
 typedef GQBaseDataRequest * (^GQChainBlockRequestCanceled)(GQRequestCanceled);//请求取消block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFailed)(GQRequestFailed);//请求失败block
@@ -49,7 +51,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 
 @optional
 - (void)requestDidStartLoad:(GQBaseDataRequest*)request;//请求开始代理
-- (NSURLSessionResponseDisposition )requestRechiveResponse:(GQBaseDataRequest *)request urlResponse:(NSURLResponse *)response;
+- (NSURLSessionResponseDisposition )requestRechiveResponse:(GQBaseDataRequest *)request urlResponse:(NSURLResponse *)response;//收到请求头代理
+- (NSURLRequest *)requestWillRedirection:(GQBaseDataRequest *)request urlRequset:(NSURLRequest *)urlRequest urlResponse:(NSURLResponse *)response;//HTTP重定向代理
 - (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
 - (void)requestDidCancelLoad:(GQBaseDataRequest*)request;//请求取消代理
 - (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress;//请求数据变化代理
@@ -81,7 +84,10 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     
     NSString            *_subRequestUrl;
     
+    //请求体
     NSDictionary        *_parameters;
+    //请求头
+    NSDictionary<NSString *,NSString *> *_headerParameters;
     
     NSString            *_cacheKey;
     NSString            *_localFilePath;
@@ -93,6 +99,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     //callback stuffs
     GQRequestStart      _onRequestStart;
     GQRequestRechiveResponse _onRequestRechiveResponse;
+    GQRequestWillRedirection _onRequestWillRedirection;
     GQRequestFinished   _onRequestFinished;
     GQRequestCanceled   _onRequestCanceled;
     GQRequestFailed     _onRequestFailed;
@@ -156,6 +163,11 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 @property (nonatomic, copy , readonly) GQChainObjectRequest mappingChain;
 
 /**
+ *  请求头  type : NSDictionary
+ */
+@property (nonatomic, copy, readonly) GQChainObjectRequest headerParametersChain;
+
+/**
  *  请求参数字典   type : NSDictionary
  */
 @property (nonatomic, copy , readonly) GQChainObjectRequest parametersChain;
@@ -188,7 +200,12 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 /**
  *  收到请求头block   type : NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRequest * request,NSURLResponse *response)
  */
-@property  (nonatomic, copy , readonly) GQChainBlockRequestRechiveResponse onRechiveResponseBlockChain;
+@property (nonatomic, copy , readonly) GQChainBlockRequestRechiveResponse onRechiveResponseBlockChain;
+
+/**
+ *  HTTP重定向block type: NSURLRequest *(^GQRequestWillRedirection)(GQBaseDataRequest * request,NSURLRequest *urlRequest,NSURLResponse *response)
+ */
+@property (nonatomic, copy, readonly) GQChainBlockRequestWillRedirection onWillRedirectionBlockChain;
 
 /**
  *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);
@@ -385,6 +402,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 + (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
                    onRequestStart:(GQRequestStart)onStartBlock
                 onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                onWillRedirection:(GQRequestWillRedirection)onWillRedirection
                 onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestCanceled:(GQRequestCanceled)onCanceledBlock
                   onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -392,6 +410,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 
 #pragma mark -  file download class method using block
 + (id)requestWithParameters:(NSDictionary*)params
+       withHeaderParameters:(NSDictionary *)headerParameters
           withSubRequestUrl:(NSString*)subUrl
           withCancelSubject:(NSString*)cancelSubject
                withFilePath:(NSString*)localFilePath
@@ -402,6 +421,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 #pragma mark - subclass not override method
 - (void)notifyRequestDidStart;
 - (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response;
+- (NSURLRequest *)notifyRequestWillRedirection:(NSURLRequest *)request response:(NSURLResponse *)response;
 - (void)notifyRequestDidChange:(float)progress;
 - (void)notifyRequestDidSuccess;
 - (void)notifyRequestDidErrorWithError:(NSError*)error;

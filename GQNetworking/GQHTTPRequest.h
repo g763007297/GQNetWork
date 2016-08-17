@@ -18,6 +18,7 @@
 {
     void (^_onRequestStartBlock)();
     NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
+    NSURLRequest *(^_onWillHttpRedirection)(NSURLRequest *request,NSURLResponse *response);
     void (^_onRequestFinishBlock)(NSData *);
     void (^_onRequestCanceled)();
     void (^_onRequestFailedBlock)(NSError *);
@@ -44,6 +45,7 @@
                                requestMethod:(GQRequestMethod)requestMethod
                                onRequestStart:(void(^)())onStartBlock
                            onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
+                       onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
                             onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                             onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                             onRequestCanceled:(void(^)())onCanceledBlock

@@ -65,7 +65,6 @@
     [[[DemoHttpRequest1 prepareRequset]
       .requestUrlChain(@"product/list")
       .mappingChain(map)
-      .mappingChain(map)
       .keyPathChain(@"result/rows")
       onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
         GQDPRINT(@"%@",result.rawDictionary);
@@ -96,11 +95,18 @@
 #pragma mark -- 常规block
     [DemoHttpRequest1 requestWithRequestParameter:parameter
                                   onRequestStart:nil
-                                onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request, NSURLResponse *response) {
+                                onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request,
+                                                                                   NSURLResponse *response) {
                                     GQDPRINT(@"%@",response);
                                     return NSURLSessionResponseAllow;
                                 }
-                               onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result){
+                                onWillRedirection:^NSURLRequest *(GQBaseDataRequest *request,
+                                                                  NSURLRequest *urlRequest,
+                                                                  NSURLResponse *response) {
+                                     return urlRequest;
+                                }
+                               onRequestFinished:^(GQBaseDataRequest *request,
+                                                   GQMappingResult *result){
                                    GQDPRINT(@"%@",result.rawDictionary);
                                    GQDPRINT(@"%@",result.array);
                                }

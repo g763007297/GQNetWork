@@ -77,10 +77,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                                requestMethod:(GQRequestMethod)requestMethod
                               onRequestStart:(void(^)())onStartBlock
                            onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
-                            onProgressChanged:(void(^)(float progress))onProgressChangedBlock
-                            onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
-                            onRequestCanceled:(void(^)())onCanceledBlock
-                              onRequestFailed:(void(^)(NSError *error))onFailedBlock
+                       onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
+                           onProgressChanged:(void(^)(float progress))onProgressChangedBlock
+                           onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
+                           onRequestCanceled:(void(^)())onCanceledBlock
+                             onRequestFailed:(void(^)(NSError *error))onFailedBlock
 {
     self = [self init];
     if (self) {
@@ -105,6 +106,9 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         }
         if (onRechiveResponseBlock) {
             _onRechiveResponseBlock = [onRechiveResponseBlock copy];
+        }
+        if (onWillHttpRedirection) {
+            _onWillHttpRedirection = [onWillHttpRedirection copy];
         }
         if (onProgressChangedBlock) {
             _onRequestProgressChangedBlock = [onProgressChangedBlock copy];
@@ -299,6 +303,13 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                                   return strongSelf->_onRechiveResponseBlock(response);
                               }
                               return NSURLSessionResponseAllow;
+                          }
+                          onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
+                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                              if (strongSelf->_onWillHttpRedirection) {
+                                  return strongSelf->_onWillHttpRedirection(request,response);
+                              }
+                              return request;
                           }
                           completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
