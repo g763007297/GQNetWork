@@ -19,32 +19,25 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-  # s.subspec 'GQMapping' do |ss|
-    # ss.ios.source_files = [
-      # 'GQMapping/**/*.{h,m}',
-      # 'GQBaseNetwork/Additions/NSString+GQAdditions.h',
-      # 'GQBaseNetwork/Additions/NSString+GQAdditions.m',
-    # ]
-    # ss.public_header_files = [
-      # 'GQMapping/**/*.h',
-      # 'GQBaseNetwork/Additions/NSString+GQAdditions.h',
-    # ]
-  # end
+   s.subspec 'GQMapping' do |ss|
+     ss.ios.source_files = 'GQMapping/**/*.{h,m}'
+     ss.public_header_files = 'GQMapping/**/*.h'
+   end
 
   s.subspec 'GQNetworking' do |ss|
     ss.ios.source_files  = [
       "GQNetworking/**/*.{h,m}",
       "GQBaseNetwork/**/*.{h,m}",
-    ]    
-    # ss.dependency 'GQNetWork/GQMapping'
-    ss.dependency 'GQMapping'
+    ]
+
+    ss.public_header_files = [
+      'GQNetworking/**/*.h',
+      'GQBaseNetwork/**/*.h',
+    ]
+   ss.dependency 'GQNetWork/GQMapping'
   end
 
-  s.public_header_files = [
-    'GQNetworking/**/*.h',
-    'GQBaseNetwork/**/*.h',
-  ]
-
+  #s.dependency 'GQMapping'
   s.default_subspec = 'GQNetworking'
 
 end
