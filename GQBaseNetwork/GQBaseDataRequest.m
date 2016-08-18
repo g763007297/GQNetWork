@@ -15,14 +15,12 @@
 #import "GQDebug.h"
 
 @interface GQBaseDataRequest()
-{
-    
-}
 
 /**
  *  Block实例方法
  *
  *  @param params                 请求体
+ *  @param headerParameters         请求头
  *  @param subUrl                 拼接url
  *  @param indiView               正在加载maskview
  *  @param keyPath                需要过滤的key
@@ -67,6 +65,7 @@
  *  @param keyPath        需要过滤的key
  *  @param mapping        映射map
  *  @param params         请求体
+ *  @param headerParameters         请求头
  *  @param indiView       maskview显示在你的view
  *  @param loadingMessage 正在加载弹框显示的文字
  *  @param cancelSubject  NSNotificationCenter 取消key
