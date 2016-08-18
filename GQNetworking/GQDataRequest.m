@@ -46,7 +46,7 @@
                         }
                         onRequestFinished:^(NSData *responseData) {
                             __strong typeof(weakSelf) strongSelf = weakSelf;
-                            if (strongSelf->_localFilePath) {
+                            if (strongSelf&&strongSelf->_localFilePath) {
                                 [strongSelf notifyRequestDidSuccess];
                             }else{
                                 [strongSelf handleResponseString:responseData];

@@ -391,6 +391,7 @@
 				TargetAttributes = {
 					B6CB1D321CF83E3B00D485E3 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = KT3C6DHFPC;
 					};
 				};
 			};
@@ -583,12 +584,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = GQNetWorkDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Bossy.GQNetWorkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4f283d41-db15-418d-81ed-ce3376375480";
+				PROVISIONING_PROFILE = "bb4658ec-a772-47af-a395-3992088557ff";
 			};
 			name = Debug;
 		};
@@ -598,12 +600,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = GQNetWorkDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Bossy.GQNetWorkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "4f283d41-db15-418d-81ed-ce3376375480";
+				PROVISIONING_PROFILE = "bb4658ec-a772-47af-a395-3992088557ff";
 			};
 			name = Release;
 		};

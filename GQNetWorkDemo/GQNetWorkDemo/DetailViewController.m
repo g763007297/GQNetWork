@@ -13,7 +13,7 @@
 #import "GQDebug.h"
 
 @interface DetailViewController ()
-
+@property (nonatomic, strong) TestRequestHandlerHttpRequest *request;
 @end
 
 @implementation DetailViewController
@@ -45,7 +45,12 @@
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)ges{
-    [TestRequestHandlerHttpRequest prepareRequset]
+    if ([_request loading]) {
+        [_request cancelRequest];
+        _request = nil;
+    }
+    
+    _request = (TestRequestHandlerHttpRequest *)[TestRequestHandlerHttpRequest prepareRequset]
     .requestUrlChain(@"http://www.hao123.com")
     .onRechiveResponseBlockChain(^NSURLSessionResponseDisposition(GQBaseDataRequest *request, NSURLResponse *response){
         GQDPRINT(@"%@",response);
@@ -57,8 +62,8 @@
     })
     .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
         GQDPRINT(@"%@",error);
-    })
-    .startRequestChain();
+    });
+    _request.startRequestChain();
 }
 
 - (void)didReceiveMemoryWarning {

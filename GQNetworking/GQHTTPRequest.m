@@ -287,26 +287,30 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                           certificateData:self.certificateData
                           progress:^(float progress) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
-                              if (strongSelf->_onRequestProgressChangedBlock) {
+                              if (strongSelf&&strongSelf->_onRequestProgressChangedBlock) {
                                   strongSelf->_onRequestProgressChangedBlock(progress);
                               }
                           }
                           onRequestStart:^(GQURLOperation *urlConnectionOperation) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;
-                              if (strongSelf->_onRequestStartBlock) {
+                              if (strongSelf&&strongSelf->_onRequestStartBlock) {
                                   strongSelf->_onRequestStartBlock();
                               }
                           }
                           onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
                               __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf->_onRechiveResponseBlock) {
-                                  return strongSelf->_onRechiveResponseBlock(response);
+                              if (strongSelf) {
+                                  if (strongSelf->_onRechiveResponseBlock) {
+                                      return strongSelf->_onRechiveResponseBlock(response);
+                                  }
+                              }else{
+                                  return NSURLSessionResponseCancel;
                               }
                               return NSURLSessionResponseAllow;
                           }
                           onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
                               __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf->_onWillHttpRedirection) {
+                              if (strongSelf&&strongSelf->_onWillHttpRedirection) {
                                   return strongSelf->_onWillHttpRedirection(request,response);
                               }
                               return request;
@@ -315,11 +319,11 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                               __strong typeof(weakSelf) strongSelf= weakSelf;
                               if (requestSuccess) {
                                   [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
-                                  if (strongSelf->_onRequestFinishBlock) {
+                                  if (strongSelf&&strongSelf->_onRequestFinishBlock) {
                                       strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
                                   }
                               }else{
-                                  if (strongSelf->_onRequestFailedBlock) {
+                                  if (strongSelf&&strongSelf->_onRequestFailedBlock) {
                                       strongSelf->_onRequestFailedBlock(error);
                                   }
                               }
