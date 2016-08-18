@@ -167,9 +167,7 @@ static NSInteger version = 0;
         if ([self respondsToSelector:sel] &&
             [self respondsToSelector:getSel]) {
             id valueObj = [self getValue:attributeName];
-            [object performSelectorOnMainThread:sel
-                                     withObject:valueObj
-                                  waitUntilDone:TRUE];
+            [object setValue:valueObj forKey:attributeName];
         }
     }
     return object;
@@ -244,7 +242,8 @@ static NSInteger version = 0;
                     attributeName = changeOldPropertys[[changeNewPropertys indexOfObject:attributeName]];
                 }
                 id obj = [decoder decodeObjectForKey:attributeName];
-                [self performSelectorOnMainThread:sel withObject:obj waitUntilDone:[NSThread isMainThread]];
+                [self setValue:obj forKey:attributeName];
+//                [self performSelectorOnMainThread:sel withObject:obj waitUntilDone:[NSThread isMainThread]];
             }
         }
     }

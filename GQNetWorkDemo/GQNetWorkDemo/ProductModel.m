@@ -19,7 +19,8 @@
              @"likes":@"likes",
              @"name":@"name",
              @"picUrl":@"picUrl",
-             @"price":@"price"};
+             @"price":@"price",
+             @"is":@"is"};
 }
 /**后台返回给我们的数据
 

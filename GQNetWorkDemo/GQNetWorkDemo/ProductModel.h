@@ -28,4 +28,6 @@
 
 @property (nonatomic, copy) NSString *price;
 
+@property (nonatomic, assign) BOOL is;
+
 @end
