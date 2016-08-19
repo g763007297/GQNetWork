@@ -19,6 +19,8 @@
     void (^_onRequestStartBlock)();
     NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
     NSURLRequest *(^_onWillHttpRedirection)(NSURLRequest *request,NSURLResponse *response);
+    NSInputStream *(^_onNeedNewBodyStream)(NSInputStream * originalStream);
+    NSCachedURLResponse *(^_onWillCacheResponse)(NSCachedURLResponse *proposedResponse);
     void (^_onRequestFinishBlock)(NSData *);
     void (^_onRequestCanceled)();
     void (^_onRequestFailedBlock)(NSError *);
@@ -43,13 +45,15 @@
                              requestEncoding:(NSStringEncoding)requestEncoding
                             parmaterEncoding:(GQParameterEncoding)parameterEncoding
                                requestMethod:(GQRequestMethod)requestMethod
-                               onRequestStart:(void(^)())onStartBlock
+                              onRequestStart:(void(^)())onStartBlock
                            onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                        onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
-                            onProgressChanged:(void(^)(float progress))onProgressChangedBlock
-                            onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
-                            onRequestCanceled:(void(^)())onCanceledBlock
-                              onRequestFailed:(void(^)(NSError *error))onFailedBlock;
+                         onNeedNewBodyStream:(NSInputStream *(^)(NSInputStream * originalStream))onNeedNewBodyStream
+                         onWillCacheResponse:(NSCachedURLResponse *(^)(NSCachedURLResponse *proposedResponse))onWillCacheResponse
+                           onProgressChanged:(void(^)(float progress))onProgressChangedBlock
+                           onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
+                           onRequestCanceled:(void(^)())onCanceledBlock
+                             onRequestFailed:(void(^)(NSError *error))onFailedBlock;
 
 - (void)setTimeoutInterval:(NSTimeInterval)seconds;
 - (void)addPostForm:(NSString *)key value:(NSString *)value;

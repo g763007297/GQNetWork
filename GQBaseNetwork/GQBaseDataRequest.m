@@ -52,6 +52,8 @@
           onRequestStart:(GQRequestCanceled)onStartBlock
        onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
        onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+     onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+     onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
        onRequestFinished:(GQRequestFinished)onFinishedBlock
        onRequestCanceled:(GQRequestCanceled)onCanceledBlock
          onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -107,6 +109,8 @@
 @synthesize onStartBlockChain = _onStartBlockChain;
 @synthesize onRechiveResponseBlockChain = _onRechiveResponseBlockChain;
 @synthesize onWillRedirectionBlockChain = _onWillRedirectionBlockChain;
+@synthesize onNeedNewBodyStreamBlockChain = _onNeedNewBodyStreamBlockChain;
+@synthesize onWillCacheResponseBlockChain = _onWillCacheResponseBlockChain;
 @synthesize onFinishedBlockChain = _onFinishedBlockChain;
 @synthesize onCanceledBlockChain = _onCanceledBlockChain;
 @synthesize onFailedBlockChain = _onFailedBlockChain;
@@ -138,6 +142,8 @@ GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest)
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
 GQChainRequestDefine(onRechiveResponseBlockChain, onRequestRechiveResponse, GQRequestRechiveResponse, GQChainBlockRequestRechiveResponse);
 GQChainRequestDefine(onWillRedirectionBlockChain, onRequestWillRedirection, GQRequestWillRedirection, GQChainBlockRequestWillRedirection);
+GQChainRequestDefine(onNeedNewBodyStreamBlockChain, onRequestNeedNewBodyStream, GQRequestNeedNewBodyStream, GQChainBlockRequestNeedNewBodyStream);
+GQChainRequestDefine(onWillCacheResponseBlockChain, onRequestWillCacheRespons, GQRequestWillCacheResponse, GQChainBlockRequestWillCacheResponse);
 GQChainRequestDefine(onFinishedBlockChain, onRequestFinished, GQRequestFinished, GQChainBlockRequestFinished);
 GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled, GQChainBlockRequestCanceled);
 GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQChainBlockRequestFailed);
@@ -305,6 +311,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
                                                         onWillRedirection:nil
+                                                      onNeedNewBodyStream:nil
+                                                      onWillCacheResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -329,6 +337,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
                                                         onWillRedirection:nil
+                                                      onNeedNewBodyStream:nil
+                                                      onWillCacheResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -354,6 +364,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
                                                         onWillRedirection:nil
+                                                      onNeedNewBodyStream:nil
+                                                      onWillCacheResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -366,6 +378,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                    onRequestStart:(GQRequestStart)onStartBlock
                 onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
                 onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+              onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+              onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
                 onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestCanceled:(GQRequestCanceled)onCanceledBlock
                   onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -383,6 +397,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                            onRequestStart:onStartBlock
                                                         onRechiveResponse:onRechiveResponse
                                                         onWillRedirection:onWillRedirection
+                                                      onNeedNewBodyStream:onNeedNewBodyStream
+                                                      onWillCacheResponse:onWillCacheResponse
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:onCanceledBlock
                                                           onRequestFailed:onFailedBlock
@@ -412,6 +428,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
                                                            onRequestStart:nil
                                                         onRechiveResponse:nil
                                                         onWillRedirection:nil
+                                                      onNeedNewBodyStream:nil
+                                                      onWillCacheResponse:nil
                                                         onRequestFinished:onFinishedBlock
                                                         onRequestCanceled:nil
                                                           onRequestFailed:onFailedBlock
@@ -433,6 +451,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
           onRequestStart:(GQRequestStart)onStartBlock
        onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
        onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+     onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+     onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
        onRequestFinished:(GQRequestFinished)onFinishedBlock
        onRequestCanceled:(GQRequestCanceled)onCanceledBlock
          onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -468,6 +488,14 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         
         if (onWillRedirection) {
             _onRequestWillRedirection = [onWillRedirection copy];
+        }
+        
+        if (onNeedNewBodyStream) {
+            _onRequestNeedNewBodyStream = [onNeedNewBodyStream copy];
+        }
+        
+        if (onWillCacheResponse) {
+            _onRequestWillCacheRespons = [onWillCacheResponse copy];
         }
         
         if (onFinishedBlock) {
@@ -707,6 +735,33 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         }
     }
     return redirectionRequest;
+}
+
+- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSInputStream *)originalStream
+{
+    NSInputStream *inputSteam = originalStream;
+    if (_onRequestNeedNewBodyStream) {
+        inputSteam = _onRequestNeedNewBodyStream(self,originalStream);
+    }else if
+        (self.delegate){
+        if ([self.delegate respondsToSelector:@selector(requestNeedNewBodyStream:originStream:)]) {
+            inputSteam = [self.delegate requestNeedNewBodyStream:self originStream:originalStream];
+        }
+    }
+    return inputSteam;
+}
+
+- (NSCachedURLResponse *)notifyRequestWillCacheResponse:(NSCachedURLResponse *)proposedResponse
+{
+    NSCachedURLResponse *cachedResponse = proposedResponse;
+    if (_onRequestWillCacheRespons) {
+        cachedResponse = _onRequestWillCacheRespons(self,proposedResponse);
+    }else if (self.delegate){
+        if ([self.delegate respondsToSelector:@selector(requestWillCacheResponse:originStream:)]) {
+            cachedResponse = [self.delegate requestWillCacheResponse:self originStream:proposedResponse];
+        }
+    }
+    return cachedResponse;
 }
 
 - (void)notifyRequestDidSuccess

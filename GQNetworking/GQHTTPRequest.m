@@ -78,6 +78,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                               onRequestStart:(void(^)())onStartBlock
                            onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
                        onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
+                         onNeedNewBodyStream:(NSInputStream *(^)(NSInputStream * originalStream))onNeedNewBodyStream
+                         onWillCacheResponse:(NSCachedURLResponse *(^)(NSCachedURLResponse *proposedResponse))onWillCacheResponse
                            onProgressChanged:(void(^)(float progress))onProgressChangedBlock
                            onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
                            onRequestCanceled:(void(^)())onCanceledBlock
@@ -109,6 +111,12 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         }
         if (onWillHttpRedirection) {
             _onWillHttpRedirection = [onWillHttpRedirection copy];
+        }
+        if (onNeedNewBodyStream) {
+            _onNeedNewBodyStream = [onNeedNewBodyStream copy];
+        }
+        if (onWillCacheResponse) {
+            _onWillCacheResponse = [onWillCacheResponse copy];
         }
         if (onProgressChangedBlock) {
             _onRequestProgressChangedBlock = [onProgressChangedBlock copy];
@@ -314,6 +322,20 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                                   return strongSelf->_onWillHttpRedirection(request,response);
                               }
                               return request;
+                          }
+                          onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
+                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                              if (strongSelf&&strongSelf->_onNeedNewBodyStream) {
+                                  return strongSelf->_onNeedNewBodyStream(originalStream);
+                              }
+                              return originalStream;
+                          }
+                          onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
+                              __strong typeof(weakSelf) strongSelf = weakSelf;
+                              if (strongSelf&&strongSelf->_onWillCacheResponse) {
+                                  return strongSelf->_onWillCacheResponse(proposedResponse);
+                              }
+                              return proposedResponse;
                           }
                           completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
                               __strong typeof(weakSelf) strongSelf= weakSelf;

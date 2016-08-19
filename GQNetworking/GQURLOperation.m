@@ -13,6 +13,13 @@
 #import "GQSecurityPolicy.h"
 
 @interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
+{
+    GQHTTPRequestStartHandler           _onRequestStartBlock;
+    GQHTTPRechiveResponseHandler        _onRechiveResponseBlock;
+    GQHTTPWillHttpRedirectionHandler    _onWillHttpRedirectionBlock;
+    GQHTTPNeedNewBodyStreamHandler      _onNeedNewBodyStreamBlock;
+    GQHTTPWillCacheResponseHandler      _onWillCacheResponse;
+}
 
 #if !OS_OBJECT_USE_OBJC
 @property (nonatomic, assign) dispatch_queue_t saveDataDispatchQueue;
@@ -49,16 +56,17 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 - (GQURLOperation *)initWithURLRequest:(NSURLRequest *)urlRequest
                             saveToPath:(NSString*)savePath
                        certificateData:(NSData *)certificateData
-                              progress:(void (^)(float progress))progressBlock
-                        onRequestStart:(void(^)(GQURLOperation *urlOperation))onStartBlock
-                     onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
-                     onWillHttpRedirection:(NSURLRequest *(^)(NSURLRequest *request, NSURLResponse *response))onWillHttpRedirectionBlock
-                            completion:(GQHTTPRequestCompletionHandler)completionBlock;
+                              progress:(GQHTTPRequestChangeHandler)onProgressBlock
+                        onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
+                     onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
+                 onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
+                   onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
+                   onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
+                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
+
 {
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
-    self.operationCompletionBlock = completionBlock;
-    self.operationProgressBlock = progressBlock;
     self.operationRequest = urlRequest;
     self.certificateData = certificateData;
     self.operationSavePath = savePath;
@@ -73,6 +81,15 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     }
     if (onWillHttpRedirectionBlock) {
         _onWillHttpRedirectionBlock = onWillHttpRedirectionBlock;
+    }
+    if (onNeedNewBodyStreamBlock) {
+        _onNeedNewBodyStreamBlock = [onNeedNewBodyStreamBlock copy];
+    }
+    if (onProgressBlock) {
+        _operationProgressBlock = onProgressBlock;
+    }
+    if (onCompletionBlock) {
+        _operationCompletionBlock = onCompletionBlock;
     }
     return self;
 }
@@ -219,7 +236,9 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 #pragma mark - NSURLConnectionDelegate
 
-- (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)response
+- (NSURLRequest *)connection:(NSURLConnection *)connection
+             willSendRequest:(NSURLRequest *)request
+            redirectResponse:(NSURLResponse *)response
 {
     NSURLRequest *redirectionRequest = request;
     
@@ -230,7 +249,8 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     return request;
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+- (void)connection:(NSURLConnection *)connection
+didReceiveResponse:(NSURLResponse *)response
 {
     if (_onRechiveResponseBlock) {
         _onRechiveResponseBlock(response);
@@ -240,7 +260,8 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self.operationURLResponse = (NSHTTPURLResponse *)response;
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void)connection:(NSURLConnection *)connection
+    didReceiveData:(NSData *)data
 {
     [self handleResponseData:data];
 }
@@ -250,12 +271,14 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     [self callCompletionBlockWithResponse:nil requestSuccess:YES error:nil];
 }
 
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+- (void)connection:(NSURLConnection *)connection
+  didFailWithError:(NSError *)error
 {
     [self callCompletionBlockWithResponse:nil requestSuccess:NO error:error];
 }
 
-- (void)connection:(NSURLConnection *)connection willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
+- (void)connection:(NSURLConnection *)connection
+willSendRequestForAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge
 {
     GQSecurityPolicy *policy = [GQSecurityPolicy defaultSecurityPolicy:_certificateData withChallenge:challenge];
     if (policy) {
@@ -305,7 +328,8 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
 willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         newRequest:(NSURLRequest *)request
  completionHandler:(void (^)(NSURLRequest *))completionHandler
@@ -321,7 +345,8 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
     }
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
 didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential * credential))completionHandler
 {
@@ -342,10 +367,17 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
  needNewBodyStream:(void (^)(NSInputStream * bodyStream))completionHandler
 {
     NSInputStream *inputStream = nil;
+    if (task.originalRequest.HTTPBodyStream && [task.originalRequest.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
+        inputStream = [task.originalRequest.HTTPBodyStream copy];
+    }
+    if (_onNeedNewBodyStreamBlock) {
+        inputStream = _onNeedNewBodyStreamBlock(inputStream);
+    }
     if (completionHandler) {
         completionHandler(inputStream);
     }
@@ -357,7 +389,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     [self handleResponseData:data];
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
  willCacheResponse:(NSCachedURLResponse *)proposedResponse
  completionHandler:(void (^)(NSCachedURLResponse * cachedResponse))completionHandler
 {
@@ -396,7 +429,9 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
--(void)callCompletionBlockWithResponse:(NSData *)response requestSuccess:(BOOL)requestSuccess error:(NSError *)error
+-(void)callCompletionBlockWithResponse:(NSData *)response
+                        requestSuccess:(BOOL)requestSuccess
+                                 error:(NSError *)error
 {
     if(self.operationRunLoop){
         CFRunLoopStop(self.operationRunLoop);

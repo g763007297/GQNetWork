@@ -25,6 +25,8 @@
 typedef void (^GQRequestStart)(GQBaseDataRequest * request);//请求开始block
 typedef NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRequest * request,NSURLResponse *response);//收到请求头block
 typedef NSURLRequest *(^GQRequestWillRedirection)(GQBaseDataRequest * request,NSURLRequest *urlRequest,NSURLResponse *response);//HTTP重定向block
+typedef NSInputStream * (^GQRequestNeedNewBodyStream)(GQBaseDataRequest * request,NSInputStream *originalStream);//需要新的数据流block
+typedef NSCachedURLResponse * (^GQRequestWillCacheResponse)(GQBaseDataRequest * request,NSCachedURLResponse *proposedResponse);//将要缓存到web的block
 typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);//请求完成block
 typedef void (^GQRequestCanceled)(GQBaseDataRequest * request);//请求取消block
 typedef void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error);//请求失败block
@@ -40,6 +42,8 @@ typedef void(^GQChainBlockStartRequest)();//发送请求block
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
 typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//收到请求头block
 typedef GQBaseDataRequest * (^GQChainBlockRequestWillRedirection)(GQRequestWillRedirection);//HTTP重定向block
+typedef GQBaseDataRequest * (^GQChainBlockRequestNeedNewBodyStream) (GQRequestNeedNewBodyStream);//需要新的数据流block
+typedef GQBaseDataRequest * (^GQChainBlockRequestWillCacheResponse)(GQRequestWillCacheResponse);//将要缓存到web的block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFinished)(GQRequestFinished);//请求完成block
 typedef GQBaseDataRequest * (^GQChainBlockRequestCanceled)(GQRequestCanceled);//请求取消block
 typedef GQBaseDataRequest * (^GQChainBlockRequestFailed)(GQRequestFailed);//请求失败block
@@ -49,14 +53,18 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 
 @protocol GQDataRequestDelegate <NSObject>
 
+@required
+- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
+- (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error;//请求失败代理
+
 @optional
 - (void)requestDidStartLoad:(GQBaseDataRequest*)request;//请求开始代理
 - (NSURLSessionResponseDisposition )requestRechiveResponse:(GQBaseDataRequest *)request urlResponse:(NSURLResponse *)response;//收到请求头代理
 - (NSURLRequest *)requestWillRedirection:(GQBaseDataRequest *)request urlRequset:(NSURLRequest *)urlRequest urlResponse:(NSURLResponse *)response;//HTTP重定向代理
-- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
+- (NSInputStream *)requestNeedNewBodyStream:(GQBaseDataRequest *)request originStream:(NSInputStream *)originStream;//需要新的数据流代理
+- (NSCachedURLResponse *)requestWillCacheResponse:(GQBaseDataRequest *)request originStream:(NSCachedURLResponse *)originStream;//将要缓存到web代理
 - (void)requestDidCancelLoad:(GQBaseDataRequest*)request;//请求取消代理
 - (void)request:(GQBaseDataRequest*)request progressChanged:(CGFloat)progress;//请求数据变化代理
-- (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error;//请求失败代理
 
 @end
 
@@ -100,6 +108,9 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
     GQRequestStart      _onRequestStart;
     GQRequestRechiveResponse _onRequestRechiveResponse;
     GQRequestWillRedirection _onRequestWillRedirection;
+    GQRequestNeedNewBodyStream _onRequestNeedNewBodyStream;
+    GQRequestWillCacheResponse _onRequestWillCacheRespons;
+    
     GQRequestFinished   _onRequestFinished;
     GQRequestCanceled   _onRequestCanceled;
     GQRequestFailed     _onRequestFailed;
@@ -206,6 +217,16 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *  HTTP重定向block type: NSURLRequest *(^GQRequestWillRedirection)(GQBaseDataRequest * request,NSURLRequest *urlRequest,NSURLResponse *response)
  */
 @property (nonatomic, copy, readonly) GQChainBlockRequestWillRedirection onWillRedirectionBlockChain;
+
+/**
+ *  需要新的数据流block type: NSInputStream * (^GQRequestNeedNewBodyStream)(GQBaseDataRequest * request,NSInputStream *originalStream)
+ */
+@property (nonatomic, copy, readonly) GQChainBlockRequestNeedNewBodyStream onNeedNewBodyStreamBlockChain;
+
+/**
+ *  将要缓存到web的block  type : NSCachedURLResponse * (^GQRequestWillCacheResponse)(GQBaseDataRequest * request,NSCachedURLResponse *proposedResponse)
+ */
+@property (nonatomic, copy, readonly) GQChainBlockRequestWillCacheResponse onWillCacheResponseBlockChain;
 
 /**
  *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);
@@ -403,6 +424,8 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
                    onRequestStart:(GQRequestStart)onStartBlock
                 onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
                 onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+              onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+              onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
                 onRequestFinished:(GQRequestFinished)onFinishedBlock
                 onRequestCanceled:(GQRequestCanceled)onCanceledBlock
                   onRequestFailed:(GQRequestFailed)onFailedBlock
@@ -420,12 +443,15 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 
 #pragma mark - subclass not override method
 - (void)notifyRequestDidStart;
-- (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response;
-- (NSURLRequest *)notifyRequestWillRedirection:(NSURLRequest *)request response:(NSURLResponse *)response;
 - (void)notifyRequestDidChange:(float)progress;
 - (void)notifyRequestDidSuccess;
 - (void)notifyRequestDidErrorWithError:(NSError*)error;
 - (void)notifyRequestDidCancel;
+- (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response;
+- (NSURLRequest *)notifyRequestWillRedirection:(NSURLRequest *)request response:(NSURLResponse *)response;
+- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSInputStream *)originalStream;
+- (NSCachedURLResponse *)notifyRequestWillCacheResponse:(NSCachedURLResponse *)proposedResponse;
+
 - (void)doRelease;
 
 #pragma mark - subclass can  override method

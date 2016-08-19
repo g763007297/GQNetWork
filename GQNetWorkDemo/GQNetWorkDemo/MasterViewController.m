@@ -103,9 +103,13 @@
                                 onWillRedirection:^NSURLRequest *(GQBaseDataRequest *request,
                                                                   NSURLRequest *urlRequest,
                                                                   NSURLResponse *response) {
-                                     return urlRequest;
-                                }
-                               onRequestFinished:^(GQBaseDataRequest *request,
+                                    return urlRequest;
+                                }onNeedNewBodyStream:^NSInputStream *(GQBaseDataRequest *request,
+                                                                      NSInputStream *originalStream) {
+                                    return originalStream;
+                                } onWillCacheResponse:^NSCachedURLResponse *(GQBaseDataRequest *request, NSCachedURLResponse *proposedResponse) {
+                                    return proposedResponse;
+                                }onRequestFinished:^(GQBaseDataRequest *request,
                                                    GQMappingResult *result){
                                    GQDPRINT(@"%@",result.rawDictionary);
                                    GQDPRINT(@"%@",result.array);

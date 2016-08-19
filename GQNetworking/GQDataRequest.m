@@ -40,6 +40,14 @@
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             return [strongSelf notifyRequestWillRedirection:request response:response];
                         }
+                        onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
+                            __strong typeof(weakSelf) strongSelf = weakSelf;
+                            return [strongSelf notifyRequestNeedNewBodyStream:originalStream];
+                        }
+                        onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
+                            __strong typeof(weakSelf) strongSelf = weakSelf;
+                            return [strongSelf notifyRequestWillCacheResponse:proposedResponse];
+                        }
                         onProgressChanged:^(float progress) {
                             __strong typeof(weakSelf) strongSelf = weakSelf;
                             [strongSelf notifyRequestDidChange:progress];
