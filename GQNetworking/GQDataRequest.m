@@ -12,7 +12,6 @@
 #import "GQRequestJsonDataHandler.h"
 #import "GQNetworkConsts.h"
 #import "GQDataEnvironment.h"
-#import "GQObjectSingleton.h"
 #import "GQDebug.h"
 
 @implementation GQDataRequest
@@ -54,7 +53,7 @@
                         }
                         onRequestFinished:^(NSData *responseData) {
                             GQStrongify(self);
-                            [self notifyRequestDidFinish:responseData];
+                            [self handleResponseString:responseData];
                             [self showIndicator:NO];
                             [self doRelease];
                         }
@@ -83,25 +82,10 @@
     [self showIndicator:YES];
 }
 
-- (NSDictionary*)getStaticParams
-{
-    return nil;
-}
-
 - (void)doRelease
 {
     [super doRelease];
     self.httpRequest = nil;
-}
-
-- (GQParameterEncoding)getParameterEncoding
-{
-    return GQURLParameterEncoding;
-}
-
-- (GQRequestMethod)getRequestMethod
-{
-    return GQRequestMethodGet;
 }
 
 - (void)cancelRequest

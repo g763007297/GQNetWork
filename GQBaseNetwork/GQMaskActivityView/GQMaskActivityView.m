@@ -120,7 +120,8 @@
     }
 }
 
-- (UIView *)bgMaskView{
+- (UIView *)bgMaskView
+{
     if (!_bgMaskView) {
         _bgMaskView = [[UIView alloc] initWithFrame:self.bounds];
         _bgMaskView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.6666];
@@ -130,7 +131,8 @@
     return _bgMaskView;
 }
 
-- (UILabel *)hintLabel{
+- (UILabel *)hintLabel
+{
     if (!_hintLabel) {
         _hintLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 154, 35)];
         _hintLabel.font = [UIFont systemFontOfSize:17];
@@ -142,7 +144,8 @@
     return _hintLabel;
 }
 
-- (UIActivityIndicatorView *)maskViewIndicator{
+- (UIActivityIndicatorView *)maskViewIndicator
+{
     if (!_maskViewIndicator) {
         _maskViewIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(67, 45, 20, 20)];
         _maskViewIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
@@ -151,7 +154,8 @@
     return _maskViewIndicator;
 }
 
-- (UIButton *)cancleBtn{
+- (UIButton *)cancleBtn
+{
     if (!_cancleBtn) {
         _cancleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
         _cancleBtn.titleLabel.font = [UIFont systemFontOfSize:17];

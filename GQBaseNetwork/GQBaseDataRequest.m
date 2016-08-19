@@ -10,7 +10,6 @@
 #import "GQDataRequestManager.h"
 #import "GQRequestDataHandleHeader.h"
 #import "GQMappingHeader.h"
-#import "GQObjectSingleton.h"
 #import "GQMaskActivityView.h"
 #import "GQDebug.h"
 
@@ -806,15 +805,6 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         }
     }
     return cachedResponse;
-}
-
-- (void)notifyRequestDidFinish:(NSData *)responseData
-{
-    if (_localFilePath) {
-        [self notifyRequestDidSuccess];
-    }else{
-        [self handleResponseString:responseData];
-    }
 }
 
 - (void)notifyRequestDidSuccess

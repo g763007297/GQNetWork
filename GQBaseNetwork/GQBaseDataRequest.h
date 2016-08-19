@@ -433,7 +433,6 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 #pragma mark - subclass not override method
 - (void)notifyRequestDidStart;
 - (void)notifyRequestDidChange:(float)progress;
-- (void)notifyRequestDidFinish:(NSData *)responseData;
 - (void)notifyRequestDidSuccess;
 - (void)notifyRequestDidErrorWithError:(NSError*)error;
 - (void)notifyRequestDidCancel;
@@ -462,7 +461,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param result 请求结果
  */
-- (void)handleResponseString:(NSData*)result;
+- (void)handleResponseString:(id)result;
 
 /**
  *  如果需要处理缓存就覆盖这个方法  前提是要使用到了缓存

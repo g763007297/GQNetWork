@@ -13,7 +13,6 @@
 #import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
 #import "GQNetworkConsts.h"
-#import "GQObjectSingleton.h"
 
 @interface GQHTTPRequest()
 {
@@ -33,6 +32,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     self.request = nil;
     self.bodyData = nil;
     self.requestParameters = nil;
+    self.filePath = nil;
+    self.certificateData = nil;
 }
 
 - (id)init
@@ -43,6 +44,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         self.urlOperation = nil;
         self.requestURL = nil;
         self.requestParameters = nil;
+        self.filePath = nil;
+        self.certificateData = nil;
         self.request = nil;
         self.bodyData = nil;
     }
@@ -286,6 +289,10 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             break;
         case GQRequestMethodDelete:{
             [self generateDELETERequest];
+        }
+            break;
+        case GQRequestMethodHead:{
+            
         }
             break;
     }

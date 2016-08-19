@@ -12,7 +12,7 @@
 
 #import "GQSecurityPolicy.h"
 
-#import "GQObjectSingleton.h"
+#import "GQNetworkConsts.h"
 
 @interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
 {
@@ -47,6 +47,10 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self.operationFileHandle = nil;
     self.operationData = nil;
     self.responseData = nil;
+    self.certificateData = nil;
+    self.operationSession = nil;
+    self.operationSessionTask = nil;
+    self.operationConnection = nil;
     
 #if !OS_OBJECT_USE_OBJC
     dispatch_release(_saveDataDispatchGroup);
@@ -88,10 +92,10 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         _onNeedNewBodyStreamBlock = [onNeedNewBodyStreamBlock copy];
     }
     if (onProgressBlock) {
-        _operationProgressBlock = onProgressBlock;
+        _operationProgressBlock = [onProgressBlock copy];
     }
     if (onCompletionBlock) {
-        _operationCompletionBlock = onCompletionBlock;
+        _operationCompletionBlock = [onCompletionBlock copy];
     }
     return self;
 }
