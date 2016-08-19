@@ -12,6 +12,8 @@
 
 #import "GQSecurityPolicy.h"
 
+#import "GQObjectSingleton.h"
+
 @interface GQURLOperation()<NSURLConnectionDelegate,NSURLConnectionDataDelegate,NSURLSessionDelegate,NSURLSessionTaskDelegate>
 {
     GQHTTPRequestStartHandler           _onRequestStartBlock;
@@ -184,11 +186,12 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         [self increaseSVHTTPRequestTaskCount];
     });
     
-    __weak typeof(self) weakSelf = self;
+    GQWeakify(self);
     dispatch_block_t callStart = ^{
         @autoreleasepool {
-            if (_onRequestStartBlock) {
-                _onRequestStartBlock(weakSelf);
+            GQStrongify(self);
+            if (self->_onRequestStartBlock) {
+                self->_onRequestStartBlock(self);
             }
         }
     };

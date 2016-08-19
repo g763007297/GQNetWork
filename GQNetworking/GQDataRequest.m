@@ -12,14 +12,14 @@
 #import "GQRequestJsonDataHandler.h"
 #import "GQNetworkConsts.h"
 #import "GQDataEnvironment.h"
+#import "GQObjectSingleton.h"
 #import "GQDebug.h"
 
 @implementation GQDataRequest
 
 - (void)doRequestWithParams:(NSDictionary*)params
 {
-    __weak typeof(self) weakSelf  = self;
-    
+    GQWeakify(self);
     self.httpRequest = [[GQHTTPRequest alloc]
                         initRequestWithParameters:params
                         URL:self.requestUrl
@@ -29,49 +29,45 @@
                         parmaterEncoding:[self getParameterEncoding]
                         requestMethod:_requestMethod
                         onRequestStart:^() {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf notifyRequestDidStart];
+                            GQStrongify(self);
+                            [self notifyRequestDidStart];
                         }
                         onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            return [strongSelf notifyRequestRechiveResponse:response];
+                            GQStrongify(self);
+                            return [self notifyRequestRechiveResponse:response];
                         }
                         onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            return [strongSelf notifyRequestWillRedirection:request response:response];
+                            GQStrongify(self);
+                            return [self notifyRequestWillRedirection:request response:response];
                         }
                         onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            return [strongSelf notifyRequestNeedNewBodyStream:originalStream];
+                            GQStrongify(self);
+                            return [self notifyRequestNeedNewBodyStream:originalStream];
                         }
                         onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            return [strongSelf notifyRequestWillCacheResponse:proposedResponse];
+                            GQStrongify(self);
+                            return [self notifyRequestWillCacheResponse:proposedResponse];
                         }
                         onProgressChanged:^(float progress) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf notifyRequestDidChange:progress];
+                            GQStrongify(self);
+                            [self notifyRequestDidChange:progress];
                         }
                         onRequestFinished:^(NSData *responseData) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            if (strongSelf&&strongSelf->_localFilePath) {
-                                [strongSelf notifyRequestDidSuccess];
-                            }else{
-                                [strongSelf handleResponseString:responseData];
-                            }
-                            [strongSelf showIndicator:NO];
-                            [strongSelf doRelease];
+                            GQStrongify(self);
+                            [self notifyRequestDidFinish:responseData];
+                            [self showIndicator:NO];
+                            [self doRelease];
                         }
                         onRequestCanceled:^() {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf notifyRequestDidCancel];
-                            [strongSelf doRelease];
+                            GQStrongify(self);
+                            [self notifyRequestDidCancel];
+                            [self doRelease];
                         }
                         onRequestFailed:^(NSError *error) {
-                            __strong typeof(weakSelf) strongSelf = weakSelf;
-                            [strongSelf notifyRequestDidErrorWithError:error];
-                            [strongSelf showIndicator:NO];
-                            [strongSelf doRelease];
+                            GQStrongify(self);
+                            [self notifyRequestDidErrorWithError:error];
+                            [self showIndicator:NO];
+                            [self doRelease];
                         }];
     
     if (_headerParameters) {

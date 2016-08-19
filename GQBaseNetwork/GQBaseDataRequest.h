@@ -71,61 +71,19 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 @interface GQBaseDataRequest : NSObject
 {
 @protected
-    BOOL                _usingCacheData;
-    
-    GQDataCacheManagerType _cacheType;
-    
+
     GQRequestMethod     _requestMethod;
     
-    GQParameterEncoding _parmaterEncoding;
-    
-    GQMaskActivityView  *_maskActivityView;
-    
-    //progress related
-    long long           _totalData;
-    
-    long long           _downloadedData;
-    
-    NSString            *_cancelSubject;
-    
-    NSInteger           _timeOutInterval;
-    
-    NSString            *_subRequestUrl;
-    
-    //请求体
-    NSDictionary        *_parameters;
     //请求头
     NSDictionary<NSString *,NSString *> *_headerParameters;
     
-    NSString            *_cacheKey;
     NSString            *_localFilePath;
-    
-    NSString            *_keyPath;
-    NSDate              *_requestStartDate;
-    UIView              *_indicatorView;
-    
-    //callback stuffs
-    GQRequestStart      _onRequestStart;
-    GQRequestRechiveResponse _onRequestRechiveResponse;
-    GQRequestWillRedirection _onRequestWillRedirection;
-    GQRequestNeedNewBodyStream _onRequestNeedNewBodyStream;
-    GQRequestWillCacheResponse _onRequestWillCacheRespons;
-    
-    GQRequestFinished   _onRequestFinished;
-    GQRequestCanceled   _onRequestCanceled;
-    GQRequestFailed     _onRequestFailed;
-    GQProgressChanged   _onProgressChanged;
-    
-    //the finall mapping result
-    GQMappingResult     *_responseResult;
-    GQObjectMapping     *_mapping;
 }
 
 @property (nonatomic, weak) id<GQDataRequestDelegate> delegate;
 @property (nonatomic, assign, readonly) BOOL loading;
-@property (nonatomic, assign) CGFloat currentProgress;
-@property (nonatomic, copy, readonly) NSData *rawResultData;
-@property (nonatomic, copy, readonly) NSString *requestUrl;
+@property (nonatomic, copy, readonly) NSData *rawResultData;//请求回来的元数据
+@property (nonatomic, copy, readonly) NSString *requestUrl;//请求地址
 @property (nonatomic, copy, readonly) NSMutableDictionary *userInfo;
 @property (nonatomic, copy, readonly) GQRequestDataHandler *requestDataHandler;
 
@@ -259,7 +217,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param onRequestStart 请求开始block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onRequestStart:(GQRequestStart)onRequestStart;
 
@@ -268,16 +226,43 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param onRechiveResponse 收到请求头block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onRequestRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse;
+
+/**
+ *  HTTP重定向
+ *
+ *  @param onWillRedirection HTTP重定向block
+ *
+ *  @return GQBaseDataRequest
+ */
+- (instancetype)onWillRedirectionBlockChain:(GQRequestWillRedirection)onWillRedirection;
+
+/**
+ *  需要新的数据流
+ *
+ *  @param onNeedNewBodyStream 需要新的数据流block
+ *
+ *  @return GQBaseDataRequest
+ */
+- (instancetype)onNeedNewBodyStreamBlockChain:(GQRequestNeedNewBodyStream)onNeedNewBodyStream;
+
+/**
+ *  将要缓存到web
+ *
+ *  @param onWillCacheResponse 将要缓存到web的block
+ *
+ *  @return GQBaseDataRequest
+ */
+- (instancetype)onWillCacheResponseBlockChain:(GQRequestWillCacheResponse)onWillCacheResponse;
 
 /**
  *  请求完成
  *
  *  @param onRequestFinished 请求完成block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onRequestFinished:(GQRequestFinished)onRequestFinished;
 /**
@@ -285,7 +270,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param onRequestCanceled 请求取消block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onRequestCanceled:(GQRequestCanceled)onRequestCanceled;
 /**
@@ -293,7 +278,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param onRequestFailed 请求失败block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onRequestFailed:(GQRequestFailed)onRequestFailed;
 /**
@@ -301,7 +286,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param onProgressChanged 请求进度改变block
  *
- *  @return self
+ *  @return GQBaseDataRequest
  */
 - (instancetype)onProgressChanged:(GQProgressChanged)onProgressChanged;
 
@@ -413,6 +398,10 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param parameterBody          parameterBody
  *  @param onStartBlock           请求开始block
+ *  @param onRechiveResponse      收到请求头block
+ *  @param onWillRedirection      将要http重定向block
+ *  @param onNeedNewBodyStream    需要新的数据流block
+ *  @param onWillCacheResponse    将要缓存到web中block
  *  @param onFinishedBlock        请求完成block
  *  @param onCanceledBlock        请求取消block
  *  @param onFailedBlock          请求失败block
@@ -444,6 +433,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 #pragma mark - subclass not override method
 - (void)notifyRequestDidStart;
 - (void)notifyRequestDidChange:(float)progress;
+- (void)notifyRequestDidFinish:(NSData *)responseData;
 - (void)notifyRequestDidSuccess;
 - (void)notifyRequestDidErrorWithError:(NSError*)error;
 - (void)notifyRequestDidCancel;

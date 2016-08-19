@@ -13,6 +13,7 @@
 #import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
 #import "GQNetworkConsts.h"
+#import "GQObjectSingleton.h"
 
 @interface GQHTTPRequest()
 {
@@ -180,16 +181,17 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (void)parseRequestParameters
 {
-    __weak GQHTTPRequest *weakSelf = self;
-    
+    GQWeakify(self);
     NSDictionary *paramsDict = (NSDictionary*)self.requestParameters;
     [paramsDict.allValues enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        GQStrongify(self);
         if([obj isKindOfClass:[NSData class]] || [obj isKindOfClass:[UIImage class]]){
-            _isUploadFile = YES;
+            self->_isUploadFile = YES;
         }
     }];
     [paramsDict enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
-        [weakSelf addBodyData:key value:value];
+        GQStrongify(self);
+        [self addBodyData:key value:value];
     }];
 }
 
@@ -288,28 +290,28 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             break;
     }
     
-    __weak typeof(self) weakSelf = self;
+    GQWeakify(self);
     self.urlOperation =  [[GQURLOperation alloc]
                           initWithURLRequest:self.request
                           saveToPath:self.filePath
                           certificateData:self.certificateData
                           progress:^(float progress) {
-                              __strong typeof(weakSelf) strongSelf= weakSelf;
-                              if (strongSelf&&strongSelf->_onRequestProgressChangedBlock) {
-                                  strongSelf->_onRequestProgressChangedBlock(progress);
+                              GQStrongify(self);
+                              if (self&&self->_onRequestProgressChangedBlock) {
+                                  self->_onRequestProgressChangedBlock(progress);
                               }
                           }
                           onRequestStart:^(GQURLOperation *urlConnectionOperation) {
-                              __strong typeof(weakSelf) strongSelf= weakSelf;
-                              if (strongSelf&&strongSelf->_onRequestStartBlock) {
-                                  strongSelf->_onRequestStartBlock();
+                              GQStrongify(self);
+                              if (self&&self->_onRequestStartBlock) {
+                                  self->_onRequestStartBlock();
                               }
                           }
                           onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
-                              __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf) {
-                                  if (strongSelf->_onRechiveResponseBlock) {
-                                      return strongSelf->_onRechiveResponseBlock(response);
+                              GQStrongify(self);
+                              if (self) {
+                                  if (self->_onRechiveResponseBlock) {
+                                      return self->_onRechiveResponseBlock(response);
                                   }
                               }else{
                                   return NSURLSessionResponseCancel;
@@ -317,36 +319,36 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                               return NSURLSessionResponseAllow;
                           }
                           onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
-                              __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf&&strongSelf->_onWillHttpRedirection) {
-                                  return strongSelf->_onWillHttpRedirection(request,response);
+                              GQStrongify(self);
+                              if (self&&self->_onWillHttpRedirection) {
+                                  return self->_onWillHttpRedirection(request,response);
                               }
                               return request;
                           }
                           onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
-                              __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf&&strongSelf->_onNeedNewBodyStream) {
-                                  return strongSelf->_onNeedNewBodyStream(originalStream);
+                              GQStrongify(self);
+                              if (self&&self->_onNeedNewBodyStream) {
+                                  return self->_onNeedNewBodyStream(originalStream);
                               }
                               return originalStream;
                           }
                           onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
-                              __strong typeof(weakSelf) strongSelf = weakSelf;
-                              if (strongSelf&&strongSelf->_onWillCacheResponse) {
-                                  return strongSelf->_onWillCacheResponse(proposedResponse);
+                              GQStrongify(self);
+                              if (self&&self->_onWillCacheResponse) {
+                                  return self->_onWillCacheResponse(proposedResponse);
                               }
                               return proposedResponse;
                           }
                           completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
-                              __strong typeof(weakSelf) strongSelf= weakSelf;
+                              GQStrongify(self);
                               if (requestSuccess) {
                                   [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
-                                  if (strongSelf&&strongSelf->_onRequestFinishBlock) {
-                                      strongSelf->_onRequestFinishBlock(strongSelf.urlOperation.responseData);
+                                  if (self&&self->_onRequestFinishBlock) {
+                                      self->_onRequestFinishBlock(self.urlOperation.responseData);
                                   }
                               }else{
-                                  if (strongSelf&&strongSelf->_onRequestFailedBlock) {
-                                      strongSelf->_onRequestFailedBlock(error);
+                                  if (self&&self->_onRequestFailedBlock) {
+                                      self->_onRequestFailedBlock(error);
                                   }
                               }
                           }];

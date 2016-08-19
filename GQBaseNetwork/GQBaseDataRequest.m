@@ -15,6 +15,47 @@
 #import "GQDebug.h"
 
 @interface GQBaseDataRequest()
+{
+    BOOL     _usingCacheData;
+    
+    GQDataCacheManagerType _cacheType;
+    
+    GQParameterEncoding _parmaterEncoding;
+    
+    NSString            *_cancelSubject;
+    
+    NSInteger           _timeOutInterval;
+    
+    NSString            *_subRequestUrl;
+    //请求体
+    NSDictionary        *_parameters;
+    
+    NSString            *_keyPath;
+    
+    UIView              *_indicatorView;
+    
+    NSString            *_cacheKey;
+    
+    NSDate   *_requestStartDate;
+    
+    GQMaskActivityView  *_maskActivityView;
+    
+    //callback stuffs
+    GQRequestStart      _onRequestStart;
+    GQRequestRechiveResponse _onRequestRechiveResponse;
+    GQRequestWillRedirection _onRequestWillRedirection;
+    GQRequestNeedNewBodyStream _onRequestNeedNewBodyStream;
+    GQRequestWillCacheResponse _onRequestWillCacheRespons;
+    
+    GQRequestFinished   _onRequestFinished;
+    GQRequestCanceled   _onRequestCanceled;
+    GQRequestFailed     _onRequestFailed;
+    GQProgressChanged   _onProgressChanged;
+    
+    //the finall mapping result
+    GQMappingResult     *_responseResult;
+    GQObjectMapping     *_mapping;
+}
 
 /**
  *  Block实例方法
@@ -150,11 +191,11 @@ GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQCha
 GQChainRequestDefine(onProgressChangedBlockChain, onProgressChanged, GQProgressChanged, GQChainBlockProgressChanged);
 
 - (GQChainBlockStartRequest)startRequestChain{
-    __weak typeof(self) weakSelf = self;
+    GQWeakify(self);
     if (!_startRequestChain) {
         _startRequestChain = ^(){
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            [strongSelf startRequest];
+            GQStrongify(self);
+            [self startRequest];
         };
     }
     return _startRequestChain;
@@ -162,6 +203,9 @@ GQChainRequestDefine(onProgressChangedBlockChain, onProgressChanged, GQProgressC
 
 GQMethodRequestDefine(onRequestStart,GQRequestStart);
 GQMethodRequestDefine(onRequestRechiveResponse, GQRequestRechiveResponse);
+GQMethodRequestDefine(onWillRedirectionBlockChain, GQRequestWillRedirection);
+GQMethodRequestDefine(onNeedNewBodyStreamBlockChain, GQRequestNeedNewBodyStream);
+GQMethodRequestDefine(onWillCacheResponseBlockChain, GQRequestWillCacheResponse);
 GQMethodRequestDefine(onRequestFinished,GQRequestFinished);
 GQMethodRequestDefine(onRequestCanceled,GQRequestCanceled);
 GQMethodRequestDefine(onRequestFailed,GQRequestFailed);
@@ -764,6 +808,15 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
     return cachedResponse;
 }
 
+- (void)notifyRequestDidFinish:(NSData *)responseData
+{
+    if (_localFilePath) {
+        [self notifyRequestDidSuccess];
+    }else{
+        [self handleResponseString:responseData];
+    }
+}
+
 - (void)notifyRequestDidSuccess
 {
     if (_onRequestFinished)
@@ -850,7 +903,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
             else {
                 [[GQMappingManager sharedManager]mapWithSourceData:response
                                                       originalData:self.rawResultData
-                                                     objectMapping:_mapping keyPath:_keyPath
+                                                     objectMapping:_mapping
+                                                           keyPath:_keyPath
                                                    completionBlock:^(GQMappingResult *result, NSError *error)
                  {
                      _responseResult = result;

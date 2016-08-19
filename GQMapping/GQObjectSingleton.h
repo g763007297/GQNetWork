@@ -41,6 +41,15 @@ static _object_name_ *z##_shared_obj_name_ = nil;  \
 return nil;                                    \
 }                                                  \
 
+//强弱引用
+#ifndef GQWeakify
+#define GQWeakify(object) __weak __typeof__(object) weak##_##object = object
+#endif
+
+#ifndef GQStrongify
+#define GQStrongify(object) __strong __typeof__(object) object = weak##_##object
+#endif
+
 #define GQVariableAssert(_Chain_)\
 NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization",#_Chain_]);\
 
@@ -48,12 +57,12 @@ NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization"
 - (_block_type_)_key_name_{\
     GQVariableAssert(_##_Chain_);\
     NSAssert(!_loading, @"The request has already begun");\
-    __weak typeof(self) weakSelf = self;\
+    GQWeakify(self);\
     if (!_##_key_name_) {\
         _##_key_name_ = ^(_type_ value){\
-            __strong typeof(weakSelf) strongSelf = weakSelf;\
-            strongSelf->_##_Chain_ = value;\
-            return strongSelf;\
+            GQStrongify(self);\
+            self->_##_Chain_ = value;\
+            return self;\
         };\
     }\
     return _##_key_name_;\
@@ -65,6 +74,5 @@ NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization"
     _##_method_ = [value copy];\
     return self;\
 }\
-
 
 #endif /* GQObjectSingleton_h */
