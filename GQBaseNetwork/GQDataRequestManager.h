@@ -13,7 +13,6 @@
 @interface GQDataRequestManager : NSObject
 {
     NSMutableArray *_requests;
-    NSOperationQueue *_requesQueue;
 }
 
 + (GQDataRequestManager *)sharedManager;

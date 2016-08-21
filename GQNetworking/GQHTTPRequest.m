@@ -198,14 +198,16 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }];
 }
 
-- (NSMutableURLRequest *)generateDELETERequest{
+- (NSMutableURLRequest *)generateDELETERequest
+{
     [self parseRequestParameters];
     [self generateRequestBody];
     [self.request setHTTPMethod:@"DELETE"];
     return self.request;
 }
 
-- (NSMutableURLRequest *)generatePUTRequest{
+- (NSMutableURLRequest *)generatePUTRequest
+{
     [self parseRequestParameters];
     [self generateRequestBody];
     [self.request setHTTPMethod:@"PUT"];
@@ -234,7 +236,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     return  self.request;
 }
 
-- (NSMutableURLRequest *)generateMultipartPostRequest{
+- (NSMutableURLRequest *)generateMultipartPostRequest
+{
     [self parseRequestParameters];
     [self generateRequestBody];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
@@ -243,7 +246,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     return  self.request;
 }
 
-- (void)generateRequestBody{
+- (void)generateRequestBody
+{
     [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];

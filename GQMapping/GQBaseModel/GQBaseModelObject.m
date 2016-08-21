@@ -129,7 +129,6 @@ static NSInteger version = 0;
         id valueObj = [self getValue:attributeName];
         if (valueObj) {
             [attrsDesc appendFormat:@" [%@=%@] ",attributeName,valueObj];
-            //[valueObj release];
         }else {
             [attrsDesc appendFormat:@" [%@=nil] ",attributeName];
         }
