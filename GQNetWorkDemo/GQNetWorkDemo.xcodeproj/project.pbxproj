@@ -34,7 +34,6 @@
 		DF9C7A8E1D1F9B6F006B0D18 /* GQQueryStringPair.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A5E1D1F9B6F006B0D18 /* GQQueryStringPair.m */; };
 		DF9C7A8F1D1F9B6F006B0D18 /* GQRequestDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A611D1F9B6F006B0D18 /* GQRequestDataHandler.m */; };
 		DF9C7A901D1F9B6F006B0D18 /* GQRequestJsonDataHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A631D1F9B6F006B0D18 /* GQRequestJsonDataHandler.m */; };
-		DF9C7A911D1F9B6F006B0D18 /* GQDataEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A651D1F9B6F006B0D18 /* GQDataEnvironment.m */; };
 		DF9C7A921D1F9B6F006B0D18 /* GQBaseDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A671D1F9B6F006B0D18 /* GQBaseDataRequest.m */; };
 		DF9C7A931D1F9B6F006B0D18 /* GQDataRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A691D1F9B6F006B0D18 /* GQDataRequestManager.m */; };
 		DF9C7A941D1F9B6F006B0D18 /* GQMaskActivityView.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A6C1D1F9B6F006B0D18 /* GQMaskActivityView.m */; };
@@ -110,8 +109,6 @@
 		DF9C7A611D1F9B6F006B0D18 /* GQRequestDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQRequestDataHandler.m; sourceTree = "<group>"; };
 		DF9C7A621D1F9B6F006B0D18 /* GQRequestJsonDataHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQRequestJsonDataHandler.h; sourceTree = "<group>"; };
 		DF9C7A631D1F9B6F006B0D18 /* GQRequestJsonDataHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQRequestJsonDataHandler.m; sourceTree = "<group>"; };
-		DF9C7A641D1F9B6F006B0D18 /* GQDataEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataEnvironment.h; sourceTree = "<group>"; };
-		DF9C7A651D1F9B6F006B0D18 /* GQDataEnvironment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDataEnvironment.m; sourceTree = "<group>"; };
 		DF9C7A661D1F9B6F006B0D18 /* GQBaseDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQBaseDataRequest.h; sourceTree = "<group>"; };
 		DF9C7A671D1F9B6F006B0D18 /* GQBaseDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQBaseDataRequest.m; sourceTree = "<group>"; };
 		DF9C7A681D1F9B6F006B0D18 /* GQDataRequestManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataRequestManager.h; sourceTree = "<group>"; };
@@ -283,8 +280,6 @@
 			children = (
 				DF9C7A531D1F9B6F006B0D18 /* DataCache */,
 				DF9C7A5C1D1F9B6F006B0D18 /* DataHandler */,
-				DF9C7A641D1F9B6F006B0D18 /* GQDataEnvironment.h */,
-				DF9C7A651D1F9B6F006B0D18 /* GQDataEnvironment.m */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -448,7 +443,6 @@
 				DF9C7A961D1F9B6F006B0D18 /* GQNetworkTrafficManager.m in Sources */,
 				DF9C7A4B1D1F96A3006B0D18 /* GQBaseModelObject.m in Sources */,
 				B68867951CFEC86C00850830 /* GQMappingUtilities.m in Sources */,
-				DF9C7A911D1F9B6F006B0D18 /* GQDataEnvironment.m in Sources */,
 				B669D4721CFD1C0F00CB8AC5 /* DemoHttpRequest.m in Sources */,
 				DF9C7A941D1F9B6F006B0D18 /* GQMaskActivityView.m in Sources */,
 				B68867941CFEC86C00850830 /* GQMappingResult.m in Sources */,
