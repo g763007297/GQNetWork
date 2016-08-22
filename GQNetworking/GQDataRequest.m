@@ -11,7 +11,6 @@
 #import "GQNetworkTrafficManager.h"
 #import "GQRequestJsonDataHandler.h"
 #import "GQNetworkConsts.h"
-#import "GQDataEnvironment.h"
 #import "GQDebug.h"
 
 @implementation GQDataRequest
