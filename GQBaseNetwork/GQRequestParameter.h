@@ -13,26 +13,26 @@
 
 @interface GQRequestParameter : NSObject
 
-@property (nonatomic, copy) NSString *subRequestUrl;
+@property (nonatomic, copy)     NSString *subRequestUrl;//拼接使用的URL
 
-@property (nonatomic, copy) NSString *keyPath;
+@property (nonatomic, copy)     NSString *keyPath;//mapping所需要的层级
 
-@property (nonatomic, strong) GQObjectMapping *mapping;
+@property (nonatomic, strong)   GQObjectMapping *mapping;//model映射
 
-@property (nonatomic, copy) NSDictionary *parameters;
+@property (nonatomic, copy)     NSDictionary *parameters;//请求参数
 
-@property (nonatomic, copy) NSDictionary *headerParameters;
+@property (nonatomic, copy)     NSDictionary *headerParameters;//请求头参数
 
-@property (nonatomic, strong) UIView *indicatorView;
+@property (nonatomic, strong)   UIView *indicatorView;//加载框的父视图
 
-@property (nonatomic, copy) NSString *loadingMessage;
+@property (nonatomic, copy)     NSString *loadingMessage;//加载消息
 
-@property (nonatomic, copy) NSString *cancelSubject;
+@property (nonatomic, copy)     NSString *cancelSubject;//NSNotificationCenter 取消请求的key
 
-@property (nonatomic, copy) NSString *cacheKey;
+@property (nonatomic, copy)     NSString *cacheKey;//缓存key
 
-@property (nonatomic, assign) GQDataCacheManagerType cacheType;
+@property (nonatomic, assign)   GQDataCacheManagerType cacheType;//缓存类型
 
-@property (nonatomic, copy) NSString *localFilePath;
+@property (nonatomic, copy)     NSString *localFilePath;//文件下载的位置
 
 @end

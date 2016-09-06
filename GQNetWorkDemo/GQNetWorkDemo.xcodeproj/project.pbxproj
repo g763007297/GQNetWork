@@ -584,7 +584,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Bossy.GQNetWorkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bb4658ec-a772-47af-a395-3992088557ff";
+				PROVISIONING_PROFILE = "ad2830b4-8485-4fd2-bb06-3b62511552d2";
 			};
 			name = Debug;
 		};
@@ -600,7 +600,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = Bossy.GQNetWorkDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "bb4658ec-a772-47af-a395-3992088557ff";
+				PROVISIONING_PROFILE = "ad2830b4-8485-4fd2-bb06-3b62511552d2";
 			};
 			name = Release;
 		};
