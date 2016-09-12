@@ -226,8 +226,10 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         self.operationSessionTask = [_operationSession dataTaskWithRequest:_operationRequest];
         [self.operationSessionTask resume];
     }else{
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
         self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest delegate:self startImmediately:NO];
-        
+#pragma clang diagnostic pop
         NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
         [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
         [self.operationConnection start];

@@ -44,7 +44,10 @@
 
 - (NSString*)encodeUrl
 {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated"
     NSString *newString = (NSString *)CFBridgingRelease(CFURLCreateStringByAddingPercentEscapes(kCFAllocatorDefault, (CFStringRef)self, NULL, CFSTR(":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"), CFStringConvertNSStringEncodingToEncoding(NSUTF8StringEncoding)));
+#pragma clang diagnostic pop
     if (!newString) {
         newString = [self stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@":/?#[]@!$ &'()*+,;=\"<>%{}|\\^~`"]];
     }
