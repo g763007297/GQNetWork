@@ -308,18 +308,12 @@ static NSInteger version = 0;
         if ([self respondsToSelector:sel]) {
             NSString *dataDicKey = attrMapDic[attributeName];
             NSString *value = nil;
-            if ([[dataDic objectForKey:dataDicKey] isKindOfClass:[NSNumber class]]) {
-                value = [[dataDic objectForKey:dataDicKey] stringValue];
-            }
-            else if([[dataDic objectForKey:dataDicKey] isKindOfClass:[NSNull class]]){
+            if([[dataDic objectForKey:dataDicKey] isKindOfClass:[NSNull class]]){
                 value = nil;
-            }
-            else{
+            }else{
                 value = [dataDic objectForKey:dataDicKey];
             }
-            [self performSelectorOnMainThread:sel
-                                   withObject:value
-                                waitUntilDone:[NSThread isMainThread]];
+            [self setValue:value forKey:dataDicKey];
         }
     }
 }
