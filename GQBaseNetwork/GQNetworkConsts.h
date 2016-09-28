@@ -19,8 +19,7 @@ typedef enum : NSUInteger{
     GQRequestMethodPost,           // content type = @"application/x-www-form-urlencoded"
     GQRequestMethodMultipartPost,   // content type = @"multipart/form-data"
     GQRequestMethodPut,
-    GQRequestMethodDelete,
-    GQRequestMethodHead
+    GQRequestMethodDelete
 } GQRequestMethod;
 
 typedef enum:NSInteger {

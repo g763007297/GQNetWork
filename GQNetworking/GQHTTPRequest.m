@@ -267,7 +267,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             [self generateGETRequest];
         }
             break;
-            
         case GQRequestMethodPost:{
             switch (self.parmaterEncoding) {
                 case GQURLParameterEncoding: {
@@ -279,7 +278,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
                     [self generateJSONPOSTRequest];
                 }
                     break;
-                    
             }
             break;
         }
@@ -293,10 +291,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
             break;
         case GQRequestMethodDelete:{
             [self generateDELETERequest];
-        }
-            break;
-        case GQRequestMethodHead:{
-            
         }
             break;
     }

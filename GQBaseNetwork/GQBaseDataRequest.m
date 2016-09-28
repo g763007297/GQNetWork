@@ -521,6 +521,8 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
         
         _parameters = params;
         
+        _headerParameters = headerParameters;
+        
         if (onStartBlock) {
             _onRequestStart = [onStartBlock copy];
         }
@@ -927,6 +929,11 @@ GQMethodRequestDefine(onProgressChanged,GQProgressChanged);
 }
 
 - (NSDictionary*)getStaticParams
+{
+    return nil;
+}
+
+- (NSDictionary *)getStaticHeaderParams
 {
     return nil;
 }

@@ -517,28 +517,35 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 /**
  *  请求时的弹出框loading信息  默认为 “正在加载...”
  *
- *  @return loadingMessage
+ *  @return NSString *
  */
 - (NSString *)getLoadingMessage;
 
 /**
  *  映射关系  默认为nil
  *
- *  @return mapping
+ *  @return GQObjectMapping *
  */
 - (GQObjectMapping *)getMapping;
 
 /**
  *  静态的请求参数   默认为nil
  *
- *  @return staticParams
+ *  @return NSDictionary *
  */
 - (NSDictionary*)getStaticParams;
 
 /**
+ *  静态的请求头参数   默认为nil
+ *
+ *  @return NSDictionary *
+ */
+- (NSDictionary *)getStaticHeaderParams;
+
+/**
  *  设置超时时间
  *
- *  @return timeOutInterval
+ *  @return NSInteger
  */
 - (NSInteger)getTimeOutInterval;
 
@@ -547,7 +554,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
  *
  *  @param cachedResponse 缓存string
  *
- *  @return dic
+ *  @return NSDictionary *
  */
 + (NSDictionary*)getDicFromString:(NSString*)cachedResponse;
 

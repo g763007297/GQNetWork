@@ -68,13 +68,21 @@
                             [self doRelease];
                         }];
     
-    if (_headerParameters) {
+    if (_headerParameters&&[[_headerParameters allKeys] count]>0) {
         [_headerParameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
             if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
                 [self.httpRequest setRequestHeaderField:key value:obj];
             }
         }];
     }
+    if ([self getStaticHeaderParams]&&[[[self getStaticHeaderParams] allKeys] count] >0) {
+        [[self getStaticHeaderParams] enumerateKeysAndObjectsUsingBlock:^(NSString* _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
+            if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
+                [self.httpRequest setRequestHeaderField:key value:obj];
+            }
+        }];
+    }
+    
     [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
     
     [self.httpRequest startRequest];
