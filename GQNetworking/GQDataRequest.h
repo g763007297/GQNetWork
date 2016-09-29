@@ -8,6 +8,8 @@
 
 #import "GQBaseDataRequest.h"
 #import "GQHTTPRequest.h"
+#import "GQBaseDataRequest+GQBlockCategory.h"
+#import "GQBaseDataRequest+GQDelegateCategory.h"
 
 @interface GQDataRequest : GQBaseDataRequest
 

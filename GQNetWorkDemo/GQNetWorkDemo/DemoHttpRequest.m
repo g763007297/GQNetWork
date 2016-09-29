@@ -17,7 +17,8 @@
     return @"product/list";
 }
 
-- (NSString *)getBaseUrl{
+- (NSString *)getBaseUrl
+{
     return GQHttpReuqestURL;
 }
 
@@ -37,14 +38,15 @@
 
 @end
 
-@implementation DemoHttpRequest1 : GQDataRequest
+@implementation DemoHttpRequest1
 
 - (NSString*)getRequestUrl
 {
     return @"";
 }
 
-- (NSString *)getBaseUrl{
+- (NSString *)getBaseUrl
+{
     return GQHttpReuqestURL;
 }
 
@@ -66,15 +68,18 @@
 
 @implementation TestRequestHandlerHttpRequest
 
-- (NSString *)getRequestUrl{
+- (NSString *)getRequestUrl
+{
     return @"";
 }
 
-- (NSString *)getBaseUrl{
+- (NSString *)getBaseUrl
+{
     return @"";
 }
 
-- (GQRequestDataHandler *)generateRequestHandler{
+- (GQRequestDataHandler *)generateRequestHandler
+{
     return nil;
 }
 

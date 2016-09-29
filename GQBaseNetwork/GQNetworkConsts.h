@@ -32,14 +32,9 @@ typedef enum:NSInteger {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#pragma mark - shortcuts
-
-#define USER_DEFAULT [NSUserDefaults standardUserDefaults]
-
-#define DATA_ENV [GQDataEnvironment sharedDataEnvironment]
-
-////////////////////////////////////////////////////////////////////////////////
-
+#ifndef USER_DEFAULT
+    #define USER_DEFAULT [NSUserDefaults standardUserDefaults]
+#endif
 //强弱引用
 #ifndef GQWeakify
     #define GQWeakify(object) __weak __typeof__(object) weak##_##object = object
@@ -49,29 +44,35 @@ typedef enum:NSInteger {
     #define GQStrongify(object) __strong __typeof__(object) object = weak##_##object
 #endif
 
-#define GQVariableAssert(_Chain_)\
-NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization",#_Chain_]);\
+#ifndef GQVariableAssert
+    #define GQVariableAssert(_Chain_)\
+    NSAssert(!_Chain_, @"%@",[NSString stringWithFormat:@"The %s has initialization",#_Chain_]);
+#endif
 
-#define GQChainRequestDefine(_key_name_,_Chain_, _type_ , _block_type_)\
-- (_block_type_)_key_name_{\
-    GQVariableAssert(_##_Chain_);\
-    NSAssert(!_loading, @"The request has already begun");\
-    GQWeakify(self);\
-    if (!_##_key_name_) {\
-        _##_key_name_ = ^(_type_ value){\
-            GQStrongify(self);\
-            self->_##_Chain_ = value;\
-            return self;\
-        };\
-    }\
-    return _##_key_name_;\
-}\
+#ifndef GQChainRequestDefine
+    #define GQChainRequestDefine(_key_name_,_Chain_, _type_ , _block_type_)\
+    - (_block_type_)_key_name_{\
+        GQVariableAssert(_##_Chain_);\
+        NSAssert(!_loading, @"The request has already begun");\
+        GQWeakify(self);\
+        if (!_##_key_name_) {\
+            _##_key_name_ = ^(_type_ value){\
+                GQStrongify(self);\
+                self->_##_Chain_ = value;\
+                return self;\
+            };\
+        }\
+        return _##_key_name_;\
+    }
+#endif
 
-#define GQMethodRequestDefine( _method_ , _type_)\
-- (instancetype)_method_:(_type_)value{\
-    GQVariableAssert(_##_method_);\
-    _##_method_ = [value copy];\
-    return self;\
-}\
+#ifndef GQMethodRequestDefine
+    #define GQMethodRequestDefine( _method_ , _type_)\
+    - (instancetype)_method_:(_type_)value{\
+        GQVariableAssert(_##_method_);\
+        _##_method_ = [value copy];\
+        return self;\
+    }
+#endif
 
 #endif /* GQNetworkConsts_h */

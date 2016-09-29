@@ -68,6 +68,23 @@
                             [self doRelease];
                         }];
     
+    //添加cookie
+    [self applyCookieHeader];
+    
+    //处理请求头
+    [self applyRequestHeader];
+    
+    [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
+    
+    [self.httpRequest startRequest];
+    [self showIndicator:YES];
+}
+
+- (void)applyRequestHeader
+{
+    if ([self userAgentString]) {
+        [self.httpRequest setRequestHeaderField:@"User-Agent" value:[self userAgentString]];
+    }
     if (_headerParameters&&[[_headerParameters allKeys] count]>0) {
         [_headerParameters enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, NSString * _Nonnull obj, BOOL * _Nonnull stop) {
             if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
@@ -82,11 +99,28 @@
             }
         }];
     }
-    
-    [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];
-    
-    [self.httpRequest startRequest];
-    [self showIndicator:YES];
+}
+
+- (void)applyCookieHeader
+{
+    NSArray *cookies;
+    if ([self useResponseCookie]) {
+        cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:self.requestUrl]];
+    }
+    if ([cookies count] > 0) {
+        NSHTTPCookie *cookie;
+        NSString *cookieHeader = nil;
+        for (cookie in cookies) {
+            if (!cookieHeader) {
+                cookieHeader = [NSString stringWithFormat: @"%@=%@",[cookie name],[cookie value]];
+            } else {
+                cookieHeader = [NSString stringWithFormat: @"%@; %@=%@",cookieHeader,[cookie name],[cookie value]];
+            }
+        }
+        if (cookieHeader) {
+            [self.httpRequest setRequestHeaderField:@"Cookie" value:cookieHeader];
+        }
+    }
 }
 
 - (void)doRelease

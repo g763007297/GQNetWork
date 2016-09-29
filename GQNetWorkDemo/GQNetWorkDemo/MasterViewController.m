@@ -66,7 +66,7 @@
       .requestUrlChain(@"product/list")
       .mappingChain(map)
       .keyPathChain(@"result/rows")
-      onRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
+      onFinishedBlockChain:^(GQBaseDataRequest *request, GQMappingResult *result) {
         GQDPRINT(@"%@",result.rawDictionary);
         GQDPRINT(@"%@",result.array);
     }] startRequest];
