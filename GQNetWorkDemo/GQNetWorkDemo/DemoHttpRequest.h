@@ -7,16 +7,15 @@
 //
 
 #import "GQDataRequest.h"
-#import "GQChainDataRequest.h"
 
 @interface DemoHttpRequest : GQDataRequest
 
 @end
 
-@interface DemoHttpRequest1 : GQChainDataRequest
+@interface DemoHttpRequest1 : GQDataRequest
 
 @end
 
-@interface TestRequestHandlerHttpRequest : GQChainDataRequest
+@interface TestRequestHandlerHttpRequest : GQDataRequest
 
 @end
