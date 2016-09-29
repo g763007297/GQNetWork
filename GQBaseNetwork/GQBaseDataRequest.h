@@ -348,11 +348,11 @@
 - (BOOL)processDownloadFile;
 
 /**
- *  请求体的encoding
+ *  请求体的encoding  //default method is GQURLParameterEncoding
  *
  *  @return  parameterEncoding
  */
-- (GQParameterEncoding)getParameterEncoding;               //default method is GQURLParameterEncoding
+- (GQParameterEncoding)getParameterEncoding;
 
 /**
  *  请求方法  默认为GET  //default method is GET
