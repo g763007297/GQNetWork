@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		B6292D851CFE88A100FA12B4 /* ProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B6292D841CFE88A100FA12B4 /* ProductModel.m */; };
 		B669D4721CFD1C0F00CB8AC5 /* DemoHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */; };
+		B6708C871DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = B6708C861DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m */; };
 		B68867911CFEC86C00850830 /* GQMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = B688677D1CFEC86C00850830 /* GQMapping.m */; };
 		B68867921CFEC86C00850830 /* GQMappingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867811CFEC86C00850830 /* GQMappingManager.m */; };
 		B68867931CFEC86C00850830 /* GQMappingOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867831CFEC86C00850830 /* GQMappingOperation.m */; };
@@ -58,6 +59,8 @@
 		B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoHttpRequest.h; sourceTree = "<group>"; };
 		B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoHttpRequest.m; sourceTree = "<group>"; };
 		B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoNetworkConsts.h; sourceTree = "<group>"; };
+		B6708C851DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GQBaseDataRequest+GQBuildUploadDataCategory.h"; sourceTree = "<group>"; };
+		B6708C861DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GQBaseDataRequest+GQBuildUploadDataCategory.m"; sourceTree = "<group>"; };
 		B688677C1CFEC86C00850830 /* GQMapping.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQMapping.h; sourceTree = "<group>"; };
 		B688677D1CFEC86C00850830 /* GQMapping.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQMapping.m; sourceTree = "<group>"; };
 		B688677E1CFEC86C00850830 /* GQMappingConsts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQMappingConsts.h; sourceTree = "<group>"; };
@@ -261,6 +264,8 @@
 				B6911D141D9CB72B00DE7210 /* GQBaseDataRequest+GQBlockCategory.m */,
 				B6911D151D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.h */,
 				B6911D161D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.m */,
+				B6708C851DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.h */,
+				B6708C861DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m */,
 				DF9C7A681D1F9B6F006B0D18 /* GQDataRequestManager.h */,
 				DF9C7A691D1F9B6F006B0D18 /* GQDataRequestManager.m */,
 				DF9C7A6A1D1F9B6F006B0D18 /* GQMaskActivityView */,
@@ -470,6 +475,7 @@
 				DF9C7A8C1D1F9B6F006B0D18 /* GQFileCache.m in Sources */,
 				DF9C7A9E1D1F9B6F006B0D18 /* GQHttpRequestManager.m in Sources */,
 				DF9C7A9B1D1F9B6F006B0D18 /* GQReachability.m in Sources */,
+				B6708C871DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m in Sources */,
 				DF9C7A971D1F9B6F006B0D18 /* GQRequestParameter.m in Sources */,
 				B68867971CFEC86C00850830 /* GQObjectDataSource.m in Sources */,
 				DF9C7A8D1D1F9B6F006B0D18 /* GQUserDefaultCache.m in Sources */,

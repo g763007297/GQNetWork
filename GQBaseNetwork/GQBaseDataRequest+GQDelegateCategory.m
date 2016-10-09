@@ -18,6 +18,7 @@
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
                                                                 keyPath:nil
+                                                            uploadDatas:nil
                                                                 mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
@@ -35,6 +36,7 @@
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:parameterBody.subRequestUrl
                                                                 keyPath:parameterBody.keyPath
+                                                            uploadDatas:parameterBody.uploadDatas
                                                                 mapping:parameterBody.mapping
                                                          withParameters:parameterBody.parameters
                                                    withHeaderParameters:parameterBody.headerParameters
@@ -52,6 +54,7 @@
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
                                                                 keyPath:nil
+                                                            uploadDatas:nil
                                                                 mapping:nil
                                                          withParameters:params
                                                    withHeaderParameters:nil
@@ -69,6 +72,7 @@
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:subUrl
                                                                 keyPath:nil
+                                                            uploadDatas:nil
                                                                 mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
@@ -87,6 +91,7 @@
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:subUrl
                                                                 keyPath:nil
+                                                            uploadDatas:nil
                                                                 mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
@@ -107,7 +112,8 @@
  *  @param keyPath        需要过滤的key
  *  @param mapping        映射map
  *  @param params         请求体
- *  @param headerParameters         请求头
+ *  @param headerParameters  请求头
+ *  @param uploadDatas    上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
  *  @param indiView       maskview显示在你的view
  *  @param loadingMessage 正在加载弹框显示的文字
  *  @param cancelSubject  NSNotificationCenter 取消key
@@ -120,6 +126,7 @@
 - (id)initWithDelegate:(id<GQDataRequestDelegate>)delegate
      withSubRequestUrl:(NSString*)subUrl
                keyPath:(NSString*)keyPath
+           uploadDatas:(NSArray*)uploadDatas
                mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
   withHeaderParameters:(NSDictionary *)headerParameters
@@ -138,6 +145,8 @@
         self.delegate = delegate;
         
         _subRequestUrl = subUrl;
+    
+        _uploadDatas = uploadDatas;
         
         _indicatorView = indiView;
         
@@ -155,6 +164,5 @@
     }
     return self;
 }
-
 
 @end

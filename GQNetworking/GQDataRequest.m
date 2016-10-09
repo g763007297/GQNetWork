@@ -21,6 +21,7 @@
     self.httpRequest = [[GQHTTPRequest alloc]
                         initRequestWithParameters:params
                         headerParams:_headerParameters
+                        uploadDatas:_uploadDatas
                         URL:self.requestUrl
                         certificateData:[self getCertificateData]
                         saveToPath:_localFilePath

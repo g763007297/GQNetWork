@@ -75,4 +75,9 @@ typedef enum:NSInteger {
     }
 #endif
 
+static NSString * GQUploadKey= @"GQUploadKey";
+static NSString * GQUploadData= @"GQUploadData";
+static NSString * GQUploadFileName= @"GQUploadFileName";
+static NSString * GQUploadContentType= @"GQUploadContentType";
+
 #endif /* GQNetworkConsts_h */

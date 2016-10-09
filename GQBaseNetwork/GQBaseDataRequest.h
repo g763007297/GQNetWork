@@ -24,22 +24,25 @@
 {
 @protected
 
-    GQRequestMethod     _requestMethod;
+    GQRequestMethod         _requestMethod;
     
-    NSString            *_cacheKey;
+    NSString                *_cacheKey;
     
-    NSString            *_subRequestUrl;
+    NSString                *_subRequestUrl;
     
-    GQDataCacheManagerType _cacheType;
+    GQDataCacheManagerType  _cacheType;
     
-    NSString            *_keyPath;
+    NSString                *_keyPath;
     
-    UIView              *_indicatorView;
+    UIView                  *_indicatorView;
     
-    NSString            *_cancelSubject;
+    NSString                *_cancelSubject;
     
     //请求体
-    NSDictionary        *_parameters;
+    NSDictionary            *_parameters;
+    
+    //上传文件数组
+    NSArray<NSDictionary *>   *_uploadDatas;
     
     //请求头
     NSDictionary<NSString *,NSString *> *_headerParameters;
@@ -118,6 +121,11 @@
  *  请求头  type : NSDictionary
  */
 @property (nonatomic, copy, readonly) GQChainObjectRequest headerParametersChain;
+
+/**
+ *  上传文件数组  type : NSArray  如果只有一个文件并且不需要指定contentype时可以放在parameters里面  使用 GQBuildUploadDataCategory 中两个方法创建
+ */
+@property (nonatomic, copy, readonly) GQChainObjectRequest uploadDatasChain;
 
 /**
  *  请求参数字典   type : NSDictionary

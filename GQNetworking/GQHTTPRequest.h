@@ -34,6 +34,7 @@
 @property (nonatomic, strong) NSData                    *certificateData;
 @property (nonatomic, strong) NSMutableDictionary       *requestParameters;
 @property (nonatomic, strong) NSDictionary              *headerParams;
+@property (nonatomic, strong) NSArray                   *uploadDatas;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
 @property (nonatomic, strong) GQURLOperation            *urlOperation;
@@ -41,6 +42,7 @@
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
                                 headerParams:(NSDictionary *)headerParams
+                                 uploadDatas:(NSArray *)uploadDatas
                                          URL:(NSString *)url
                              certificateData:(NSData *)certificateData
                                   saveToPath:(NSString *)localFilePath

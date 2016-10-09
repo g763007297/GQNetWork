@@ -85,6 +85,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
                                 headerParams:(NSDictionary *)headerParams
+                                 uploadDatas:(NSArray *)uploadDatas
                                          URL:(NSString *)url
                              certificateData:(NSData *)certificateData
                                   saveToPath:(NSString *)localFilePath
@@ -107,6 +108,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         self.requestURL = url;
         self.certificateData = certificateData;
         self.requestEncoding = requestEncoding;
+        self.uploadDatas = uploadDatas;
         self.parmaterEncoding = parameterEncoding;
         self.requestMethod = requestMethod;
         self.localFilePath = localFilePath;
@@ -170,29 +172,42 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (void)addBodyData:(NSString *)key value:(id)value
 {
+    [self addBodyData:key value:value contentType:nil fileName:nil];
+}
+
+- (void)addBodyData:(NSString *)key value:(id)value contentType:(NSString *)contentType fileName:(NSString *)fileName
+{
     if(![value isKindOfClass:[NSData class]] && ![value isKindOfClass:[UIImage class]]) {
         [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"%@", value] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[@"\r\n" dataUsingEncoding:self.requestEncoding]];
     } else {
-        NSString *fileName = nil;
-        NSData *data = nil;
+        if (!fileName) {
+            if ([value isKindOfClass:[UIImage class]]) {
+                fileName = [NSString stringWithFormat:@"uploadfile_%@.png",key];
+            } else {
+                fileName = [NSString stringWithFormat:@"uploadfile_%@",key];
+            }
+        }
+        
+        NSData *data = value;
         if ([value isKindOfClass:[UIImage class]]) {
-            fileName = [NSString stringWithFormat:@"uploadfile_%@.png",key];
             data = UIImageJPEGRepresentation(value, 1.0f);
-        } else {
-            fileName = [NSString stringWithFormat:@"uploadfile_%@",key];
-            data = value;
         }
         
         [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", key, fileName] dataUsingEncoding:self.requestEncoding]];
-        if ([value isKindOfClass:[UIImage class]]) {
-            [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Type: image/png\r\n\r\n"] dataUsingEncoding:self.requestEncoding]];
-        } else {
-            [self.bodyData appendData:[@"Content-Type: application/octet-stream\r\n\r\n" dataUsingEncoding:self.requestEncoding]];
+        
+        if (!contentType) {
+            if ([value isKindOfClass:[UIImage class]]) {
+                contentType = @"image/png";
+            } else {
+                contentType = @"application/octet-stream";
+            }
         }
+        
+        [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",contentType] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:data];
         [self.bodyData appendData:[@"\r\n" dataUsingEncoding:self.requestEncoding]];
     }
@@ -214,9 +229,21 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }];
 }
 
+- (void)parseRequestDatas
+{
+    if (self.uploadDatas&&[self.uploadDatas count]) {
+        [self.uploadDatas enumerateObjectsUsingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL * stop) {
+            if ([obj isKindOfClass:[NSDictionary class]]&&[[obj allKeys] count] == 4) {
+                [self addBodyData:obj[GQUploadKey] value:obj[GQUploadData] contentType:obj[GQUploadContentType] fileName:obj[GQUploadFileName]];
+            }
+        }];
+    }
+}
+
 - (NSMutableURLRequest *)generateDELETERequest
 {
     [self parseRequestParameters];
+    [self parseRequestDatas];
     [self generateRequestBody];
     [self.request setHTTPMethod:@"DELETE"];
     return self.request;
@@ -225,6 +252,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 - (NSMutableURLRequest *)generatePUTRequest
 {
     [self parseRequestParameters];
+    [self parseRequestDatas];
     [self generateRequestBody];
     [self.request setHTTPMethod:@"PUT"];
     return self.request;
@@ -247,6 +275,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     [self parseRequestParameters];
     [self generateRequestBody];
+    [self parseRequestDatas];
     NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.requestEncoding));
     [self.request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@",charset] forHTTPHeaderField: @"Content-Type"];
     [self.request setHTTPMethod:@"POST"];
@@ -257,6 +286,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     [self parseRequestParameters];
     [self generateRequestBody];
+    [self parseRequestDatas];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
     [self.request setHTTPMethod:@"POST"];

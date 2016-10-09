@@ -19,6 +19,7 @@
                                                      withHeaderParameters:nil
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
+                                                              uploadDatas:nil
                                                                   keyPath:nil
                                                                   mapping:nil
                                                         withCancelSubject:nil
@@ -45,6 +46,7 @@
                                                      withHeaderParameters:nil
                                                         withSubRequestUrl:nil
                                                         withIndicatorView:nil
+                                                              uploadDatas:nil
                                                                   keyPath:nil
                                                                   mapping:nil
                                                         withCancelSubject:nil
@@ -72,6 +74,7 @@
                                                      withHeaderParameters:nil
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
+                                                              uploadDatas:nil
                                                                   keyPath:nil
                                                                   mapping:nil
                                                         withCancelSubject:nil
@@ -105,6 +108,7 @@
                                                      withHeaderParameters:parameterBody.headerParameters
                                                         withSubRequestUrl:parameterBody.subRequestUrl
                                                         withIndicatorView:parameterBody.indicatorView
+                                                              uploadDatas:parameterBody.uploadDatas
                                                                   keyPath:parameterBody.keyPath
                                                                   mapping:parameterBody.mapping
                                                         withCancelSubject:parameterBody.cancelSubject
@@ -136,6 +140,7 @@
                                                      withHeaderParameters:headerParameters
                                                         withSubRequestUrl:subUrl
                                                         withIndicatorView:nil
+                                                              uploadDatas:nil
                                                                   keyPath:nil
                                                                   mapping:nil
                                                         withCancelSubject:cancelSubject
@@ -162,6 +167,7 @@
  *  @param headerParameters         请求头
  *  @param subUrl                 拼接url
  *  @param indiView               正在加载maskview
+ *  @param uploadDatas            上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
  *  @param keyPath                需要过滤的key
  *  @param mapping                映射map
  *  @param loadingMessage         正在加载弹框显示的文字
@@ -182,6 +188,7 @@
     withHeaderParameters:(NSDictionary *)headerParameters
        withSubRequestUrl:(NSString*)subUrl
        withIndicatorView:(UIView*)indiView
+             uploadDatas:(NSArray*)uploadDatas
                  keyPath:(NSString*)keyPath
                  mapping:(GQObjectMapping*)mapping
        withCancelSubject:(NSString*)cancelSubject
