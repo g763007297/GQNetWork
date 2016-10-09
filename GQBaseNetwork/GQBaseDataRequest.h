@@ -13,8 +13,6 @@
 #import "GQNetworkConsts.h"
 #import "GQRequestParameter.h"
 #import "GQNetworkDefine.h"
-//#import "GQBaseDataRequest+GQDelegateCategory.h"
-//#import "GQBaseDataRequest+GQBlockCategory.h"
 
 @class GQObjectMapping;
 @class GQMappingResult;
@@ -325,7 +323,7 @@
 - (void)cancelRequest;
 
 /**
- *  处理结果
+ *  处理请求结果，如果需要自己解析数据那就覆盖该方法，但是需要处理结果逻辑
  *
  *  @param result 请求结果
  */
@@ -429,7 +427,7 @@
  *
  *  @return BOOL
  */
-- (BOOL)useResponseCookie;
+- (BOOL)useStorageCookie;
 
 /**
  *  设置userAgent   默认为系统参数

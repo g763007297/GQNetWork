@@ -62,6 +62,17 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     [self.request setTimeoutInterval:seconds];
 }
 
+- (void)applyRequestHeader
+{
+    if (self.headerParams&&[[self.headerParams allKeys] count]>0) {
+        [self.headerParams enumerateKeysAndObjectsUsingBlock:^(NSString * key, NSString * obj, BOOL * stop) {
+            if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
+                [self setRequestHeaderField:key value:obj];
+            }
+        }];
+    }
+}
+
 - (void)addPostForm:(NSString *)key value:(NSString *)value
 {
     [self.requestParameters setObject:value forKey:key];
@@ -73,9 +84,10 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 }
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
+                                headerParams:(NSDictionary *)headerParams
                                          URL:(NSString *)url
                              certificateData:(NSData *)certificateData
-                                  saveToPath:(NSString *)filePath
+                                  saveToPath:(NSString *)localFilePath
                              requestEncoding:(NSStringEncoding)requestEncoding
                             parmaterEncoding:(GQParameterEncoding)parameterEncoding
                                requestMethod:(GQRequestMethod)requestMethod
@@ -97,11 +109,15 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         self.requestEncoding = requestEncoding;
         self.parmaterEncoding = parameterEncoding;
         self.requestMethod = requestMethod;
-        self.filePath = filePath;
+        self.localFilePath = localFilePath;
         if (parameters) {
             self.requestParameters = [[NSMutableDictionary alloc] initWithDictionary:parameters];
         }else{
             self.requestParameters = [[NSMutableDictionary alloc] initWithCapacity:0];
+        }
+        
+        if (headerParams) {
+            self.headerParams = [headerParams copy];
         }
         self.bodyData = [[NSMutableData alloc] init];
         self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.requestURL]];
@@ -164,7 +180,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         NSData *data = nil;
         if ([value isKindOfClass:[UIImage class]]) {
             fileName = [NSString stringWithFormat:@"uploadfile_%@.png",key];
-            data = UIImageJPEGRepresentation(value, 0.5f);
+            data = UIImageJPEGRepresentation(value, 1.0f);
         } else {
             fileName = [NSString stringWithFormat:@"uploadfile_%@",key];
             data = value;
@@ -218,7 +234,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     if ([[self.requestParameters allKeys] count]) {
         NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
-        NSData *jsonData = [jsonString dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *jsonData = [jsonString dataUsingEncoding:self.requestEncoding];
         [self.bodyData appendData:jsonData];
     }
     [self generateRequestBody];
@@ -231,7 +247,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     [self parseRequestParameters];
     [self generateRequestBody];
-    [self.request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField: @"Content-Type"];
+    NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.requestEncoding));
+    [self.request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@",charset] forHTTPHeaderField: @"Content-Type"];
     [self.request setHTTPMethod:@"POST"];
     return  self.request;
 }
@@ -262,6 +279,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         _onRequestFailedBlock(error);
         return;
     }
+    
     switch (self.requestMethod) {
         case GQRequestMethodGet:{
             [self generateGETRequest];
@@ -294,11 +312,13 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         }
             break;
     }
+    //添加请求头
+    [self applyRequestHeader];
     
     GQWeakify(self);
     self.urlOperation =  [[GQURLOperation alloc]
                           initWithURLRequest:self.request
-                          saveToPath:self.filePath
+                          saveToPath:self.localFilePath
                           certificateData:self.certificateData
                           progress:^(float progress) {
                               GQStrongify(self);

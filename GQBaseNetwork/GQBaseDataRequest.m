@@ -148,6 +148,22 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
         [_userInfo addEntriesFromDictionary:[self getStaticParams]];
     }
     
+    NSMutableDictionary *headerParams = [[NSMutableDictionary alloc] initWithDictionary:_headerParameters];
+    if ([self getStaticHeaderParams]) {
+        [headerParams addEntriesFromDictionary:[self getStaticHeaderParams]];
+    }
+    
+    if ([self useStorageCookie]) {
+        NSString *cookie = [self storageCookies];
+        [headerParams setObject:cookie forKey:@"Cookie"];
+    }
+    
+    if ([self userAgentString]) {
+        [headerParams setObject:[self userAgentString] forKey:@"User-Agent"];
+    }
+    
+    _headerParameters = headerParams;
+    
     //是否使用假数据
     if ([self useDumpyData]) {
         //处理假数据
@@ -410,6 +426,23 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     }
 }
 
+- (NSString *)storageCookies{
+    NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:self.requestUrl]];
+    if ([cookies count] > 0) {
+        NSHTTPCookie *cookie;
+        NSString *cookieHeader = nil;
+        for (cookie in cookies) {
+            if (!cookieHeader) {
+                cookieHeader = [NSString stringWithFormat: @"%@=%@",[cookie name],[cookie value]];
+            } else {
+                cookieHeader = [NSString stringWithFormat: @"%@; %@=%@",cookieHeader,[cookie name],[cookie value]];
+            }
+        }
+        return cookieHeader;
+    }
+    return nil;
+}
+
 - (BOOL)isDownloadFileRequest
 {
     return _localFilePath && [_localFilePath length];
@@ -484,7 +517,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     return nil;
 }
 
-- (BOOL)useResponseCookie
+- (BOOL)useStorageCookie
 {
     return NO;
 }
