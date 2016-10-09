@@ -69,7 +69,6 @@ static NSInteger GQHTTPRequestTaskCount = 0;
                    onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
                    onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
                             completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
-
 {
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
@@ -77,7 +76,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self.certificateData = certificateData;
     self.operationSavePath = savePath;
     self.saveDataDispatchGroup = dispatch_group_create();
-    self.saveDataDispatchQueue = dispatch_queue_create("com.ISS.GQHTTPRequest", DISPATCH_QUEUE_SERIAL);
+    self.saveDataDispatchQueue = dispatch_queue_create("com.ISS.GQRequest", DISPATCH_QUEUE_SERIAL);
     
     if (onStartBlock) {
         _onRequestStartBlock = [onStartBlock copy];

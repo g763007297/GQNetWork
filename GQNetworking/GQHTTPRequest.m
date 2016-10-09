@@ -384,7 +384,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 {
     [self.urlOperation cancel];
     if (_onRequestCanceled) {
-        _onRequestCanceled(self.urlOperation);
+        _onRequestCanceled();
     }
 }
 
