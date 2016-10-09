@@ -32,7 +32,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     self.request = nil;
     self.bodyData = nil;
     self.requestParameters = nil;
-    self.filePath = nil;
+    self.localFilePath = nil;
     self.certificateData = nil;
 }
 
@@ -44,7 +44,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         self.urlOperation = nil;
         self.requestURL = nil;
         self.requestParameters = nil;
-        self.filePath = nil;
+        self.localFilePath = nil;
         self.certificateData = nil;
         self.request = nil;
         self.bodyData = nil;
