@@ -6,12 +6,11 @@
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import "GQDataCacheManager.h"
 #import "GQMappingResult.h"
-#import "GQNetworkConsts.h"
 #import "GQRequestParameter.h"
+
+#import "GQNetworkConsts.h"
 #import "GQNetworkDefine.h"
 
 @class GQObjectMapping;

@@ -6,10 +6,7 @@
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#import "GQBaseDataRequest.h"
-#import "GQHTTPRequest.h"
-#import "GQBaseDataRequest+GQBlockCategory.h"
-#import "GQBaseDataRequest+GQDelegateCategory.h"
+#import "GQNetworkHeader.h"
 
 @interface GQDataRequest : GQBaseDataRequest
 
