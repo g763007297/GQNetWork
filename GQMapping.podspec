@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQMapping"
-  s.version      = "1.2.7"
+  s.version      = "1.2.8"
   s.summary      = "json->model,自带model版本控制"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
