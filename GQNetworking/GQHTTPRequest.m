@@ -5,13 +5,14 @@
 //  Created by 高旗 on 16/5/27.
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
-
+#import <UIKit/UIKit.h>
 #import "GQHTTPRequest.h"
 #import "GQQueryStringPair.h"
 #import "GQHttpRequestManager.h"
 #import "GQNetworkTrafficManager.h"
 #import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
+#import "GQSessionOperation.h"
 #import "GQNetworkConsts.h"
 
 @interface GQHTTPRequest()
@@ -344,70 +345,83 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     }
     //添加请求头
     [self applyRequestHeader];
+    Class operationClass;
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0) {
+        operationClass = [GQSessionOperation class];
+    }else {
+        operationClass = [GQURLOperation class];
+    }
     
-    GQWeakify(self);
-    self.urlOperation =  [[GQURLOperation alloc]
-                          initWithURLRequest:self.request
-                          saveToPath:self.localFilePath
-                          certificateData:self.certificateData
-                          progress:^(float progress) {
-                              GQStrongify(self);
-                              if (self&&self->_onRequestProgressChangedBlock) {
-                                  self->_onRequestProgressChangedBlock(progress);
-                              }
-                          }
-                          onRequestStart:^(GQURLOperation *urlConnectionOperation) {
-                              GQStrongify(self);
-                              if (self&&self->_onRequestStartBlock) {
-                                  self->_onRequestStartBlock();
-                              }
-                          }
-                          onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
-                              GQStrongify(self);
-                              if (self) {
-                                  if (self->_onRechiveResponseBlock) {
-                                      return self->_onRechiveResponseBlock(response);
-                                  }
-                              }else{
-                                  return NSURLSessionResponseCancel;
-                              }
-                              return NSURLSessionResponseAllow;
-                          }
-                          onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
-                              GQStrongify(self);
-                              if (self&&self->_onWillHttpRedirection) {
-                                  return self->_onWillHttpRedirection(request,response);
-                              }
-                              return request;
-                          }
-                          onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
-                              GQStrongify(self);
-                              if (self&&self->_onNeedNewBodyStream) {
-                                  return self->_onNeedNewBodyStream(originalStream);
-                              }
-                              return originalStream;
-                          }
-                          onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
-                              GQStrongify(self);
-                              if (self&&self->_onWillCacheResponse) {
-                                  return self->_onWillCacheResponse(proposedResponse);
-                              }
-                              return proposedResponse;
-                          }
-                          completion:^(GQURLOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
-                              GQStrongify(self);
-                              if (requestSuccess) {
-                                  [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
-                                  if (self&&self->_onRequestFinishBlock) {
-                                      self->_onRequestFinishBlock(self.urlOperation.responseData);
-                                  }
-                              }else{
-                                  if (self&&self->_onRequestFailedBlock) {
-                                      self->_onRequestFailedBlock(error);
+    if (operationClass) {
+        GQWeakify(self);
+        self.urlOperation =  [[operationClass alloc]
+                              initWithURLRequest:self.request
+                              saveToPath:self.localFilePath
+                              certificateData:self.certificateData
+                              progress:^(float progress) {
+                                  GQStrongify(self);
+                                  if (self&&self->_onRequestProgressChangedBlock) {
+                                      self->_onRequestProgressChangedBlock(progress);
                                   }
                               }
-                          }];
-    [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlOperation];
+                              onRequestStart:^(GQBaseOperation *urlConnectionOperation) {
+                                  GQStrongify(self);
+                                  if (self&&self->_onRequestStartBlock) {
+                                      self->_onRequestStartBlock();
+                                  }
+                              }
+                              onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
+                                  GQStrongify(self);
+                                  if (self) {
+                                      if (self->_onRechiveResponseBlock) {
+                                          return self->_onRechiveResponseBlock(response);
+                                      }
+                                  }else{
+                                      return NSURLSessionResponseCancel;
+                                  }
+                                  return NSURLSessionResponseAllow;
+                              }
+                              onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
+                                  GQStrongify(self);
+                                  if (self&&self->_onWillHttpRedirection) {
+                                      return self->_onWillHttpRedirection(request,response);
+                                  }
+                                  return request;
+                              }
+                              onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
+                                  GQStrongify(self);
+                                  if (self&&self->_onNeedNewBodyStream) {
+                                      return self->_onNeedNewBodyStream(originalStream);
+                                  }
+                                  return originalStream;
+                              }
+                              onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
+                                  GQStrongify(self);
+                                  if (self&&self->_onWillCacheResponse) {
+                                      return self->_onWillCacheResponse(proposedResponse);
+                                  }
+                                  return proposedResponse;
+                              }
+                              completion:^(GQBaseOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
+                                  GQStrongify(self);
+                                  if (requestSuccess) {
+                                      [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
+                                      if (self&&self->_onRequestFinishBlock) {
+                                          self->_onRequestFinishBlock(self.urlOperation.responseData);
+                                      }
+                                  }else{
+                                      if (self&&self->_onRequestFailedBlock) {
+                                          self->_onRequestFailedBlock(error);
+                                      }
+                                  }
+                              }];
+        [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlOperation];
+    }else {
+        NSError *error = [[NSError alloc] initWithDomain:@"class missing" code:-110 userInfo:@{@"userInfo":@"class missing"}];
+        if (self&&self->_onRequestFailedBlock) {
+            self->_onRequestFailedBlock(error);
+        }
+    }
 }
 
 - (void)cancelRequest

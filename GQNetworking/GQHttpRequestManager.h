@@ -10,7 +10,7 @@
 
 @interface GQHttpRequestManager : NSObject
 
-@property (nonatomic,strong) NSOperationQueue *connectionQueue;
+@property (nonatomic, strong) NSOperationQueue *connectionQueue;
 
 + (GQHttpRequestManager *)sharedHttpRequestManager;
 

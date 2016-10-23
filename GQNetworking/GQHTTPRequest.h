@@ -10,7 +10,7 @@
 #import "GQHTTPRequestManager.h"
 #import "GQNetworkConsts.h"
 
-@class GQURLOperation;
+@class GQBaseOperation;
 
 @class GQURLSessionOpetation;
 
@@ -37,7 +37,7 @@
 @property (nonatomic, strong) NSArray                   *uploadDatas;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, strong) GQURLOperation            *urlOperation;
+@property (nonatomic, strong) GQBaseOperation           *urlOperation;
 @property (nonatomic, assign) GQParameterEncoding       parmaterEncoding;
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
