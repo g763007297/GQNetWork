@@ -337,7 +337,7 @@ static NSInteger version = 0;
     return propertyNames;
 }
 
-+ (void)enumerateCustomClass:(GQEnumerateSuper)block{
++ (void)enumerateCustomClass:(GQEnumerateSuper)block {
     if (block == nil) {
         return;
     }
@@ -373,7 +373,7 @@ static NSInteger version = 0;
     return propertiesValuesDic;
 }
 
-- (id)getValue:(NSString *)property{
+- (id)getValue:(NSString *)property {
     SEL getSel = NSSelectorFromString(property);
     id valueObj = nil;
     if ([self respondsToSelector:getSel]) {

@@ -14,7 +14,7 @@
 #import "GQObjectMapping.h"
 #import "GQDebug.h"
 
-BOOL canConvertToNumber(NSString *string){
+BOOL canConvertToNumber(NSString *string) {
     BOOL can = FALSE;
     if (string && [string length]) {
         can = TRUE;
