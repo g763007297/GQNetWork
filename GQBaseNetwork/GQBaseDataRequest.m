@@ -17,13 +17,13 @@ static NSString *defaultUserAgent = nil;
 
 @interface GQBaseDataRequest()
 {
-    BOOL     _usingCacheData;
+    BOOL                _usingCacheData;
     
     GQParameterEncoding _parmaterEncoding;
     
     NSInteger           _timeOutInterval;
     
-    NSDate   *_requestStartDate;
+    NSDate              *_requestStartDate;
     
     GQMaskActivityView  *_maskActivityView;
 }
@@ -58,7 +58,8 @@ static NSString *defaultUserAgent = nil;
 @synthesize startRequestChain = _startRequestChain;
 @synthesize timeOutIntervalChain = _timeOutIntervalChain;
 
-+ (instancetype)prepareRequset{
++ (instancetype)prepareRequset
+{
     id request = [[[self class] alloc] init];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
@@ -90,7 +91,8 @@ GQChainRequestDefine(onCanceledBlockChain, onRequestCanceled, GQRequestCanceled,
 GQChainRequestDefine(onFailedBlockChain, onRequestFailed, GQRequestFailed, GQChainBlockRequestFailed);
 GQChainRequestDefine(onProgressChangedBlockChain, onProgressChanged, GQProgressChanged, GQChainBlockProgressChanged);
 
-- (GQChainBlockStartRequest)startRequestChain{
+- (GQChainBlockStartRequest)startRequestChain
+{
     GQWeakify(self);
     if (!_startRequestChain) {
         _startRequestChain = ^(){
@@ -111,7 +113,8 @@ GQMethodRequestDefine(onCanceledBlockChain,GQRequestCanceled);
 GQMethodRequestDefine(onFailedBlockChain,GQRequestFailed);
 GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
 
-- (void)startRequest{
+- (void)startRequest
+{
     NSAssert(!_loading, @"The request has already begun");
     
     _parmaterEncoding = [self getParameterEncoding];

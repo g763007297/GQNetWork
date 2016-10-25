@@ -54,7 +54,7 @@
     @autoreleasepool {
         NSString *key = [dic objectForKey:@"key"];
         NSObject *data = [dic objectForKey:@"data"];
-        [self saveObjectWithKey:_keys key:UD_KEY_DATA_CACHE_KEYS];
+        [self saveObjectWithKey:_keys key:GQ_UD_KEY_DATA_CACHE_KEYS];
         [self saveObjectWithKey:data key:key];
     }
 }
@@ -110,7 +110,7 @@
 {
     _cacheInQueue = [[NSOperationQueue alloc] init];
     [_cacheInQueue setMaxConcurrentOperationCount:1];
-    NSArray *keysArray = [self getObjectWithKey:UD_KEY_DATA_CACHE_KEYS];
+    NSArray *keysArray = [self getObjectWithKey:GQ_UD_KEY_DATA_CACHE_KEYS];
     if (keysArray) {
         _keys = [[NSMutableArray alloc] initWithArray:keysArray];
     }
@@ -123,7 +123,7 @@
 
 - (void)doSave
 {
-    [self saveObjectWithKey:_keys key:UD_KEY_DATA_CACHE_KEYS];
+    [self saveObjectWithKey:_keys key:GQ_UD_KEY_DATA_CACHE_KEYS];
 }
 
 - (void)clearAllCache
@@ -142,7 +142,7 @@
 {
     NSArray *allKeys = [NSArray arrayWithArray:_keys];
     [_keys removeAllObjects];
-    [self removeFileWithKey:UD_KEY_DATA_CACHE_KEYS];
+    [self removeFileWithKey:GQ_UD_KEY_DATA_CACHE_KEYS];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         for (NSString *key in allKeys) {
             [self removeFileWithKey:key];

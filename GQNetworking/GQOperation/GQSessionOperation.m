@@ -31,7 +31,7 @@
                  onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
                    onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
                    onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
-                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
+                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock
 {
     self = [super initWithURLRequest:urlRequest
                           saveToPath:savePath
@@ -152,7 +152,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     }
 }
 
-- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data
 {
     [self handleResponseData:data];

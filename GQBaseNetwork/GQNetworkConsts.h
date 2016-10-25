@@ -32,8 +32,8 @@ typedef enum:NSInteger {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifndef USER_DEFAULT
-    #define USER_DEFAULT [NSUserDefaults standardUserDefaults]
+#ifndef GQ_USER_DEFAULT
+    #define GQ_USER_DEFAULT [NSUserDefaults standardUserDefaults]
 #endif
 //强弱引用
 #ifndef GQWeakify

@@ -36,7 +36,7 @@
 
 - (id)unarchivedObjectWithKey:(NSString*)key
 {
-    id objectData = [USER_DEFAULT objectForKey:key];
+    id objectData = [GQ_USER_DEFAULT objectForKey:key];
     return [NSKeyedUnarchiver unarchiveObjectWithData:objectData];
 }
 
@@ -45,9 +45,9 @@
     @autoreleasepool {
         NSString *key = [dic objectForKey:@"key"];
         NSObject *data = [dic objectForKey:@"data"];
-        [USER_DEFAULT setObject:[self archivedObjectWithObject:_keys] forKey:UD_KEY_DATA_CACHE_KEYS];
-        [USER_DEFAULT setObject:[self archivedObjectWithObject:data] forKey:key];
-        [USER_DEFAULT synchronize];
+        [GQ_USER_DEFAULT setObject:[self archivedObjectWithObject:_keys] forKey:GQ_UD_KEY_DATA_CACHE_KEYS];
+        [GQ_USER_DEFAULT setObject:[self archivedObjectWithObject:data] forKey:key];
+        [GQ_USER_DEFAULT synchronize];
     }
 }
 
@@ -77,8 +77,8 @@
     [_cacheInQueue setMaxConcurrentOperationCount:1];
     
     //restore all cached keys, otherwise create an empty nsmutablearray
-    if ([USER_DEFAULT objectForKey:UD_KEY_DATA_CACHE_KEYS]) {
-        NSArray *keysArray = [self unarchivedObjectWithKey:UD_KEY_DATA_CACHE_KEYS];
+    if ([GQ_USER_DEFAULT objectForKey:GQ_UD_KEY_DATA_CACHE_KEYS]) {
+        NSArray *keysArray = [self unarchivedObjectWithKey:GQ_UD_KEY_DATA_CACHE_KEYS];
         _keys = [[NSMutableArray alloc] initWithArray:keysArray];
     }
     else{
@@ -109,9 +109,9 @@
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         for (NSString *key in allKeys) {
-            [USER_DEFAULT removeObjectForKey:key];
+            [GQ_USER_DEFAULT removeObjectForKey:key];
         }
-        [USER_DEFAULT synchronize];
+        [GQ_USER_DEFAULT synchronize];
     });
 }
 
@@ -158,7 +158,7 @@
     if ([self hasObjectInMemoryByKey:key]) {
         return _memoryCachedObjects[key];
     }else {
-        NSObject *obj = (NSObject *)[NSKeyedUnarchiver unarchiveObjectWithData:[USER_DEFAULT objectForKey:key]];
+        NSObject *obj = (NSObject *)[NSKeyedUnarchiver unarchiveObjectWithData:[GQ_USER_DEFAULT objectForKey:key]];
         if (obj) {
             [_memoryCachedObjects setObject:obj forKey:key];
         }
@@ -192,14 +192,14 @@
     }
     [_keys removeObject:key];
     [_memoryCachedObjects removeObjectForKey:key];
-    [USER_DEFAULT removeObjectForKey:key];
+    [GQ_USER_DEFAULT removeObjectForKey:key];
     [self doSave];
 }
 
 - (void)doSave
 {
-    [USER_DEFAULT setObject:[NSKeyedArchiver archivedDataWithRootObject:_keys] forKey:UD_KEY_DATA_CACHE_KEYS];
-    [USER_DEFAULT synchronize];
+    [GQ_USER_DEFAULT setObject:[NSKeyedArchiver archivedDataWithRootObject:_keys] forKey:GQ_UD_KEY_DATA_CACHE_KEYS];
+    [GQ_USER_DEFAULT synchronize];
 }
 
 

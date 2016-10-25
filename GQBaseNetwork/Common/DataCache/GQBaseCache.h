@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-#define UD_KEY_DATA_CACHE_KEYS @"UD_KEY_DATA_CACHE_KEYS"
+#define GQ_UD_KEY_DATA_CACHE_KEYS @"GQ_UD_KEY_DATA_CACHE_KEYS"
 
 @interface GQBaseCache : NSObject
 

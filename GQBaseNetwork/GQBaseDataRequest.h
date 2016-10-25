@@ -46,23 +46,23 @@
     //请求头
     NSDictionary<NSString *,NSString *> *_headerParameters;
     
-    NSString            *_localFilePath;
+    NSString                    *_localFilePath;
     
     //callback stuffs
-    GQRequestStart      _onRequestStart;
-    GQRequestRechiveResponse _onRequestRechiveResponse;
-    GQRequestWillRedirection _onRequestWillRedirection;
-    GQRequestNeedNewBodyStream _onRequestNeedNewBodyStream;
-    GQRequestWillCacheResponse _onRequestWillCacheRespons;
+    GQRequestStart              _onRequestStart;
+    GQRequestRechiveResponse    _onRequestRechiveResponse;
+    GQRequestWillRedirection    _onRequestWillRedirection;
+    GQRequestNeedNewBodyStream  _onRequestNeedNewBodyStream;
+    GQRequestWillCacheResponse  _onRequestWillCacheRespons;
     
-    GQRequestFinished   _onRequestFinished;
-    GQRequestCanceled   _onRequestCanceled;
-    GQRequestFailed     _onRequestFailed;
-    GQProgressChanged   _onProgressChanged;
+    GQRequestFinished           _onRequestFinished;
+    GQRequestCanceled           _onRequestCanceled;
+    GQRequestFailed             _onRequestFailed;
+    GQProgressChanged           _onProgressChanged;
     
-    GQObjectMapping     *_mapping;
+    GQObjectMapping             *_mapping;
     //the finally mapping result
-    GQMappingResult     *_responseResult;
+    GQMappingResult             *_responseResult;
 }
 
 @property (nonatomic, weak) id<GQDataRequestDelegate> delegate;//代理
