@@ -47,6 +47,53 @@
     }];
 ```
 
+## HTTPS支持
+
+使用类继承GQBaseDataRequest并覆写下面方法
+
+```objc
+- (NSData *)getCertificateData
+{
+	return [NSData dataWithContentsOfFile:证书文件];
+}
+```
+
+## 自定义数据解析 原始数据->OC对象
+1.使用类继承GQBaseDataRequest并覆写下面方法:
+
+```objc
+- (GQRequestDataHandler *)generateRequestHandler;
+```
+2.使用一个自定义类继承于GQRequestDataHandler类,覆写下面方法，在该方法里面实现自己的解析流程:
+
+```objc
+- (id)parseJsonString:(NSString *)resultString error:(NSError **)error;
+```
+## 数据缓存
+
+1.通过提供的方法分别传值到cacheKey(缓存key)和cacheType(缓存类型)就可以实现简单的UserDefault或者文件缓存，也可以缓存在内存中。
+2.在使用缓存数据中可以通过类继承GQBaseDataRequest并覆写下面方法判断是否使用缓存数据:
+
+```objc
+- (BOOL)onReceivedCacheData:(NSObject*)cacheData
+```
+
+## 假数据的使用
+1.使用类继承GQBaseDataRequest并覆写下面方法返回是否使用假数据，默认为不使用:
+
+```objc
+- (BOOL)useDumpyData;
+```
+2.如果上面方法返回yes使用假数据的话则覆写下面方法返回假数据，默认为json字符串:
+
+```objc
+- (NSString*)dumpyResponseString;
+```
+
+## 加载提示框
+
+1.本框架自带加载提示框，如需使用加载提示框则通过提供的方法将需要显示提示框的父view传到indicatorView。
+
 # Hard Use
 
 前面配置和Simple Use一样，还有高级用法:
