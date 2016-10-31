@@ -6,6 +6,15 @@
 
 继承形式的网络请求框架，一步到位，自带关系映射(Mapping)，支持流量统计，支持https请求，请求数据缓存机制,支持链式调用,支持model版本控制, 支持block，delegate返回请求数据。
 
+##设计图
+1.GQNetwork网络请求部分架构图
+
+![GQNetwork网络请求部分架构图](https://github.com/g763007297/GQNetWork/blob/master/Image/GQNetwork网络请求部分架构图.png)
+
+2.GQNetwork数据缓存与解析及其他小模块设计图
+
+![GQNetwork数据缓存与解析及其他小模块设计图](https://github.com/g763007297/GQNetWork/blob/master/Image/GQNetwork数据缓存与解析及其他小模块设计图.png)
+
 # Simple Use
 
 ##CocoaPods
