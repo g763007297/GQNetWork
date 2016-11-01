@@ -76,7 +76,7 @@
 2.使用一个自定义类继承于GQRequestDataHandler类,覆写下面方法，在该方法里面实现自己的解析流程:
 
 ```objc
-- (id)parseJsonString:(NSString *)resultString error:(NSError **)error;
+- (id)parseDataString:(NSString *)resultString error:(NSError **)error;
 ```
 ## 数据缓存
 
