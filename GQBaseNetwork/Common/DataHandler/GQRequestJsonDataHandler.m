@@ -13,7 +13,7 @@
 /*!
  * default implementation:using NSJSONSerialization to generate a NSMutableDictionary
  */
-- (id)parseJsonString:(NSString *)resultString error:(NSError **)error
+- (id)parseDataString:(NSString *)resultString error:(NSError **)error
 {
     id result = nil;
     resultString = [resultString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];

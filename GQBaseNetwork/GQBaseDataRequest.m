@@ -369,7 +369,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
             dispatch_async(dispatch_get_main_queue(), callback);
         }else{
             _requestDataHandler = [self generateRequestHandler];
-            id response = [self.requestDataHandler parseJsonString:rawResultString error:&errorInfo];
+            id response = [self.requestDataHandler parseDataString:rawResultString error:&errorInfo];
             if (errorInfo) {
                 errorInfo = [NSError errorWithDomain:errorInfo?errorInfo.domain:@"" code:GQRequestErrorParse userInfo:errorInfo?errorInfo.userInfo:@{}];
                 success = FALSE;
@@ -525,7 +525,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 }
 
-- (GQRequestDataHandler*)generateRequestHandler
+- (GQRequestDataHandler *)generateRequestHandler
 {
     return [[GQRequestJsonDataHandler alloc] init];
 }

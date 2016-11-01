@@ -7,13 +7,13 @@
 //
 
 #import "GQRequestDataHandler.h"
+#import "GQNetworkConsts.h"
 
 @implementation GQRequestDataHandler
 
-- (id)parseJsonString:(NSString *)resultString error:(NSError **)error
+- (id)parseDataString:(NSString *)resultString error:(NSError **)error
 {
-    NSString *reason = [NSString stringWithFormat:@"This is a abstract method. You should subclass of ITTRequestDataHandler and override it!"];
-    @throw [NSException exceptionWithName:@"Logic Error" reason:reason userInfo:nil];
+    SHOULDOVERRIDE(@"GQRequestDataHandler", NSStringFromClass([self class]));
     return nil;
 }
 

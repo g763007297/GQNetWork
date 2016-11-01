@@ -13,25 +13,25 @@
 
 - (BOOL)hasObjectInCacheByKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
     return TRUE;
 }
 
 - (BOOL)hasObjectInMemoryByKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
     return TRUE;
 }
 
 - (id)getCachedObjectByKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
     return nil;
 }
 
 - (void)restore
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 - (void)clearAllCache
@@ -44,27 +44,27 @@
 
 - (void)clearMemoryCache
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 - (void)addObject:(NSObject*)obj forKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 - (void)addObjectToMemory:(NSObject*)obj forKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 - (void)removeObjectInCacheByKey:(NSString*)key
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 - (void)doSave
 {
-    SHOULDOVERRIDE(@"GQCacheDao", NSStringFromClass([self class]));
+    SHOULDOVERRIDE(@"GQBaseCache", NSStringFromClass([self class]));
 }
 
 

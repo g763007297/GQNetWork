@@ -10,6 +10,6 @@
 
 @interface GQRequestDataHandler : NSObject
 
-- (id)parseJsonString:(NSString *)resultString error:(NSError **)error;
+- (id)parseDataString:(NSString *)resultString error:(NSError **)error;
 
 @end
