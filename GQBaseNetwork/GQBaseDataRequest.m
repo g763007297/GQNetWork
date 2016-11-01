@@ -11,7 +11,7 @@
 #import "GQRequestDataHandleHeader.h"
 #import "GQMappingHeader.h"
 #import "GQMaskActivityView.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
 static NSString *defaultUserAgent = nil;
 
@@ -117,6 +117,8 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
 {
     NSAssert(!_loading, @"The request has already begun");
     
+    [GQDebugLog setUpConsoleLog];
+    
     _parmaterEncoding = [self getParameterEncoding];
     _loading = NO;
     
@@ -185,7 +187,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
         if (!useCurrentCache) {
             _usingCacheData = NO;
             [self doRequestWithParams:_userInfo];
-            GQDINFO(@"request %@ is created , url is \"%@\"", [self class],_requestUrl);
+            [GQDebugLog infoMessage:[NSString stringWithFormat:@"request %@ is created , url is \"%@\"", [self class],_requestUrl]];
         }else{
             _usingCacheData = YES;
             [self performSelector:@selector(doRelease) withObject:nil afterDelay:0.1f];
@@ -208,8 +210,8 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
 
 - (void)dealloc
 {
-    GQDINFO(@"request %@ is released, time spend on this request:%f seconds",
-            [self class],[[NSDate date] timeIntervalSinceDate:_requestStartDate]);
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"request %@ is released, time spend on this request:%f seconds",
+                             [self class],[[NSDate date] timeIntervalSinceDate:_requestStartDate]]];
     if (_indicatorView) {
         //make sure indicator is closed
         [self showIndicator:NO];
@@ -431,7 +433,8 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     }
 }
 
-- (NSString *)storageCookies{
+- (NSString *)storageCookies
+{
     NSArray *cookies = [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookiesForURL:[NSURL URLWithString:self.requestUrl]];
     if ([cookies count] > 0) {
         NSHTTPCookie *cookie;
@@ -468,6 +471,16 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
         NSData *jsonData = [[self dumpyResponseString] dataUsingEncoding:[self getResponseEncoding]];
         [self handleResponseString:jsonData];
     });
+}
+
++ (void)disableLogMessage
+{
+    [GQDebugLog disableConsoleLog];
+}
+
++ (void)enableLogMessage
+{
+    [GQDebugLog enableConsoleLog];
 }
 
 #pragma mark -- override method(@optional)

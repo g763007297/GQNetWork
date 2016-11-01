@@ -7,13 +7,13 @@
 //
 
 #import "GQMapping.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
 @implementation GQMapping
 
 - (void)dealloc
 {
-    GQDINFO(@"%@ dealloc", NSStringFromClass([self class]));
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"%@ dealloc", NSStringFromClass([self class])]];
 }
 
 @end

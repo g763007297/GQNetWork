@@ -7,7 +7,7 @@
 //
 
 #import "GQBaseCache.h"
-#import "GQDebug.h"
+#import "GQNetworkConsts.h"
 
 @implementation GQBaseCache
 

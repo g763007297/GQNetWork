@@ -7,7 +7,7 @@
 //
 
 #import "GQFileCache.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
 @interface GQFileCache()
 {
@@ -73,13 +73,13 @@
     if (![[NSFileManager defaultManager] fileExistsAtPath:directory isDirectory:NULL]) {
         result = [[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:TRUE attributes:NULL error:NULL];
         if (result) {
-            GQDINFO(@"create directory successfully!");
+            [GQDebugLog infoMessage:@"create directory successfully!"];
         }
     }
     NSString *filePath = [self getFilePathWithKey:key];
     result = [NSKeyedArchiver archiveRootObject:object toFile:filePath];
     if (result) {
-        GQDINFO(@"save successfully!");
+        [GQDebugLog infoMessage:@"save successfully!"];
     }
 }
 

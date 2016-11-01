@@ -31,6 +31,9 @@ typedef enum:NSInteger {
 }GQRequestError;
 
 ////////////////////////////////////////////////////////////////////////////////
+#ifndef SHOULDOVERRIDE
+    #define SHOULDOVERRIDE(basename, subclassname){ NSAssert([basename isEqualToString:subclassname], @"subclass should override the method!");}
+#endif
 
 #ifndef GQ_USER_DEFAULT
     #define GQ_USER_DEFAULT [NSUserDefaults standardUserDefaults]

@@ -8,15 +8,27 @@
 
 #import "GQNetworkTrafficManager.h"
 #import "GQObjectSingleton.h"
+#import "GQNetworkConsts.h"
 #import "GQReachability.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
-#define SHOULD_LOG_TRAFFIC_DATA YES
+#define GQ_NETWORK_TRAFFIC_GPRS_OUT @"gprsOut"
+#define GQ_NETWORK_TRAFFIC_GPRS_IN @"gprsIn"
+#define GQ_NETWORK_TRAFFIC_WIFI_OUT @"wifiOut"
+#define GQ_NETWORK_TRAFFIC_WIFI_IN @"wifiIn"
+#define GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH @"resetDate"    //数据归零日
+#define GQ_NETWORK_TRAFFIC_LAST_RESET_DATE @"lastResetData"// 上次数据归零时间
+#define GQ_NETWORK_TRAFFIC_NEXT_RESET_DATE @"nextResetData"// 上次数据归零时间
+#define GQ_NETWORK_TRAFFIC_MAX_GPRS @"maxgprsTraffic"
+#define GQ_NETWORK_TRAFFIC_MAX_GPRS_ALERT_INTERVAL 10 * 60      //流量提示间隔时间
+#define GQ_NETWORK_TRAFFIC_IS_ALERT @"trafficIsAlert" // 是否提醒流量
+#define GQ_SHOULD_LOG_TRAFFIC_DATA @"LOG_TRAFFIC_DATA" //是否打印log信息
 
 @interface GQNetworkTrafficManager()
 {
     BOOL        _isUsingGPRSNetwork;
     BOOL        _isAlert;
+    BOOL        _shouldLog;
     double      _wifiInBytes;
     double      _wifiOutBytes;
     double      _gprsInBytes;
@@ -56,8 +68,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 #pragma mark - private methods
 - (void)inGQrafficData
 {
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    _maxgprsMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
+    _maxgprsMegaBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
     if (!_maxgprsMegaBytes) {
         _wifiInBytes = 0;
         _wifiOutBytes = 0;
@@ -67,21 +78,22 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
         _maxgprsMegaBytes = 999;
     }
     else {
-        _wifiInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_WIFI_IN] doubleValue];
-        _wifiOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_WIFI_OUT] doubleValue];
-        _gprsInBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_IN] doubleValue];
-        _gprsOutBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_GPRS_OUT] doubleValue];
-        _resetDayInMonth = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH] intValue];
-        _maxgprsMegaBytes = [[userinfo objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
+        _wifiInBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_WIFI_IN] doubleValue];
+        _wifiOutBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_WIFI_OUT] doubleValue];
+        _gprsInBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_GPRS_IN] doubleValue];
+        _gprsOutBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_GPRS_OUT] doubleValue];
+        _resetDayInMonth = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH] intValue];
+        _maxgprsMegaBytes = [[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_MAX_GPRS] intValue];
     }
-    _lastResetDate =(NSDate*)[userinfo objectForKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
-    _isAlert = [userinfo boolForKey:GQ_NETWORK_TRAFFIC_IS_ALERT];
+    _lastResetDate =(NSDate*)[GQ_USER_DEFAULT objectForKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
+    _isAlert = [GQ_USER_DEFAULT boolForKey:GQ_NETWORK_TRAFFIC_IS_ALERT];
+    _shouldLog = [GQ_USER_DEFAULT boolForKey:GQ_SHOULD_LOG_TRAFFIC_DATA];
     [self checkIsResetDay];
 }
 
 - (void) networkStateDidChanged:(NSNotification*)n
 {
-    GQDINFO(@"networkStateDidChanged");
+    [GQDebugLog infoMessage:@"networkStateDidChanged"];
     GQReachability* curReach = [n object];
     NSParameterAssert([curReach isKindOfClass: [GQReachability class]]);
     [self updateNetwordStatus:curReach.currentReachabilityStatus];
@@ -107,7 +119,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
             _networkType = @"unknown";
             break;
     }
-    GQDINFO(@"network status %@", _networkType);
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"network status %@", _networkType]];
 }
 
 - (void)restore
@@ -121,7 +133,8 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     [_reachability startNotifier];
 }
 
-- (NSString *)networkType{
+- (NSString *)networkType
+{
     return _networkType;
 }
 
@@ -155,8 +168,8 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     [comps setYear:nextResetYear];
     
     nextResetDate = [calendar dateFromComponents:comps];
-    [[NSUserDefaults standardUserDefaults] setObject:nextResetDate forKey:GQ_NETWORK_TRAFFIC_NEXT_RESET_DATE];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [GQ_USER_DEFAULT setObject:nextResetDate forKey:GQ_NETWORK_TRAFFIC_NEXT_RESET_DATE];
+    [GQ_USER_DEFAULT synchronize];
 }
 
 - (double)getMegabytesFromBytes:(int)bytes
@@ -167,14 +180,13 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 #pragma mark - public methods
 - (void)doSave
 {
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    [userinfo setObject:@(_wifiInBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_IN];
-    [userinfo setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
-    [userinfo setObject:@(_gprsInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_IN];
-    [userinfo setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
-    [userinfo setObject:@(_resetDayInMonth) forKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH];
-    [userinfo setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
-    [userinfo synchronize];
+    [GQ_USER_DEFAULT setObject:@(_wifiInBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_IN];
+    [GQ_USER_DEFAULT setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
+    [GQ_USER_DEFAULT setObject:@(_gprsInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_IN];
+    [GQ_USER_DEFAULT setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
+    [GQ_USER_DEFAULT setObject:@(_resetDayInMonth) forKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH];
+    [GQ_USER_DEFAULT setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
+    [GQ_USER_DEFAULT synchronize];
 }
 
 // log traffic
@@ -186,29 +198,29 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
             _gprsInBytes = _gprsInBytes + bytes;
             [userinfo setObject:@(_gprsInBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_IN];
             [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"gprs trafic in :%lf bytes", _gprsInBytes);
+            if (_shouldLog) {
+                [GQDebugLog infoMessage:[NSString stringWithFormat:@"gprs trafic in :%lf bytes", _gprsInBytes]];
             }
             break;
         case GQReachableViaWiFi:
             _wifiInBytes = _wifiInBytes + bytes;
             [userinfo setObject:@(_wifiInBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_IN];
             [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"wifi trafic in :%lf bytes", _wifiInBytes);
+            if (_shouldLog) {
+                [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi trafic in :%lf bytes", _wifiInBytes]];
             }
             break;
         default:
             break;
     }
-    if ([self hasExceedMaxGPRSTraffic]) {
+    if ([self hasExceedMaxGPRSTraffic]&&_isAlert) {
         NSDate *now = [NSDate date];
         BOOL shouldShowAlert = NO;
         if (!_lastAlertTime || [now timeIntervalSinceDate:_lastAlertTime]/100 > GQ_NETWORK_TRAFFIC_MAX_GPRS_ALERT_INTERVAL) {
             shouldShowAlert = YES;
         }
         if (shouldShowAlert) {
-            NSString *alertMsg = [NSString stringWithFormat:@"您目前的GPRS流量(%4.2fM)已超过您所设定的上限(%dM)",[self getGPRSTraffic],[self getMaxGPRSTraffic] ];
+            NSString *alertMsg = [NSString stringWithFormat:@"您目前的GPRS流量(%4.2fM)已超过您所设定的上限(%dM)",[self getGPRSTraffic],[self getMaxGPRSTraffic]];
             
 //            UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"流量提示" message:alertMsg preferredStyle:UIAlertControllerStyleAlert];
 //            [alertController addAction:[UIAlertAction actionWithTitle:@"知道了" style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {
@@ -228,22 +240,21 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
 - (void)logTrafficOut:(unsigned long long)bytes
 {
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
     switch (_networkStatus) {
         case GQReachableViaWWAN:
             _gprsOutBytes = _gprsOutBytes + bytes;
-            [userinfo setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
-            [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"gprs trafic in :%lf bytes", _gprsInBytes);
+            [GQ_USER_DEFAULT setObject:@(_gprsOutBytes) forKey:GQ_NETWORK_TRAFFIC_GPRS_OUT];
+            [GQ_USER_DEFAULT synchronize];
+            if (_shouldLog) {
+                [GQDebugLog infoMessage:[NSString stringWithFormat:@"gprs trafic in :%lf bytes", _gprsInBytes]];
             }
             break;
         case GQReachableViaWiFi:
             _wifiOutBytes = _wifiOutBytes + bytes;
-            [userinfo setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
-            [userinfo synchronize];
-            if (SHOULD_LOG_TRAFFIC_DATA) {
-                GQDINFO(@"wifi trafic in :%lf bytes", _wifiInBytes);
+            [GQ_USER_DEFAULT setObject:@(_wifiOutBytes) forKey:GQ_NETWORK_TRAFFIC_WIFI_OUT];
+            [GQ_USER_DEFAULT synchronize];
+            if (_shouldLog) {
+                [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi trafic in :%lf bytes", _wifiInBytes]];
             }
             break;
         default:
@@ -255,9 +266,8 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 - (void)setTrafficResetDay:(int)dayInMonth
 {
     _resetDayInMonth = dayInMonth;
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    [userinfo setObject:@(_resetDayInMonth) forKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH];
-    [userinfo synchronize];
+    [GQ_USER_DEFAULT setObject:@(_resetDayInMonth) forKey:GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH];
+    [GQ_USER_DEFAULT synchronize];
 }
 
 - (int)getTrafficResetDay
@@ -269,9 +279,8 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 - (void)setMaxGPRSTraffic:(int)megabyte
 {
     _maxgprsMegaBytes = megabyte;
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    [userinfo setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
-    [userinfo synchronize];
+    [GQ_USER_DEFAULT setObject:@(_maxgprsMegaBytes) forKey:GQ_NETWORK_TRAFFIC_MAX_GPRS];
+    [GQ_USER_DEFAULT synchronize];
 }
 
 - (int)getMaxGPRSTraffic
@@ -291,15 +300,26 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
 -(void)setAlertStatus:(BOOL)isAlert
 {
-    NSUserDefaults *userinfo = [NSUserDefaults standardUserDefaults];
-    [userinfo setObject: [NSNumber numberWithInt:isAlert] forKey:GQ_NETWORK_TRAFFIC_IS_ALERT];
-    [userinfo synchronize];
+    [GQ_USER_DEFAULT setBool:isAlert forKey:GQ_NETWORK_TRAFFIC_IS_ALERT];
+    [GQ_USER_DEFAULT synchronize];
     _isAlert = isAlert;
 }
 
 -(BOOL)getAlertStatus
 {
     return _isAlert;
+}
+
+- (void)setLogTrafficDataStatus:(BOOL)log
+{
+    [GQ_USER_DEFAULT setBool:log forKey:GQ_SHOULD_LOG_TRAFFIC_DATA];
+    [GQ_USER_DEFAULT synchronize];
+    _shouldLog = log;
+}
+
+- (BOOL)getLogTrafficDataStatus
+{
+    return _shouldLog;
 }
 
 // reset
@@ -309,7 +329,7 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     _wifiOutBytes = 0;
     _gprsOutBytes = 0;
     _gprsInBytes = 0;
-    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
+    [GQ_USER_DEFAULT setObject:[NSDate date] forKey:GQ_NETWORK_TRAFFIC_LAST_RESET_DATE];
     [self doSave];
 }
 
@@ -347,21 +367,23 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 // for debug
 - (void)consoleDeviceNetworkTrafficInfo
 {
-    GQDINFO(@"==============current network traffic=============\n");
-    GQDINFO(@"gprs in:%fmb", [self getGPRSTrafficIn]);
-    GQDINFO(@"gprs out:%fmb", [self getGPRSTrafficOut]);
-    GQDINFO(@"gprs total:%fmb", [self getGPRSTraffic]);
-    GQDINFO(@"wifi in:%fmb", [self getWifiTrafficIn]);
-    GQDINFO(@"wifi out:%fmb", [self getWifiTrafficOut]);
-    GQDINFO(@"wifi total:%fmb", [self getWifiTraffic]);
-    GQDINFO(@"==================================================\n");
+    [GQDebugLog infoMessage:@"==============current network traffic=============\n"];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"gprs in:%fmb", [self getGPRSTrafficIn]]];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"gprs out:%fmb", [self getGPRSTrafficOut]]];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"gprs total:%fmb", [self getGPRSTraffic]]];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi in:%fmb", [self getWifiTrafficIn]]];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi out:%fmb", [self getWifiTrafficOut]]];
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi total:%fmb", [self getWifiTraffic]]];
+    [GQDebugLog infoMessage:@"==================================================\n"];
 }
 
-- (BOOL)isReachability{
+- (BOOL)isReachability
+{
     return _networkStatus != GQNotReachable;
 }
 
-- (BOOL)isUseGPRSNetwork{
+- (BOOL)isUseGPRSNetwork
+{
     return _networkStatus == GQReachableViaWWAN;
 }
 

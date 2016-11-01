@@ -1,11 +1,10 @@
 //
-//  GQDEBUG.h
+//  GQConsoleLog.m
 //  GQNetWorkDemo
 //
-//  Created by 高旗 on 16/5/27.
+//  Created by 高旗 on 16/11/1.
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
-
 #define GQDEBUG
 #define GQLOGLEVEL_INFO     10
 #define GQLOGLEVEL_WARNING  3
@@ -20,8 +19,6 @@
 #endif
 
 #endif
-
-#define SHOULDOVERRIDE(basename, subclassname){ NSAssert([basename isEqualToString:subclassname], @"subclass should override the method!");}
 
 // The general purpose logger. This ignores logging levels.
 #ifdef GQDEBUG
@@ -54,20 +51,65 @@
 
 #ifdef GQDEBUG
     #define GQDCONDITIONLOG(condition, xx, ...) { if ((condition)) { \
-                        GQDPRINT(xx, ##__VA_ARGS__); \
-                        } \
-                    } ((void)0)
+        GQDPRINT(xx, ##__VA_ARGS__); \
+        } \
+    } ((void)0)
 #else
     #define GQDCONDITIONLOG(condition, xx, ...) ((void)0)
 #endif
 
-#define GQAssert(condition, ...)                                       \
-do {                                                                      \
-    if (!(condition)) {                                                     \
-        [[NSAssertionHandler currentHandler]                                  \
-            handleFailureInFunction:[NSString stringWithUTF8String:__PRETTY_FUNCTION__] \
-                file:[NSString stringWithUTF8String:__FILE__]  \
-                lineNumber:__LINE__                                  \
-                description:__VA_ARGS__];                             \
-    }                                                                       \
-} while(0)
+#define GQConsoleLogKey @"GQConsoleLogKey"
+
+#import "GQDebugLog.h"
+#import "GQNetworkConsts.h"
+
+static BOOL debugLogMessage;
+
+@implementation GQDebugLog
+
++ (void)printMessage:(NSString *)message
+{
+    if (debugLogMessage) {
+        GQDPRINT(@"%@",message);
+    }
+}
+
++ (void)errorMessage:(NSString *)message
+{
+    if (debugLogMessage) {
+        GQDERROR(@"%@",message);
+    }
+}
+
++ (void)warningMessage:(NSString *)message
+{
+    if (debugLogMessage) {
+        GQDWARNING(@"%@",message);
+    }
+}
+
++ (void)infoMessage:(NSString *)message
+{
+    if (debugLogMessage) {
+        GQDINFO(@"%@",message);
+    }
+}
+
++ (void)setUpConsoleLog
+{
+    debugLogMessage = [GQ_USER_DEFAULT boolForKey:GQConsoleLogKey];
+}
+
++ (void)disableConsoleLog
+{
+    debugLogMessage = NO;
+    [GQ_USER_DEFAULT setBool:NO forKey:GQConsoleLogKey];
+}
+
++ (void)enableConsoleLog
+{
+    debugLogMessage = YES;
+    [GQ_USER_DEFAULT setBool:YES forKey:GQConsoleLogKey];
+}
+
+@end

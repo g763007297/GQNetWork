@@ -299,6 +299,16 @@
 
 - (void)doRelease;
 
+/**
+ 屏蔽打印信息
+ */
++ (void)disableLogMessage;
+
+/**
+ 开启打印信息
+ */
++ (void)enableLogMessage;
+
 #pragma mark - subclass can  override method(@required)
 
 /**

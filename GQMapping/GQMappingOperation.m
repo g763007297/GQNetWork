@@ -13,7 +13,7 @@
 #import "GQMappingResult.h"
 #import "GQMappingUtilities.h"
 #import "GQMappingConsts.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
 @interface GQMappingOperation()
 {
@@ -70,10 +70,10 @@
             _complectionBlock(mappingResult, _error);
         }
         else {
-            NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:beginDate];
             [_dataSource replaceObjectAtKeyPath:_keyPath object:mappedObject];
             mappingResult = [[GQMappingResult alloc] intWithDataSource:_dataSource];
-            GQDPRINT(@"total time of parse process is %lf seconds", interval);
+            NSTimeInterval interval = [[NSDate date] timeIntervalSinceDate:beginDate];
+            [GQDebugLog printMessage:[NSString stringWithFormat:@"total time of parse process is %lf seconds", interval]];
             _complectionBlock(mappingResult, _error);
         }
     }

@@ -10,7 +10,6 @@
 #import "DetailViewController.h"
 #import "DemoHttpRequest.h"
 #import "ProductModel.h"
-#import "GQDebug.h"
 #import "GQObjectMapping.h"
 
 @interface MasterViewController ()<GQDataRequestDelegate>
@@ -43,9 +42,9 @@
 #pragma mark -- 初级用法 使用block
     
     [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        GQDPRINT(@"%@",result.dictionary);
+        NSLog(@"%@",result.dictionary);
     } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
-        GQDPRINT(@"%@",error);
+        NSLog(@"%@",error);
     }];
     
 #pragma mark -- 高级用法  使用mapping
@@ -67,8 +66,8 @@
       .mappingChain(map)
       .keyPathChain(@"result/rows")
       onFinishedBlockChain:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        GQDPRINT(@"%@",result.rawDictionary);
-        GQDPRINT(@"%@",result.array);
+        NSLog(@"%@",result.rawDictionary);
+        NSLog(@"%@",result.array);
     }] startRequest];
     
 #pragma mark -- 全链式调用
@@ -97,7 +96,7 @@
                                   onRequestStart:nil
                                 onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request,
                                                                                    NSURLResponse *response) {
-                                    GQDPRINT(@"%@",response);
+                                    NSLog(@"%@",response);
                                     return NSURLSessionResponseAllow;
                                 }
                                 onWillRedirection:^NSURLRequest *(GQBaseDataRequest *request,
@@ -111,8 +110,8 @@
                                     return proposedResponse;
                                 }onRequestFinished:^(GQBaseDataRequest *request,
                                                    GQMappingResult *result){
-                                   GQDPRINT(@"%@",result.rawDictionary);
-                                   GQDPRINT(@"%@",result.array);
+                                   NSLog(@"%@",result.rawDictionary);
+                                   NSLog(@"%@",result.array);
                                }
                                onRequestCanceled:nil
                                  onRequestFailed:nil
@@ -128,7 +127,7 @@
 
 - (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result{
     if ([request isKindOfClass:[DemoHttpRequest class]]) {//如果同一页面有多个不同的请求的话可以使用isKindOfClass判断是哪个请求
-        GQDPRINT(@"%@",result.rawDictionary);
+        NSLog(@"%@",result.rawDictionary);
     }
 }
 

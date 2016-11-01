@@ -10,8 +10,6 @@
 
 #import "DemoHttpRequest.h"
 
-#import "GQDebug.h"
-
 @interface DetailViewController ()
 @property (nonatomic, strong) TestRequestHandlerHttpRequest *request;
 @end
@@ -53,15 +51,15 @@
     _request = (TestRequestHandlerHttpRequest *)[TestRequestHandlerHttpRequest prepareRequset]
     .requestUrlChain(@"http://www.hao123.com")
     .onRechiveResponseBlockChain(^NSURLSessionResponseDisposition(GQBaseDataRequest *request, NSURLResponse *response){
-        GQDPRINT(@"%@",response);
+        NSLog(@"%@",response);
         return NSURLSessionResponseAllow;
     })
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
         NSString *string = [[NSString alloc] initWithData:result.originalData encoding:NSUTF8StringEncoding];
-        GQDPRINT(@"%@",string);
+        NSLog(@"%@",string);
     })
     .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
-        GQDPRINT(@"%@",error);
+        NSLog(@"%@",error);
     });
     _request.startRequestChain();
 }

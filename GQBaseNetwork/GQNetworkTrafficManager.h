@@ -8,17 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#define GQ_NETWORK_TRAFFIC_GPRS_OUT @"gprsOut"
-#define GQ_NETWORK_TRAFFIC_GPRS_IN @"gprsIn"
-#define GQ_NETWORK_TRAFFIC_WIFI_OUT @"wifiOut"
-#define GQ_NETWORK_TRAFFIC_WIFI_IN @"wifiIn"
-#define GQ_NETWORK_TRAFFIC_RESET_DAY_IN_MONTH @"resetDate"    //数据归零日
-#define GQ_NETWORK_TRAFFIC_LAST_RESET_DATE @"lastResetData"// 上次数据归零时间
-#define GQ_NETWORK_TRAFFIC_NEXT_RESET_DATE @"nextResetData"// 上次数据归零时间
-#define GQ_NETWORK_TRAFFIC_MAX_GPRS @"maxgprsTraffic"
-#define GQ_NETWORK_TRAFFIC_MAX_GPRS_ALERT_INTERVAL 10 * 60      //流量提示间隔时间
-#define GQ_NETWORK_TRAFFIC_IS_ALERT @"trafficIsAlert" // 是否提醒流量
-
 @interface GQNetworkTrafficManager : NSObject
 
 @property (nonatomic, readonly) NSString *networkType;
@@ -55,6 +44,9 @@
 
 -(void)setAlertStatus:(BOOL)isAlert;
 -(BOOL)getAlertStatus;
+
+- (void)setLogTrafficDataStatus:(BOOL)log;
+- (BOOL)getLogTrafficDataStatus;
 
 - (BOOL)isReachability;
 //

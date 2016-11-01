@@ -11,7 +11,7 @@
 #import "GQNetworkTrafficManager.h"
 #import "GQRequestJsonDataHandler.h"
 #import "GQNetworkConsts.h"
-#import "GQDebug.h"
+#import "GQDebugLog.h"
 
 @implementation GQDataRequest
 
@@ -87,7 +87,7 @@
     [self.httpRequest cancelRequest];
     
     [self showIndicator:NO];
-    GQDINFO(@"%@ request is cancled", [self class]);
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"%@ request is cancled", [self class]]];
 }
 
 @end

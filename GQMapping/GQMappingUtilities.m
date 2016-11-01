@@ -12,7 +12,6 @@
 #import "GQPropertyMapping.h"
 #import "GQBaseModelObject.h"
 #import "GQObjectMapping.h"
-#import "GQDebug.h"
 
 BOOL canConvertToNumber(NSString *string) {
     BOOL can = FALSE;
