@@ -152,14 +152,17 @@ static NSInteger GQHTTPRequestTaskCount = 0;
         self.operationFileHandle = [NSFileHandle fileHandleForWritingAtPath:self.operationSavePath];
     }
     
-    NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
-    BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
-    
-    if(inBackgroundAndInOperationQueue) {
-        self.operationRunLoop = CFRunLoopGetCurrent();
-        BOOL isWaiting = CFRunLoopIsWaiting(self.operationRunLoop);
-        isWaiting?CFRunLoopWakeUp(self.operationRunLoop):CFRunLoopRun();
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+        NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
+        BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
+        
+        if(inBackgroundAndInOperationQueue) {
+            self.operationRunLoop = CFRunLoopGetCurrent();
+            BOOL isWaiting = CFRunLoopIsWaiting(self.operationRunLoop);
+            isWaiting?CFRunLoopWakeUp(self.operationRunLoop):CFRunLoopRun();
+        }
     }
+    
     if (self->_onRequestStartBlock) {
         self->_onRequestStartBlock(self);
     }
@@ -236,8 +239,10 @@ static NSInteger GQHTTPRequestTaskCount = 0;
                         requestSuccess:(BOOL)requestSuccess
                                  error:(NSError *)error
 {
-    if(self.operationRunLoop){
-        CFRunLoopStop(self.operationRunLoop);
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] < 8.0) {
+        if(self.operationRunLoop){
+            CFRunLoopStop(self.operationRunLoop);
+        }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         self.responseData = self.operationData;

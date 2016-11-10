@@ -346,7 +346,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
     //添加请求头
     [self applyRequestHeader];
     Class operationClass;
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] > 8.0) {
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
         operationClass = [GQSessionOperation class];
     }else {
         operationClass = [GQURLOperation class];

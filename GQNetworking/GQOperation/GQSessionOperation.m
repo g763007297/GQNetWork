@@ -50,14 +50,18 @@
 {
     [self.operationSessionTask cancel];
     [self.operationSession finishTasksAndInvalidate];
-    self.operationSession = nil;
+//    self.operationSession = nil;
+//    self.operationSessionTask = nil;
     [super finish];
 }
 
 - (void)main
 {
     [super main];
-    self.operationSession =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:nil];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
+    queue.maxConcurrentOperationCount = 1;
+    
+    self.operationSession =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:queue];
     self.operationSessionTask = [_operationSession dataTaskWithRequest:self.operationRequest];
     [self.operationSessionTask resume];
 }
