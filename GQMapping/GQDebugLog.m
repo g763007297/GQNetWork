@@ -61,7 +61,6 @@
 #define GQConsoleLogKey @"GQConsoleLogKey"
 
 #import "GQDebugLog.h"
-#import "GQNetworkConsts.h"
 
 static BOOL debugLogMessage;
 
@@ -97,19 +96,21 @@ static BOOL debugLogMessage;
 
 + (void)setUpConsoleLog
 {
-    debugLogMessage = [GQ_USER_DEFAULT boolForKey:GQConsoleLogKey];
+    debugLogMessage = [[NSUserDefaults standardUserDefaults] boolForKey:GQConsoleLogKey];
 }
 
 + (void)disableConsoleLog
 {
     debugLogMessage = NO;
-    [GQ_USER_DEFAULT setBool:NO forKey:GQConsoleLogKey];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:GQConsoleLogKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 + (void)enableConsoleLog
 {
     debugLogMessage = YES;
-    [GQ_USER_DEFAULT setBool:YES forKey:GQConsoleLogKey];
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:GQConsoleLogKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end
