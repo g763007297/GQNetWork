@@ -11,6 +11,7 @@
 		B620C9DB1DBC658100505B9A /* GQURLOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B620C9D91DBC658100505B9A /* GQURLOperation.m */; };
 		B620C9DE1DBC659800505B9A /* GQBaseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B620C9DD1DBC659800505B9A /* GQBaseOperation.m */; };
 		B6292D851CFE88A100FA12B4 /* ProductModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B6292D841CFE88A100FA12B4 /* ProductModel.m */; };
+		B66801621DD466220075D134 /* GQDebugLog.m in Sources */ = {isa = PBXBuildFile; fileRef = B66801611DD466220075D134 /* GQDebugLog.m */; };
 		B669D4721CFD1C0F00CB8AC5 /* DemoHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */; };
 		B6708C871DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = B6708C861DAA401D00A6ACB7 /* GQBaseDataRequest+GQBuildUploadDataCategory.m */; };
 		B68867911CFEC86C00850830 /* GQMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = B688677D1CFEC86C00850830 /* GQMapping.m */; };
@@ -23,7 +24,6 @@
 		B68867991CFEC86C00850830 /* GQPropertyMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = B68867901CFEC86C00850830 /* GQPropertyMapping.m */; };
 		B6911D171D9CB72B00DE7210 /* GQBaseDataRequest+GQBlockCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = B6911D141D9CB72B00DE7210 /* GQBaseDataRequest+GQBlockCategory.m */; };
 		B6911D181D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = B6911D161D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.m */; };
-		B6C3616F1DC82BBF004A4710 /* GQDebugLog.m in Sources */ = {isa = PBXBuildFile; fileRef = B6C3616E1DC82BBF004A4710 /* GQDebugLog.m */; };
 		B6CB1D381CF83E3B00D485E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D371CF83E3B00D485E3 /* main.m */; };
 		B6CB1D3B1CF83E3B00D485E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D3A1CF83E3B00D485E3 /* AppDelegate.m */; };
 		B6CB1D3E1CF83E3B00D485E3 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D3D1CF83E3B00D485E3 /* MasterViewController.m */; };
@@ -65,6 +65,8 @@
 		B620C9DD1DBC659800505B9A /* GQBaseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQBaseOperation.m; sourceTree = "<group>"; };
 		B6292D831CFE88A100FA12B4 /* ProductModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductModel.h; sourceTree = "<group>"; };
 		B6292D841CFE88A100FA12B4 /* ProductModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductModel.m; sourceTree = "<group>"; };
+		B66801601DD466220075D134 /* GQDebugLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDebugLog.h; sourceTree = "<group>"; };
+		B66801611DD466220075D134 /* GQDebugLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDebugLog.m; sourceTree = "<group>"; };
 		B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoHttpRequest.h; sourceTree = "<group>"; };
 		B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoHttpRequest.m; sourceTree = "<group>"; };
 		B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoNetworkConsts.h; sourceTree = "<group>"; };
@@ -95,8 +97,6 @@
 		B6911D141D9CB72B00DE7210 /* GQBaseDataRequest+GQBlockCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GQBaseDataRequest+GQBlockCategory.m"; sourceTree = "<group>"; };
 		B6911D151D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GQBaseDataRequest+GQDelegateCategory.h"; sourceTree = "<group>"; };
 		B6911D161D9CB72B00DE7210 /* GQBaseDataRequest+GQDelegateCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GQBaseDataRequest+GQDelegateCategory.m"; sourceTree = "<group>"; };
-		B6C3616D1DC82BBF004A4710 /* GQDebugLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDebugLog.h; sourceTree = "<group>"; };
-		B6C3616E1DC82BBF004A4710 /* GQDebugLog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDebugLog.m; sourceTree = "<group>"; };
 		B6CB1D331CF83E3B00D485E3 /* GQNetWorkDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GQNetWorkDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CB1D371CF83E3B00D485E3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B6CB1D391CF83E3B00D485E3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -187,6 +187,8 @@
 		B688677B1CFEC86C00850830 /* GQMapping */ = {
 			isa = PBXGroup;
 			children = (
+				B66801601DD466220075D134 /* GQDebugLog.h */,
+				B66801611DD466220075D134 /* GQDebugLog.m */,
 				B688679D1CFECAD400850830 /* GQObjectSingleton.h */,
 				B688677E1CFEC86C00850830 /* GQMappingConsts.h */,
 				B688677F1CFEC86C00850830 /* GQMappingHeader.h */,
@@ -280,8 +282,6 @@
 				DF9C7A521D1F9B6F006B0D18 /* Common */,
 				B6911D061D9CAE2500DE7210 /* GQNetworkDefine.h */,
 				B688A1A81DAB309700D5E2DE /* GQNetworkHeader.h */,
-				B6C3616D1DC82BBF004A4710 /* GQDebugLog.h */,
-				B6C3616E1DC82BBF004A4710 /* GQDebugLog.m */,
 				DF9C7A661D1F9B6F006B0D18 /* GQBaseDataRequest.h */,
 				DF9C7A671D1F9B6F006B0D18 /* GQBaseDataRequest.m */,
 				B6911D131D9CB72B00DE7210 /* GQBaseDataRequest+GQBlockCategory.h */,
@@ -489,7 +489,6 @@
 				B620C9DB1DBC658100505B9A /* GQURLOperation.m in Sources */,
 				DF9C7A941D1F9B6F006B0D18 /* GQMaskActivityView.m in Sources */,
 				B620C9DA1DBC658100505B9A /* GQSessionOperation.m in Sources */,
-				B6C3616F1DC82BBF004A4710 /* GQDebugLog.m in Sources */,
 				B68867941CFEC86C00850830 /* GQMappingResult.m in Sources */,
 				B6CB1D3E1CF83E3B00D485E3 /* MasterViewController.m in Sources */,
 				B68867911CFEC86C00850830 /* GQMapping.m in Sources */,
@@ -506,6 +505,7 @@
 				B68867971CFEC86C00850830 /* GQObjectDataSource.m in Sources */,
 				DF9C7A8D1D1F9B6F006B0D18 /* GQUserDefaultCache.m in Sources */,
 				B6CB1D381CF83E3B00D485E3 /* main.m in Sources */,
+				B66801621DD466220075D134 /* GQDebugLog.m in Sources */,
 				B6CB1D411CF83E3B00D485E3 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
