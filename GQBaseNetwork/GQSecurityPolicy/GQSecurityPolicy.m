@@ -64,22 +64,6 @@
         {
             credential = [NSURLCredential credentialForTrust:trust];
         }
-    }else{
-        if ([challenge.protectionSpace.authenticationMethod isEqualToString:NSURLAuthenticationMethodServerTrust])
-        {
-            SecTrustRef trust = challenge.protectionSpace.serverTrust;
-            SecTrustResultType result;
-            //设置证书信任
-            SecTrustSetAnchorCertificatesOnly(trust,YES);
-            OSStatus status = SecTrustEvaluate(trust, &result);
-            if (status == errSecSuccess &&
-                (result == kSecTrustResultProceed ||
-                 result == kSecTrustResultUnspecified||
-                 result == kSecTrustResultRecoverableTrustFailure))
-            {
-                credential = [NSURLCredential credentialForTrust:trust];
-            }
-        }
     }
     return [[[self class] alloc] initWithURLCredential:credential];
 }
