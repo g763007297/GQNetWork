@@ -8,9 +8,8 @@
 
 #import "GQBaseOperation.h"
 
-@interface GQSessionOperation : GQBaseOperation
+@interface GQSessionOperation : GQBaseOperation<NSURLSessionTaskDelegate,NSURLSessionDataDelegate>
 
-@property (nonatomic, strong) NSURLSession          *operationSession;
 @property (nonatomic, strong) NSURLSessionDataTask  *operationSessionTask;
 
 @end

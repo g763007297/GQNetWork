@@ -44,6 +44,8 @@ typedef NSUInteger GQURLState;
 
 @property (nonatomic, strong) NSData                            *certificateData;
 
+@property (nonatomic, strong) NSURLSession                      *operationSession;
+
 @property (nonatomic, strong) NSMutableData                     *operationData;
 @property (nonatomic, assign) CFRunLoopRef                      operationRunLoop;
 @property (nonatomic, readwrite) UIBackgroundTaskIdentifier     backgroundTaskIdentifier;
@@ -56,6 +58,7 @@ typedef NSUInteger GQURLState;
 @property (nonatomic, copy) GQHTTPRequestCompletionHandler      operationCompletionBlock;
 
 - (instancetype)initWithURLRequest:(NSURLRequest *)urlRequest
+                  operationSession:(NSURLSession *)operationSession
                             saveToPath:(NSString*)savePath
                        certificateData:(NSData *)certificateData
                               progress:(GQHTTPRequestChangeHandler)onProgressBlock

@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GQHttpRequestManager : NSObject
+@interface GQHttpRequestManager : NSObject<NSURLSessionDelegate,NSURLSessionTaskDelegate>
 
 @property (nonatomic, strong) NSOperationQueue *connectionQueue;
+
+@property (strong, nonatomic) NSURLSession *session;
 
 + (GQHttpRequestManager *)sharedHttpRequestManager;
 

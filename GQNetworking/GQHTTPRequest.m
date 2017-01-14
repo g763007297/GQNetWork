@@ -356,6 +356,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         GQWeakify(self);
         self.urlOperation =  [[operationClass alloc]
                               initWithURLRequest:self.request
+                              operationSession:[GQHttpRequestManager sharedHttpRequestManager].session
                               saveToPath:self.localFilePath
                               certificateData:self.certificateData
                               progress:^(float progress) {

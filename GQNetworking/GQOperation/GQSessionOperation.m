@@ -10,30 +10,27 @@
 #import "GQHttpRequestManager.h"
 #import "GQSecurityPolicy.h"
 
-@interface GQSessionOperation()<NSURLSessionDelegate,NSURLSessionTaskDelegate>
-
-@end
-
 @implementation GQSessionOperation
 
 - (void)dealloc
 {
     self.operationSessionTask = nil;
-    self.operationSession = nil;
 }
 
-- (GQSessionOperation *)initWithURLRequest:(NSURLRequest *)urlRequest
-                            saveToPath:(NSString*)savePath
-                       certificateData:(NSData *)certificateData
-                              progress:(GQHTTPRequestChangeHandler)onProgressBlock
-                        onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
-                     onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
-                 onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
-                   onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
-                   onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
-                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock
+- (instancetype)initWithURLRequest:(NSURLRequest *)urlRequest
+                  operationSession:(NSURLSession *)operationSession
+                        saveToPath:(NSString*)savePath
+                   certificateData:(NSData *)certificateData
+                          progress:(GQHTTPRequestChangeHandler)onProgressBlock
+                    onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
+                 onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
+             onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
+               onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
+               onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
+                        completion:(GQHTTPRequestCompletionHandler)onCompletionBlock
 {
     self = [super initWithURLRequest:urlRequest
+                    operationSession:operationSession
                           saveToPath:savePath
                      certificateData:certificateData
                             progress:onProgressBlock
@@ -49,20 +46,14 @@
 - (void)finish
 {
     [self.operationSessionTask cancel];
-    [self.operationSession finishTasksAndInvalidate];
-//    self.operationSession = nil;
-//    self.operationSessionTask = nil;
     [super finish];
 }
 
 - (void)main
 {
     [super main];
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    queue.maxConcurrentOperationCount = 1;
     
-    self.operationSession =[NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:self delegateQueue:queue];
-    self.operationSessionTask = [_operationSession dataTaskWithRequest:self.operationRequest];
+    self.operationSessionTask = [self.operationSession dataTaskWithRequest:self.operationRequest];
     [self.operationSessionTask resume];
 }
 

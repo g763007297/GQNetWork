@@ -49,6 +49,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 }
 
 - (instancetype)initWithURLRequest:(NSURLRequest *)urlRequest
+                  operationSession:(NSURLSession *)operationSession
                             saveToPath:(NSString*)savePath
                        certificateData:(NSData *)certificateData
                               progress:(GQHTTPRequestChangeHandler)onProgressBlock
@@ -62,6 +63,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
     self.operationRequest = urlRequest;
+    self.operationSession = operationSession;
     self.certificateData = certificateData;
     self.operationSavePath = savePath;
     self.saveDataDispatchGroup = dispatch_group_create();
