@@ -7,6 +7,18 @@
 //
 
 #import "GQSecurityPolicy.h"
+#import <AssertMacros.h>
+
+static BOOL GQServerTrustIsValid(SecTrustRef serverTrust) {
+    BOOL isValid = NO;
+    SecTrustResultType result;
+    __Require_noErr_Quiet(SecTrustEvaluate(serverTrust, &result), _out);
+    
+    isValid = (result == kSecTrustResultUnspecified || result == kSecTrustResultProceed);
+    
+_out:
+    return isValid;
+}
 
 @implementation GQSecurityPolicy
 
@@ -63,6 +75,17 @@
              result == kSecTrustResultRecoverableTrustFailure))
         {
             credential = [NSURLCredential credentialForTrust:trust];
+        }
+    }else {
+        SecTrustRef trust = challenge.protectionSpace.serverTrust;
+        NSMutableArray *policies = [NSMutableArray array];
+        if (!GQServerTrustIsValid(trust)) {
+            [policies addObject:(__bridge_transfer id)SecPolicyCreateSSL(true, (__bridge CFStringRef)challenge.protectionSpace.host)];
+            SecTrustSetPolicies(trust, (__bridge CFArrayRef)policies);
+            credential = [NSURLCredential credentialForTrust:trust];
+        }
+        if (!GQServerTrustIsValid(trust)) {
+            return nil;
         }
     }
     return [[[self class] alloc] initWithURLCredential:credential];
