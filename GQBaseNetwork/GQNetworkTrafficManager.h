@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define kGQNetWorkChangedNotification kGQReachabilityChangedNotification
+
 @interface GQNetworkTrafficManager : NSObject
 
 @property (nonatomic, readonly) NSString *networkType;
@@ -48,8 +50,13 @@
 - (void)setLogTrafficDataStatus:(BOOL)log;
 - (BOOL)getLogTrafficDataStatus;
 
+//是否联网
 - (BOOL)isReachability;
-//
+
+//是否使用蜂窝网络
 - (BOOL)isUseGPRSNetwork;
+
+//是否使用wifi网络
+- (BOOL)isUseWIFINetwork;
 
 @end

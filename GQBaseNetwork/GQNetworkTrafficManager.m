@@ -387,4 +387,9 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     return _networkStatus == GQReachableViaWWAN;
 }
 
+- (BOOL)isUseWIFINetwork
+{
+    return _networkStatus == GQReachableViaWiFi;
+}
+
 @end
