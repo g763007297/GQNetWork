@@ -9,6 +9,22 @@
 #ifndef GQNetworkConsts_h
 #define GQNetworkConsts_h
 
+/**
+ * Create NS_ENUM macro if it does not exist on the targeted version of iOS or OS X.
+ *
+ * @see http://nshipster.com/ns_enum-ns_options/
+ **/
+#ifndef NS_ENUM
+#define NS_ENUM(_type, _name) enum _name : _type _name; enum _name : _type
+#endif
+
+typedef NS_ENUM(NSInteger, GQNetworkStatus) {
+    // Apple NetworkStatus Compatible Names.
+    GQNotReachable = 0,
+    GQReachableViaWiFi=2,
+    GQReachableViaWWAN=1
+};
+
 typedef enum {
     GQURLParameterEncoding,             //常规post请求  可有图片
     GQJSONParameterEncoding             //parameter json化 无图片

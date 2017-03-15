@@ -7,12 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GQNetworkConsts.h"
 
-#define kGQNetWorkChangedNotification kGQReachabilityChangedNotification
+#define kGQNetWorkChangedNotification @"kGQReachabilityChangedNotification"
 
 @interface GQNetworkTrafficManager : NSObject
 
-@property (nonatomic, readonly) NSString *networkType;
+@property (nonatomic, readonly) GQNetworkStatus networkStatus;
 
 + (GQNetworkTrafficManager *)sharedManager;
 
@@ -33,6 +34,7 @@
 -(void)resetData;
 -(void)checkIsResetDay;
 
+//network traffic，Company for MB
 - (double)getGPRSTrafficIn;
 - (double)getGPRSTrafficOut;
 - (double)getGPRSTraffic;

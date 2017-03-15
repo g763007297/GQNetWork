@@ -99,6 +99,35 @@
 - (NSString*)dumpyResponseString;
 ```
 
+## 网络状态判断以及网络状态改变通知
+
+1.本框架自带网络状态判断和网络改变通知。
+(1)使用下面的方法获取网络状态:
+
+```objc
+GQNetworkStatus status = [GQNetworkTrafficManager sharedManager].networkStatus;
+```
+
+网络状态分为以下三种:
+
+```objc
+typedef NS_ENUM(NSInteger, GQNetworkStatus) {
+    GQNotReachable = 0,//无网络链接
+    GQReachableViaWiFi=2,//使用wifi链接
+    GQReachableViaWWAN=1//使用移动蜂窝网链接
+};
+```
+
+(2)需要用到网络状态改变的通知时则加上以下代码则可以及时获取到网络状态的改变:
+
+```objc
+[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkChange:) name:kGQNetWorkChangedNotification object:nil];
+
+- (void)networkChange:(id)data {
+    GQNetworkStatus status = [GQNetworkTrafficManager sharedManager].networkStatus;
+}
+```
+
 ## 加载提示框
 
 1.本框架自带加载提示框，如需使用加载提示框则通过提供的方法将需要显示提示框的父view传到indicatorView。

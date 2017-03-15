@@ -23,6 +23,21 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self configureNavigation];
+    
+    [self addNetworkChangeNotification];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
+    [super viewDidAppear:animated];
+    
+    [self testNetwork];
+}
+
+#pragma mark -- navigation configure
+- (void)configureNavigation {
     // Do any additional setup after loading the view, typically from a nib.
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
     
@@ -31,10 +46,20 @@
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-    self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
-    [super viewDidAppear:animated];
-    
+#pragma mark -- Notification  添加通知
+- (void)addNetworkChangeNotification {
+    GQNetworkStatus status = [GQNetworkTrafficManager sharedManager].networkStatus;
+    NSLog(@"%ld",status);
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(networkChange:) name:kGQNetWorkChangedNotification object:nil];
+}
+
+- (void)networkChange:(id)data {
+    GQNetworkStatus status = [GQNetworkTrafficManager sharedManager].networkStatus;
+    NSLog(@"%ld",status);
+}
+
+#pragma mark -- testNetwork
+- (void)testNetwork {
 #pragma mark -- 初级用法 使用delegate
     
     [DemoHttpRequest requestWithDelegate:self];
@@ -66,9 +91,9 @@
       .mappingChain(map)
       .keyPathChain(@"result/rows")
       onFinishedBlockChain:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        NSLog(@"%@",result.rawDictionary);
-        NSLog(@"%@",result.array);
-    }] startRequest];
+          NSLog(@"%@",result.rawDictionary);
+          NSLog(@"%@",result.array);
+      }] startRequest];
     
 #pragma mark -- 全链式调用
     
@@ -93,7 +118,7 @@
     
 #pragma mark -- 常规block
     [DemoHttpRequest1 requestWithRequestParameter:parameter
-                                  onRequestStart:nil
+                                   onRequestStart:nil
                                 onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request,
                                                                                    NSURLResponse *response) {
                                     NSLog(@"%@",response);
@@ -109,13 +134,13 @@
                                 } onWillCacheResponse:^NSCachedURLResponse *(GQBaseDataRequest *request, NSCachedURLResponse *proposedResponse) {
                                     return proposedResponse;
                                 }onRequestFinished:^(GQBaseDataRequest *request,
-                                                   GQMappingResult *result){
-                                   NSLog(@"%@",result.rawDictionary);
-                                   NSLog(@"%@",result.array);
-                               }
-                               onRequestCanceled:nil
-                                 onRequestFailed:nil
-                               onProgressChanged:nil];
+                                                     GQMappingResult *result){
+                                    NSLog(@"%@",result.rawDictionary);
+                                    NSLog(@"%@",result.array);
+                                }
+                                onRequestCanceled:nil
+                                  onRequestFailed:nil
+                                onProgressChanged:nil];
 }
 
 #pragma mark -- DataRequestDelegate
@@ -163,10 +188,6 @@
 
 - (id)getModel{
     return [NSKeyedUnarchiver unarchiveObjectWithFile:[self HomePathArchiver]];
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
 }
 
 - (void)insertNewObject:(id)sender {
@@ -221,6 +242,10 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
 }
 
 @end

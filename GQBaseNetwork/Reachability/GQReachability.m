@@ -34,7 +34,6 @@
 #import <ifaddrs.h>
 #import <netdb.h>
 
-
 NSString *const kGQReachabilityChangedNotification = @"kGQReachabilityChangedNotification";
 
 

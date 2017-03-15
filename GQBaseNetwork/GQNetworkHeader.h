@@ -9,10 +9,15 @@
 #ifndef GQNetworkHeader_h
 #define GQNetworkHeader_h
 
-#import "GQBaseDataRequest.h"
 #import "GQHTTPRequest.h"
+//使用Block网络请求方法
 #import "GQBaseDataRequest+GQBlockCategory.h"
+//使用delegate网络请求方法
 #import "GQBaseDataRequest+GQDelegateCategory.h"
+//上传文件或图片创建字典
 #import "GQBaseDataRequest+GQBuildUploadDataCategory.h"
+
+//网络状态判断与流量统计
+#import "GQNetworkTrafficManager.h"
 
 #endif /* GQNetworkHeader_h */

@@ -36,8 +36,6 @@
     int         _resetDayInMonth;
     int         _maxgprsMegaBytes;     // this is MB not byte
     
-    GQNetworkStatus _networkStatus;
-    
     NSDate      *_lastAlertTime;
     NSDate      *_lastResetDate;
     
@@ -52,7 +50,7 @@
 @end
 
 @implementation GQNetworkTrafficManager
-@synthesize networkType = _networkType;
+@synthesize networkStatus = _networkStatus;
 
 GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
 
@@ -106,20 +104,36 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     switch (status)
     {
         case GQReachableViaWiFi:
-            _networkType = @"wifi";
             break;
         case GQReachableViaWWAN:
-            _networkType = @"gprs";
             _isUsingGPRSNetwork = TRUE;
             break;
         case GQNotReachable:
-            _networkType = @"unavailable";
             break;
         default:
-            _networkType = @"unknown";
             break;
     }
-    [GQDebugLog infoMessage:[NSString stringWithFormat:@"network status %@", _networkType]];
+    [self debugNetworkStatus];
+}
+
+- (void)debugNetworkStatus {
+    NSString *networkType = @"unknown";
+    switch (_networkStatus)
+    {
+        case GQReachableViaWiFi:
+            networkType = @"wifi";
+            break;
+        case GQReachableViaWWAN:
+            networkType = @"gprs";
+            _isUsingGPRSNetwork = TRUE;
+            break;
+        case GQNotReachable:
+            networkType = @"unavailable";
+            break;
+        default:
+            break;
+    }
+    [GQDebugLog infoMessage:[NSString stringWithFormat:@"network status %@", networkType]];
 }
 
 - (void)restore
@@ -131,11 +145,6 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     _reachability = [GQReachability reachabilityForInternetConnection];
     [self updateNetwordStatus:_reachability.currentReachabilityStatus];
     [_reachability startNotifier];
-}
-
-- (NSString *)networkType
-{
-    return _networkType;
 }
 
 -(void)checkIsResetDay
@@ -375,6 +384,10 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQNetworkTrafficManager, sharedManager)
     [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi out:%fmb", [self getWifiTrafficOut]]];
     [GQDebugLog infoMessage:[NSString stringWithFormat:@"wifi total:%fmb", [self getWifiTraffic]]];
     [GQDebugLog infoMessage:@"==================================================\n"];
+}
+
+- (GQNetworkStatus)networkStatus {
+    return _networkStatus;
 }
 
 - (BOOL)isReachability
