@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GQHTTPRequestManager.h"
+#import "GQHttpRequestManager.h"
 #import "GQNetworkConsts.h"
 
 @class GQBaseOperation;
