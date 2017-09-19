@@ -80,7 +80,7 @@
     if (_onWillHttpRedirectionBlock) {
         redirectionRequest = _onWillHttpRedirectionBlock(request,response);
     }
-    return request;
+    return redirectionRequest;
 }
 
 - (void)connection:(NSURLConnection *)connection
