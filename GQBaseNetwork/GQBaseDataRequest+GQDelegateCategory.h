@@ -15,7 +15,7 @@
 /**
  *  请求方法
  *
- *  @param delegate DataRequestDelegate
+ *  param delegate DataRequestDelegate
  *
  *  @return  GQBaseDataRequest
  */
@@ -24,8 +24,8 @@
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
  *
- *  @param parameterBody parameterBody
- *  @param delegate      DataRequestDelegate
+ *  param parameterBody parameterBody
+ *  param delegate      DataRequestDelegate
  *
  *  @return GQBaseDataRequest
  */
@@ -35,8 +35,8 @@
 /**
  *  请求方法
  *
- *  @param delegate DataRequestDelegate
- *  @param params   请求体
+ *  param delegate DataRequestDelegate
+ *  param params   请求体
  *
  *  @return GQBaseDataRequest
  */
@@ -45,8 +45,8 @@
 /**
  *  请求方法
  *
- *  @param delegate DataRequestDelegate
- *  @param subUrl   拼接url
+ *  param delegate DataRequestDelegate
+ *  param subUrl   拼接url
  *
  *  @return GQBaseDataRequest
  */
@@ -56,9 +56,9 @@
 /**
  *  请求方法
  *
- *  @param delegate      DataRequestDelegate
- *  @param subUrl        拼接url
- *  @param cancelSubject 取消请求NSNotification的Key
+ *  param delegate      DataRequestDelegate
+ *  param subUrl        拼接url
+ *  param cancelSubject 取消请求NSNotification的Key
  *
  *  @return GQBaseDataRequest
  */

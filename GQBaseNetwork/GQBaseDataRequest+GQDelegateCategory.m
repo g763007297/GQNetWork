@@ -107,19 +107,19 @@
 /**
  *  代理实例方法
  *
- *  @param delegate       代理
- *  @param subUrl         拼接url
- *  @param keyPath        需要过滤的key
- *  @param mapping        映射map
- *  @param params         请求体
- *  @param headerParameters  请求头
- *  @param uploadDatas    上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
- *  @param indiView       maskview显示在你的view
- *  @param loadingMessage 正在加载弹框显示的文字
- *  @param cancelSubject  NSNotificationCenter 取消key
- *  @param cache          缓存key
- *  @param cacheType      缓存类型
- *  @param localFilePath  下载到什么文件位置
+ *  param delegate       代理
+ *  param subUrl         拼接url
+ *  param keyPath        需要过滤的key
+ *  param mapping        映射map
+ *  param params         请求体
+ *  param headerParameters  请求头
+ *  param uploadDatas    上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
+ *  param indiView       maskview显示在你的view
+ *  param loadingMessage 正在加载弹框显示的文字
+ *  param cancelSubject  NSNotificationCenter 取消key
+ *  param cache          缓存key
+ *  param cacheType      缓存类型
+ *  param localFilePath  下载到什么文件位置
  *
  *  @return GQBaseDataRequest
  */

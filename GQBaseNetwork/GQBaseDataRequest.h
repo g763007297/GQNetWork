@@ -205,7 +205,7 @@
 /**
  *  请求开始
  *
- *  @param onRequestStart 请求开始block
+ *  param onRequestStart 请求开始block
  *
  *  @return GQBaseDataRequest
  */
@@ -214,7 +214,7 @@
 /**
  *  收到请求头
  *
- *  @param onRechiveResponse 收到请求头block
+ *  param onRechiveResponse 收到请求头block
  *
  *  @return GQBaseDataRequest
  */
@@ -223,7 +223,7 @@
 /**
  *  HTTP重定向
  *
- *  @param onWillRedirection HTTP重定向block
+ *  param onWillRedirection HTTP重定向block
  *
  *  @return GQBaseDataRequest
  */
@@ -232,7 +232,7 @@
 /**
  *  需要新的数据流
  *
- *  @param onNeedNewBodyStream 需要新的数据流block
+ *  param onNeedNewBodyStream 需要新的数据流block
  *
  *  @return GQBaseDataRequest
  */
@@ -241,7 +241,7 @@
 /**
  *  将要缓存到web
  *
- *  @param onWillCacheResponse 将要缓存到web的block
+ *  param onWillCacheResponse 将要缓存到web的block
  *
  *  @return GQBaseDataRequest
  */
@@ -250,7 +250,7 @@
 /**
  *  请求完成
  *
- *  @param onRequestFinished 请求完成block
+ *  param onRequestFinished 请求完成block
  *
  *  @return GQBaseDataRequest
  */
@@ -259,7 +259,7 @@
 /**
  *  请求取消
  *
- *  @param onRequestCanceled 请求取消block
+ *  param onRequestCanceled 请求取消block
  *
  *  @return GQBaseDataRequest
  */
@@ -267,7 +267,7 @@
 /**
  *  请求失败
  *
- *  @param onRequestFailed 请求失败block
+ *  param onRequestFailed 请求失败block
  *
  *  @return GQBaseDataRequest
  */
@@ -275,7 +275,7 @@
 /**
  *  请求进度改变
  *
- *  @param onProgressChanged 请求进度改变block
+ *  param onProgressChanged 请求进度改变block
  *
  *  @return GQBaseDataRequest
  */
@@ -342,14 +342,14 @@
 /**
  *  处理请求结果，如果需要自己解析数据那就覆盖该方法，但是需要处理结果逻辑
  *
- *  @param result 请求结果
+ *  param result 请求结果
  */
 - (void)handleResponseString:(id)result;
 
 /**
  *  如果需要处理缓存就覆盖这个方法  前提是要使用到了缓存
  *
- *  @param cacheData 缓存数据
+ *  param cacheData 缓存数据
  *
  *  @return 是否使用缓存数据
  */
@@ -421,7 +421,7 @@
 /**
  *   从缓存string中提取字典
  *
- *  @param cachedResponse 缓存string
+ *  param cachedResponse 缓存string
  *
  *  @return NSDictionary *
  */

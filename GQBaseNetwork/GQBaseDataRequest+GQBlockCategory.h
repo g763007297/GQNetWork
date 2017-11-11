@@ -15,8 +15,8 @@
 /**
  *  不需要添加参数的请求
  *
- *  @param onFinishedBlock 请求完成block
- *  @param onFailedBlock   请求失败block
+ *  param onFinishedBlock 请求完成block
+ *  param onFailedBlock   请求失败block
  *
  *  @return self
  */
@@ -26,9 +26,9 @@
 /**
  *  添加请求体的request
  *
- *  @param params          请求体
- *  @param onFinishedBlock 请求完成block
- *  @param onFailedBlock   请求失败block
+ *  param params          请求体
+ *  param onFinishedBlock 请求完成block
+ *  param onFailedBlock   请求失败block
  *
  *  @return self
  */
@@ -39,10 +39,10 @@
 /**
  *  添加请求体的request
  *
- *  @param params          请求体
- *  @param subUrl          拼接url
- *  @param onFinishedBlock 请求完成block
- *  @param onFailedBlock   请求失败block
+ *  param params          请求体
+ *  param subUrl          拼接url
+ *  param onFinishedBlock 请求完成block
+ *  param onFailedBlock   请求失败block
  *
  *  @return self
  */
@@ -54,16 +54,16 @@
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
  *
- *  @param parameterBody          parameterBody
- *  @param onStartBlock           请求开始block
- *  @param onRechiveResponse      收到请求头block
- *  @param onWillRedirection      将要http重定向block
- *  @param onNeedNewBodyStream    需要新的数据流block
- *  @param onWillCacheResponse    将要缓存到web中block
- *  @param onFinishedBlock        请求完成block
- *  @param onCanceledBlock        请求取消block
- *  @param onFailedBlock          请求失败block
- *  @param onProgressChangedBlock 请求进度block
+ *  param parameterBody          parameterBody
+ *  param onStartBlock           请求开始block
+ *  param onRechiveResponse      收到请求头block
+ *  param onWillRedirection      将要http重定向block
+ *  param onNeedNewBodyStream    需要新的数据流block
+ *  param onWillCacheResponse    将要缓存到web中block
+ *  param onFinishedBlock        请求完成block
+ *  param onCanceledBlock        请求取消block
+ *  param onFailedBlock          请求失败block
+ *  param onProgressChangedBlock 请求进度block
  *
  *  @return GQBaseDataRequest
  */

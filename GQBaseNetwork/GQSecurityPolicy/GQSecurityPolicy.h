@@ -15,7 +15,7 @@
 /**
  *  根据服务器的证书进行创建
  *
- *  @param challenge 需要授权
+ *  param challenge 需要授权
  *
  *  @return GQSecurityPolicy
  */
@@ -24,8 +24,8 @@
 /**
  *  根据file创建GQSecurityPolicy
  *
- *  @param cerData   证书的二进制数据
- *  @param challenge 需要授权
+ *  param cerData   证书的二进制数据
+ *  param challenge 需要授权
  *
  *  @return GQSecurityPolicy
  */

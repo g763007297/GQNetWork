@@ -13,28 +13,28 @@
 /**
  打印详细信息
 
- @param message 提示信息
+ param message 提示信息
  */
 + (void)printMessage:(NSString *)message;
 
 /**
  打印错误信息
  
- @param message 提示信息
+ param message 提示信息
  */
 + (void)errorMessage:(NSString *)message;
 
 /**
  打印警告信息
  
- @param message 提示信息
+ param message 提示信息
  */
 + (void)warningMessage:(NSString *)message;
 
 /**
  打印警告信息
  
- @param message 提示信息
+ param message 提示信息
  */
 + (void)infoMessage:(NSString *)message;
 

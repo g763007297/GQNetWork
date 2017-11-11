@@ -163,24 +163,24 @@
 /**
  *  Block实例方法
  *
- *  @param params                 请求体
- *  @param headerParameters         请求头
- *  @param subUrl                 拼接url
- *  @param indiView               正在加载maskview
- *  @param uploadDatas            上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
- *  @param keyPath                需要过滤的key
- *  @param mapping                映射map
- *  @param loadingMessage         正在加载弹框显示的文字
- *  @param cancelSubject          NSNotificationCenter 取消key
- *  @param cache                  缓存key
- *  @param cacheType              缓存类型
- *  @param localFilePath          下载到什么文件位置
- *  @param onStartBlock           请求开始block
- *  @param onRechiveResponse      收到请求头block
- *  @param onFinishedBlock        请求完成block
- *  @param onCanceledBlock        请求取消block
- *  @param onFailedBlock          请求失败block
- *  @param onProgressChangedBlock 请求百分比变化block
+ *  param params                 请求体
+ *  param headerParameters         请求头
+ *  param subUrl                 拼接url
+ *  param indiView               正在加载maskview
+ *  param uploadDatas            上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
+ *  param keyPath                需要过滤的key
+ *  param mapping                映射map
+ *  param loadingMessage         正在加载弹框显示的文字
+ *  param cancelSubject          NSNotificationCenter 取消key
+ *  param cache                  缓存key
+ *  param cacheType              缓存类型
+ *  param localFilePath          下载到什么文件位置
+ *  param onStartBlock           请求开始block
+ *  param onRechiveResponse      收到请求头block
+ *  param onFinishedBlock        请求完成block
+ *  param onCanceledBlock        请求取消block
+ *  param onFailedBlock          请求失败block
+ *  param onProgressChangedBlock 请求百分比变化block
  *
  *  @return GQBaseDataRequest
  */

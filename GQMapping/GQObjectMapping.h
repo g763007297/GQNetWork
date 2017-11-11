@@ -24,15 +24,15 @@
 
 /*!
  * add property mapping from dictionary.
- * @param mappingDictionary Key-Value pair by data key name and property name.
+ * param mappingDictionary Key-Value pair by data key name and property name.
  */
 - (void)addPropertyMappingsFromDictionary:(NSDictionary*)mappingDictionary;
 
 /*!
  * add sub property to object mapping
- * @param objectMapping The object mapping to be added
- * @param from The key of data
- * @param to property name of mapping class
+ * param objectMapping The object mapping to be added
+ * param from The key of data
+ * param to property name of mapping class
  */
 - (void)addPropertyMapping:(GQObjectMapping*)objectMapping fromKey:(NSString*)from toKey:(NSString*)to;
 
