@@ -27,7 +27,7 @@ typedef void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress)
 typedef GQBaseDataRequest *(^GQChainObjectRequest)(id value);//NSObject block
 typedef GQBaseDataRequest *(^GQChainStuctRequest)(NSInteger value);   //NSInteger block
 
-typedef void(^GQChainBlockStartRequest)();//发送请求block
+typedef void(^GQChainBlockStartRequest)(void);//发送请求block
 
 typedef GQBaseDataRequest * (^GQChainBlockRequestStart)(GQRequestStart);//请求开始block
 typedef GQBaseDataRequest * (^GQChainBlockRequestRechiveResponse)(GQRequestRechiveResponse);//收到请求头block
