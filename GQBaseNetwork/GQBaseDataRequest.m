@@ -367,7 +367,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
         if (!rawResultString|| ![rawResultString length]) {
             errorInfo = [NSError errorWithDomain:@"empty data" code:GQRequestErrorNoData userInfo:nil];
             dispatch_async(dispatch_get_main_queue(), callback);
-        }else{
+        }else {
             _requestDataHandler = [self generateRequestHandler];
             id response = [self.requestDataHandler parseDataString:rawResultString error:&errorInfo];
             if (errorInfo) {

@@ -10,7 +10,6 @@
 #import "GQQueryStringPair.h"
 #import "GQHttpRequestManager.h"
 #import "GQNetworkTrafficManager.h"
-#import "NSJSONSerialization+GQAdditions.h"
 #import "GQURLOperation.h"
 #import "GQSessionOperation.h"
 #import "GQNetworkConsts.h"
@@ -262,8 +261,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 - (NSMutableURLRequest *)generateJSONPOSTRequest
 {
     if ([[self.requestParameters allKeys] count]) {
-        NSString *jsonString = [NSJSONSerialization jsonStringFromDictionary:self.requestParameters];
-        NSData *jsonData = [jsonString dataUsingEncoding:self.requestEncoding];
+        NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.requestParameters options:NSJSONWritingPrettyPrinted error:nil];
         [self.bodyData appendData:jsonData];
     }
     [self generateRequestBody];
