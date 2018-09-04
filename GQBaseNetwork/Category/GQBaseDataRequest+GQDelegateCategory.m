@@ -17,9 +17,7 @@
 {
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
-                                                                keyPath:nil
                                                             uploadDatas:nil
-                                                                mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
                                                       withIndicatorView:nil
@@ -35,9 +33,7 @@
 {
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:parameterBody.subRequestUrl
-                                                                keyPath:parameterBody.keyPath
                                                             uploadDatas:parameterBody.uploadDatas
-                                                                mapping:parameterBody.mapping
                                                          withParameters:parameterBody.parameters
                                                    withHeaderParameters:parameterBody.headerParameters
                                                       withIndicatorView:parameterBody.indicatorView
@@ -53,9 +49,7 @@
            withParameters:(NSDictionary*)params{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:nil
-                                                                keyPath:nil
                                                             uploadDatas:nil
-                                                                mapping:nil
                                                          withParameters:params
                                                    withHeaderParameters:nil
                                                       withIndicatorView:nil
@@ -71,9 +65,7 @@
         withSubRequestUrl:(NSString*)subUrl{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:subUrl
-                                                                keyPath:nil
                                                             uploadDatas:nil
-                                                                mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
                                                       withIndicatorView:nil
@@ -90,9 +82,7 @@
         withCancelSubject:(NSString*)cancelSubject{
     GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
                                                       withSubRequestUrl:subUrl
-                                                                keyPath:nil
                                                             uploadDatas:nil
-                                                                mapping:nil
                                                          withParameters:nil
                                                    withHeaderParameters:nil
                                                       withIndicatorView:nil
@@ -109,8 +99,6 @@
  *
  *  param delegate       代理
  *  param subUrl         拼接url
- *  param keyPath        需要过滤的key
- *  param mapping        映射map
  *  param params         请求体
  *  param headerParameters  请求头
  *  param uploadDatas    上传文件数组  使用 GQBuildUploadDataCategory 中两个方法创建
@@ -125,9 +113,7 @@
  */
 - (id)initWithDelegate:(id<GQDataRequestDelegate>)delegate
      withSubRequestUrl:(NSString*)subUrl
-               keyPath:(NSString*)keyPath
            uploadDatas:(NSArray*)uploadDatas
-               mapping:(GQObjectMapping*)mapping
         withParameters:(NSDictionary*)params
   withHeaderParameters:(NSDictionary *)headerParameters
      withIndicatorView:(UIView*)indiView
@@ -138,9 +124,6 @@
 {
     self = [super init];
     if(self) {
-        _keyPath = keyPath;
-        
-        _mapping = mapping;
         
         self.delegate = delegate;
         

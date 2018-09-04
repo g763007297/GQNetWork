@@ -9,15 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "GQDataCacheManager.h"
 
-@class GQObjectMapping;
-
 @interface GQRequestParameter : NSObject
 
 @property (nonatomic, copy)     NSString *subRequestUrl;//拼接使用的URL
-
-@property (nonatomic, copy)     NSString *keyPath;//mapping所需要的层级
-
-@property (nonatomic, strong)   GQObjectMapping *mapping;//model映射
 
 @property (nonatomic, copy)     NSDictionary *parameters;//请求参数
 

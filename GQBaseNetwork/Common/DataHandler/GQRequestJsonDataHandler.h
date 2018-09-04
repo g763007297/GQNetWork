@@ -6,8 +6,8 @@
 //  Copyright © 2016年 gaoqi. All rights reserved.
 //
 
-#import "GQRequestDataHandler.h"
+#import "GQBaseRequestDataHandler.h"
 
-@interface GQRequestJsonDataHandler : GQRequestDataHandler
+@interface GQRequestJsonDataHandler : GQBaseRequestDataHandler
 
 @end

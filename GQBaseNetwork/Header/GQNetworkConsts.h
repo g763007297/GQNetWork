@@ -43,7 +43,6 @@ typedef enum:NSInteger {
     GQRequestErrorNoNetWork,        //无网络
     GQRequestErrorNoData,           //无数据
     GQRequestErrorParse,            //解析错误
-    GQRequestErrorMap               //映射错误
 }GQRequestError;
 
 ////////////////////////////////////////////////////////////////////////////////

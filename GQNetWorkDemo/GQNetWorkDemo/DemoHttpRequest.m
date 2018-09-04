@@ -8,7 +8,7 @@
 
 #import "DemoHttpRequest.h"
 #import "DemoNetworkConsts.h"
-#import "GQRequestDataHandleHeader.h"
+#import "GQBaseRequestDataHandler.h"
 
 @implementation DemoHttpRequest
 
@@ -78,7 +78,7 @@
     return @"";
 }
 
-- (GQRequestDataHandler *)generateRequestHandler
+- (GQBaseRequestDataHandler *)generateRequestHandler
 {
     return nil;
 }

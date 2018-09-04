@@ -58,9 +58,9 @@
 //            NSLog(@"%@",response);
             return NSURLSessionResponseAllow;
         })
-        .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
+        .onFinishedBlockChain(^(GQBaseDataRequest * request, GQRequestResult * result){
 //            NSLog(@"%@",result.dictionary);
-            NSString *string = [[NSString alloc] initWithData:result.originalData encoding:NSUTF8StringEncoding];
+            NSString *string = [[NSString alloc] initWithData:result.rawResultData encoding:NSUTF8StringEncoding];
             NSLog(@"%@",string);
         })
         .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){

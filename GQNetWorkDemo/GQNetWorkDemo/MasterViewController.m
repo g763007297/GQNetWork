@@ -9,8 +9,6 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "DemoHttpRequest.h"
-#import "ProductModel.h"
-#import "GQObjectMapping.h"
 
 @interface MasterViewController ()<GQDataRequestDelegate>
 
@@ -43,7 +41,6 @@
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 #pragma mark -- Notification  添加通知
@@ -66,81 +63,79 @@
     
 #pragma mark -- 初级用法 使用block
     
-    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQMappingResult *result) {
-        NSLog(@"%@",result.dictionary);
+    [DemoHttpRequest requestWithOnRequestFinished:^(GQBaseDataRequest *request, GQRequestResult *result) {
+        NSLog(@"%@",result.rawResponse);
     } onRequestFailed:^(GQBaseDataRequest *request, NSError *error) {
         NSLog(@"%@",error);
     }];
     
-#pragma mark -- 高级用法  使用mapping
-    GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
-    
-    [map addPropertyMappingsFromDictionary:[ProductModel attributeMapDictionary]];//往我们的map中加映射规则
-    
-    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];//配置请求参数
-    
-    parameter.keyPath = @"result/rows";//如果取的数据在字典里面很多层的话需要指定map的层级keyPath
-    
-    parameter.mapping = map;
-    
-    parameter.subRequestUrl = @"product/list";
-    
-#pragma mark -- 链式调用 + 方法调用
-    [[[DemoHttpRequest1 prepareRequset]
-      .requestUrlChain(@"product/list")
-      .mappingChain(map)
-      .keyPathChain(@"result/rows")
-      onFinishedBlockChain:^(GQBaseDataRequest *request, GQMappingResult *result) {
-          NSLog(@"%@",result.rawDictionary);
-          NSLog(@"%@",result.array);
-      }] startRequest];
+//#pragma mark -- 高级用法  使用mapping
+//    GQObjectMapping *map = [[GQObjectMapping alloc]initWithClass:[ProductModel class]];//进行map的初始化，必须穿我们要映射的class
+//
+//    [map addPropertyMappingsFromDictionary:[ProductModel attributeMapDictionary]];//往我们的map中加映射规则
+//
+//    GQRequestParameter *parameter = [[GQRequestParameter alloc] init];//配置请求参数
+//
+//    parameter.keyPath = @"result/rows";//如果取的数据在字典里面很多层的话需要指定map的层级keyPath
+//
+//    parameter.mapping = map;
+//
+//    parameter.subRequestUrl = @"product/list";
+//
+//#pragma mark -- 链式调用 + 方法调用
+//    [[[DemoHttpRequest1 prepareRequset]
+//      .requestUrlChain(@"product/list")
+//      .mappingChain(map)
+//      .keyPathChain(@"result/rows")
+//      onFinishedBlockChain:^(GQBaseDataRequest *request, GQRequestResult *result) {
+//          NSLog(@"%@",result.rawResponse);
+//      }] startRequest];
     
 #pragma mark -- 全链式调用
     
-    __weak typeof(self) weakSelf = self;
-    [DemoHttpRequest1 prepareRequset]
-    .requestUrlChain(@"product/list")/*请求地址*/
-    .mappingChain(map)/*映射关系*/
-    .indicatorViewChain(self.view)/*显示的view*/
-    .keyPathChain(@"result/rows")/*映射层级*/
-    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQMappingResult * result){
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        [strongSelf saveModel:result.array];
-    })
-    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
-        
-    })
-    .parametersChain(@{})/*请求参数*/
-    .startRequestChain();/**开始请求*/
-    
-    NSArray *array = [self getModel];
-    NSLog(@"%@",array);
+//    __weak typeof(self) weakSelf = self;
+//    [DemoHttpRequest1 prepareRequset]
+//    .requestUrlChain(@"product/list")/*请求地址*/
+//    .mappingChain(map)/*映射关系*/
+//    .indicatorViewChain(self.view)/*显示的view*/
+//    .keyPathChain(@"result/rows")/*映射层级*/
+//    .onFinishedBlockChain(^(GQBaseDataRequest * request, GQRequestResult * result){
+//        __strong typeof(weakSelf) strongSelf = weakSelf;
+//        [strongSelf saveModel:result.array];
+//    })
+//    .onFailedBlockChain(^(GQBaseDataRequest * request, NSError * error){
+//
+//    })
+//    .parametersChain(@{})/*请求参数*/
+//    .startRequestChain();/**开始请求*/
+//
+//    NSArray *array = [self getModel];
+//    NSLog(@"%@",array);
     
 #pragma mark -- 常规block
-    [DemoHttpRequest1 requestWithRequestParameter:parameter
-                                   onRequestStart:nil
-                                onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request,
-                                                                                   NSURLResponse *response) {
-                                    NSLog(@"%@",response);
-                                    return NSURLSessionResponseAllow;
-                                }
-                                onWillRedirection:^NSURLRequest *(GQBaseDataRequest *request,
-                                                                  NSURLRequest *urlRequest,
-                                                                  NSURLResponse *response) {
-                                    return urlRequest;
-                                }onNeedNewBodyStream:^NSInputStream *(GQBaseDataRequest *request,
-                                                                      NSInputStream *originalStream) {
-                                    return originalStream;
-                                } onWillCacheResponse:^NSCachedURLResponse *(GQBaseDataRequest *request, NSCachedURLResponse *proposedResponse) {
-                                    return proposedResponse;
-                                }onRequestFinished:^(GQBaseDataRequest *request,
-                                                     GQMappingResult *result){
-                                    NSLog(@"%@",result.rawDictionary);
-                                    NSLog(@"%@",result.array);
-                                }
-                                onRequestCanceled:nil
-                                  onRequestFailed:nil
-                                onProgressChanged:nil];
+//    [DemoHttpRequest1 requestWithRequestParameter:parameter
+//                                   onRequestStart:nil
+//                                onRechiveResponse:^NSURLSessionResponseDisposition(GQBaseDataRequest *request,
+//                                                                                   NSURLResponse *response) {
+//                                    NSLog(@"%@",response);
+//                                    return NSURLSessionResponseAllow;
+//                                }
+//                                onWillRedirection:^NSURLRequest *(GQBaseDataRequest *request,
+//                                                                  NSURLRequest *urlRequest,
+//                                                                  NSURLResponse *response) {
+//                                    return urlRequest;
+//                                }onNeedNewBodyStream:^NSInputStream *(GQBaseDataRequest *request,
+//                                                                      NSInputStream *originalStream) {
+//                                    return originalStream;
+//                                } onWillCacheResponse:^NSCachedURLResponse *(GQBaseDataRequest *request, NSCachedURLResponse *proposedResponse) {
+//                                    return proposedResponse;
+//                                }onRequestFinished:^(GQBaseDataRequest *request,
+//                                                     GQRequestResult *result){
+//                                    NSLog(@"%@",result.rawResponse);
+//                                }
+//                                onRequestCanceled:nil
+//                                  onRequestFailed:nil
+//                                onProgressChanged:nil];
 }
 
 #pragma mark -- DataRequestDelegate
@@ -150,9 +145,9 @@
     
 }
 
-- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result{
+- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQRequestResult *)result{
     if ([request isKindOfClass:[DemoHttpRequest class]]) {//如果同一页面有多个不同的请求的话可以使用isKindOfClass判断是哪个请求
-        NSLog(@"%@",result.rawDictionary);
+        NSLog(@"%@",result.rawResponse);
     }
 }
 
@@ -199,19 +194,6 @@
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
-#pragma mark - Segues
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
-        [controller setDetailItem:object];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
-    }
-}
-
 #pragma mark - Table View
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -223,7 +205,12 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    
+    if (!cell) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"Cell"];
+    }
     
     NSDate *object = self.objects[indexPath.row];
     cell.textLabel.text = [object description];
@@ -242,6 +229,14 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    NSDate *object = self.objects[indexPath.row];
+    DetailViewController *controller = [[DetailViewController alloc] init];
+    [controller setDetailItem:object];
+    [self.navigationController pushViewController:controller animated:YES];
 }
 
 - (void)didReceiveMemoryWarning {

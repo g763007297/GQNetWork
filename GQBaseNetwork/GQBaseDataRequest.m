@@ -8,8 +8,8 @@
 
 #import "GQBaseDataRequest.h"
 #import "GQDataRequestManager.h"
-#import "GQRequestDataHandleHeader.h"
-#import "GQMappingHeader.h"
+#import "GQRequestResult.h"
+#import "GQRequestJsonDataHandler.h"
 #import "GQMaskActivityView.h"
 #import "GQDebugLog.h"
 
@@ -38,7 +38,6 @@ static NSString *defaultUserAgent = nil;
 @synthesize subRequestUrlChain = _subRequestUrlChain;
 @synthesize cancelSubjectChain = _cancelSubjectChain;
 @synthesize keyPathChain = _keyPathChain;
-@synthesize mappingChain = _mappingChain;
 @synthesize headerParametersChain = _headerParametersChain;
 @synthesize uploadDatasChain = _uploadDatasChain;
 @synthesize parametersChain = _parametersChain;
@@ -72,7 +71,6 @@ GQChainRequestDefine(subRequestUrlChain,subRequestUrl, NSString *, GQChainObject
 GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(keyPathChain, keyPath, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(timeOutIntervalChain, timeOutInterval, NSInteger, GQChainStuctRequest);
-GQChainRequestDefine(mappingChain, mapping, GQObjectMapping *, GQChainObjectRequest);
 GQChainRequestDefine(headerParametersChain, headerParameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(uploadDatasChain, uploadDatas, NSArray *, GQChainObjectRequest);
 GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectRequest);
@@ -376,25 +374,10 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
                 dispatch_async(dispatch_get_main_queue(), callback);
             }
             else {
-                [[GQMappingManager sharedManager]mapWithSourceData:response
-                                                      originalData:self.rawResultData
-                                                     objectMapping:_mapping
-                                                           keyPath:_keyPath
-                                                   completionBlock:^(GQMappingResult *result, NSError *error)
-                 {
-                     _responseResult = result;
-                     if (result) {
-                         success = TRUE;
-                     }
-                     else {
-                         success = FALSE;
-                     }
-                     if (error) {
-                         errorInfo = [NSError errorWithDomain:error.domain code:GQRequestErrorMap userInfo:error.userInfo];
-                     }
-                     [self processResult];
-                     dispatch_async(dispatch_get_main_queue(), callback);
-                 }];
+                _responseResult = [[GQRequestResult alloc] initWithRawResultData:self.rawResultData rawJsonString:rawResultString rawResponse:response];
+                success = TRUE;
+                [self processResult];
+                dispatch_async(dispatch_get_main_queue(), callback);
             }
         }
     }
@@ -423,12 +406,12 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
 //缓存数据
 - (void)cacheResult
 {
-    if (_responseResult.dictionary && _cacheKey) {
+    if (_responseResult.rawResponse && _cacheKey) {
         if (GQDataCacheManagerMemory == _cacheType) {
-            [[GQDataCacheManager sharedManager] addObjectToMemory:_responseResult.rawDictionary forKey:_cacheKey];
+            [[GQDataCacheManager sharedManager] addObjectToMemory:_responseResult.rawResponse forKey:_cacheKey];
         }
         else{
-            [[GQDataCacheManager sharedManager] addObject:_responseResult.rawDictionary forKey:_cacheKey];
+            [[GQDataCacheManager sharedManager] addObject:_responseResult.rawResponse forKey:_cacheKey];
         }
     }
 }
@@ -525,7 +508,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     return [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:nil];
 }
 
-- (GQRequestDataHandler *)generateRequestHandler
+- (GQBaseRequestDataHandler *)generateRequestHandler
 {
     return [[GQRequestJsonDataHandler alloc] init];
 }
@@ -641,11 +624,6 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
 - (NSString *)getLoadingMessage
 {
     return @"加载中...";
-}
-
-- (GQObjectMapping *)getMapping
-{
-    return nil;
 }
 
 #pragma mark -- override method(@required)

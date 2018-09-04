@@ -1,5 +1,5 @@
 //
-//  GQRequestDataHandler.h
+//  GQBaseRequestDataHandler.h
 //  GQNetWorkDemo
 //
 //  Created by 高旗 on 16/5/27.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GQRequestDataHandler : NSObject
+@interface GQBaseRequestDataHandler : NSObject
 
 - (id)parseDataString:(NSString *)resultString error:(NSError **)error;
 

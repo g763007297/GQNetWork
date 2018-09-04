@@ -7,16 +7,14 @@
 //
 
 #import "GQDataCacheManager.h"
-#import "GQMappingResult.h"
 #import "GQRequestParameter.h"
 
 #import "GQNetworkConsts.h"
 #import "GQNetworkDefine.h"
 
-@class GQObjectMapping;
-@class GQMappingResult;
+@class GQRequestResult;
 
-@class GQRequestDataHandler;
+@class GQBaseRequestDataHandler;
 @class GQMaskActivityView;
 
 @interface GQBaseDataRequest : NSObject
@@ -30,8 +28,6 @@
     NSString                *_subRequestUrl;
     
     GQDataCacheManagerType  _cacheType;
-    
-    NSString                *_keyPath;
     
     UIView                  *_indicatorView;
     
@@ -60,9 +56,8 @@
     GQRequestFailed             _onRequestFailed;
     GQProgressChanged           _onProgressChanged;
     
-    GQObjectMapping             *_mapping;
     //the finally mapping result
-    GQMappingResult             *_responseResult;
+    GQRequestResult             *_responseResult;
 }
 
 @property (nonatomic, weak) id<GQDataRequestDelegate> delegate;//代理
@@ -70,7 +65,7 @@
 @property (nonatomic, copy, readonly) NSData *rawResultData;//请求回来的元数据
 @property (nonatomic, copy, readonly) NSString *requestUrl;//请求地址
 @property (nonatomic, copy, readonly) NSMutableDictionary *userInfo;//请求参数
-@property (nonatomic, copy, readonly) GQRequestDataHandler *requestDataHandler;//解析方式
+@property (nonatomic, copy, readonly) GQBaseRequestDataHandler *requestDataHandler;//解析方式
 
 #pragma mark -- chain code methods   链式写法
 
@@ -110,11 +105,6 @@
  *  timeOutInterval    type  NSTimeInterval
  */
 @property (nonatomic, copy, readonly) GQChainStuctRequest timeOutIntervalChain;
-
-/**
- *  具体映射的关系   type : GQObjectMapping
- */
-@property (nonatomic, copy , readonly) GQChainObjectRequest mappingChain;
 
 /**
  *  请求头  type : NSDictionary
@@ -177,7 +167,7 @@
 @property (nonatomic, copy, readonly) GQChainBlockRequestWillCacheResponse onWillCacheResponseBlockChain;
 
 /**
- *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);
+ *  请求完成block   type : void (^GQRequestFinished)(GQBaseDataRequest * request, GQRequestResult * result);
  */
 @property (nonatomic, copy , readonly) GQChainBlockRequestFinished onFinishedBlockChain;
 
@@ -391,13 +381,6 @@
 - (NSString *)getLoadingMessage;
 
 /**
- *  映射关系  默认为nil
- *
- *  @return GQObjectMapping *
- */
-- (GQObjectMapping *)getMapping;
-
-/**
  *  静态的请求参数   默认为nil
  *
  *  @return NSDictionary *
@@ -430,7 +413,7 @@
 /**
  *  子类覆盖该方法修改数据解析方式  默认为json解析
  */
-- (GQRequestDataHandler *)generateRequestHandler;
+- (GQBaseRequestDataHandler *)generateRequestHandler;
 
 /**
  *  https证书二进制数据

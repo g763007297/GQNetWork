@@ -10,6 +10,7 @@
 #define GQNetworkDefine_h
 
 @class GQBaseDataRequest;
+@class GQRequestResult;
 #pragma mark -- blockTypedef  普通函数式block
 
 typedef void (^GQRequestStart)(GQBaseDataRequest * request);//请求开始block
@@ -17,7 +18,7 @@ typedef NSURLSessionResponseDisposition (^GQRequestRechiveResponse)(GQBaseDataRe
 typedef NSURLRequest *(^GQRequestWillRedirection)(GQBaseDataRequest * request,NSURLRequest *urlRequest,NSURLResponse *response);//HTTP重定向block
 typedef NSInputStream * (^GQRequestNeedNewBodyStream)(GQBaseDataRequest * request,NSInputStream *originalStream);//需要新的数据流block
 typedef NSCachedURLResponse * (^GQRequestWillCacheResponse)(GQBaseDataRequest * request,NSCachedURLResponse *proposedResponse);//将要缓存到web的block
-typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQMappingResult * result);//请求完成block
+typedef void (^GQRequestFinished)(GQBaseDataRequest * request, GQRequestResult * result);//请求完成block
 typedef void (^GQRequestCanceled)(GQBaseDataRequest * request);//请求取消block
 typedef void (^GQRequestFailed)(GQBaseDataRequest * request, NSError * error);//请求失败block
 typedef void (^GQProgressChanged)(GQBaseDataRequest * request, CGFloat progress);//请求进度改变block
@@ -43,7 +44,7 @@ typedef GQBaseDataRequest * (^GQChainBlockProgressChanged)(GQProgressChanged);//
 @protocol GQDataRequestDelegate <NSObject>
 
 @required
-- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQMappingResult *)result;//请求完成代理
+- (void)requestDidFinishLoad:(GQBaseDataRequest*)request mappingResult:(GQRequestResult *)result;//请求完成代理
 - (void)request:(GQBaseDataRequest*)request didFailLoadWithError:(NSError*)error;//请求失败代理
 
 @optional
