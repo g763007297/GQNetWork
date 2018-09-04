@@ -152,7 +152,6 @@
 		B6CB1D2A1CF83E3B00D485E3 = {
 			isa = PBXGroup;
 			children = (
-				DFAC01EA213E28CE0038444B /* GQNetworkHeader.h */,
 				DF9C7A4C1D1F9B6F006B0D18 /* GQBaseNetwork */,
 				DF9C7A7F1D1F9B6F006B0D18 /* GQNetworking */,
 				B6CB1D351CF83E3B00D485E3 /* GQNetWorkDemo */,
@@ -201,6 +200,7 @@
 		DF9C7A4C1D1F9B6F006B0D18 /* GQBaseNetwork */ = {
 			isa = PBXGroup;
 			children = (
+				DFAC01EA213E28CE0038444B /* GQNetworkHeader.h */,
 				DFAC01F2213E28CE0038444B /* GQBaseDataRequest.h */,
 				DFAC01E9213E28CE0038444B /* GQBaseDataRequest.m */,
 				DFAC01EB213E28CE0038444B /* Category */,

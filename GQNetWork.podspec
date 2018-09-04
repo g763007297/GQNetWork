@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-  s.version      = "1.3.4"
-  s.summary      = "继承形式的网络请求库，支持关系映射，支持NSURLSession,支持https请求，请求数据缓存机制，支持链式调用，支持model版本控制"
+  s.version      = "1.3.5"
+  s.summary      = "继承形式的网络请求库，支持NSURLSession,支持https请求，请求数据缓存机制，支持链式调用"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
 
@@ -19,11 +19,6 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
 
-   s.subspec 'GQMapping' do |ss|
-     ss.ios.source_files = 'GQMapping/**/*.{h,m}'
-     ss.public_header_files = 'GQMapping/**/*.h'
-   end
-
   s.subspec 'GQNetworking' do |ss|
     ss.ios.source_files  = [
       "GQNetworking/**/*.{h,m}",
@@ -34,10 +29,8 @@ Pod::Spec.new do |s|
       'GQNetworking/**/*.h',
       'GQBaseNetwork/**/*.h',
     ]
-   ss.dependency 'GQNetWork/GQMapping'
   end
 
-  #s.dependency 'GQMapping'
   s.default_subspec = 'GQNetworking'
 
 end
