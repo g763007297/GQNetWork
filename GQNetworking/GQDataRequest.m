@@ -53,19 +53,25 @@
                         onRequestFinished:^(NSData *responseData) {
                             GQStrongify(self);
                             [self handleResponseString:responseData];
-                            [self showIndicator:NO];
-                            [self doRelease];
+                            GQDispatch_main_async_safe(^{
+                                [self showIndicator:NO];
+                                [self doRelease];
+                            });
                         }
                         onRequestCanceled:^() {
                             GQStrongify(self);
-                            [self notifyRequestDidCancel];
-                            [self doRelease];
+                            GQDispatch_main_async_safe(^{
+                                [self notifyRequestDidCancel];
+                                [self doRelease];
+                            });
                         }
                         onRequestFailed:^(NSError *error) {
                             GQStrongify(self);
-                            [self notifyRequestDidErrorWithError:error];
-                            [self showIndicator:NO];
-                            [self doRelease];
+                            GQDispatch_main_async_safe(^{
+                                [self notifyRequestDidErrorWithError:error];
+                                [self showIndicator:NO];
+                                [self doRelease];
+                            });
                         }];
     
     [self.httpRequest setTimeoutInterval:[self getTimeOutInterval]];

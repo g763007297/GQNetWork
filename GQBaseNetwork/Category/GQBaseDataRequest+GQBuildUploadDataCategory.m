@@ -26,7 +26,10 @@ static inline NSString * GQMimeTypeForFileAtPath(NSString *path)
     }
 }
 
-+ (NSDictionary *)buildUploadData:(id)data withFileName:(NSString *)fileName andContentType:(NSString *)contentType forKey:(NSString *)key
++ (NSDictionary *)buildUploadData:(id)data
+                     withFileName:(NSString *)fileName
+                   andContentType:(NSString *)contentType
+                           forKey:(NSString *)key
 {
     NSAssert(data, @"UploadData don`t be nil");
     NSAssert(key, @"UploadKey don`t be nil");
@@ -41,7 +44,10 @@ static inline NSString * GQMimeTypeForFileAtPath(NSString *path)
              GQUploadKey:key};
 }
 
-+ (NSDictionary *)buildUploadFile:(NSString *)filePath withFileName:(NSString *)fileName andContentType:(NSString *)contentType forKey:(NSString *)key
++ (NSDictionary *)buildUploadFile:(NSString *)filePath
+                     withFileName:(NSString *)fileName
+                   andContentType:(NSString *)contentType
+                           forKey:(NSString *)key
 {
     NSAssert(filePath, @"UploadData don`t be nil");
     NSAssert(key, @"UploadKey don`t be nil");

@@ -211,7 +211,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 #pragma mark -- HandleResponseData
 
-- (void)handleResponseData:(NSData *)data{
+- (void)handleResponseData:(NSData *)data {
     dispatch_group_async(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{
         if(self.operationSavePath) {
             @try {
@@ -246,19 +246,17 @@ static NSInteger GQHTTPRequestTaskCount = 0;
             CFRunLoopStop(self.operationRunLoop);
         }
     }
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.responseData = self.operationData;
-        NSError *serverError = error;
-        if(!serverError) {
-            serverError = [NSError errorWithDomain:NSURLErrorDomain
-                                              code:NSURLErrorBadServerResponse
-                                          userInfo:nil];
-        }
-        if(self.operationCompletionBlock && self.state != NSURLSessionTaskStateCanceling){
-            self.operationCompletionBlock(self,requestSuccess,requestSuccess?nil:serverError);
-        }
-        [self finish];
-    });
+    self.responseData = self.operationData;
+    NSError *serverError = error;
+    if(!serverError) {
+        serverError = [NSError errorWithDomain:NSURLErrorDomain
+                                          code:NSURLErrorBadServerResponse
+                                      userInfo:nil];
+    }
+    if(self.operationCompletionBlock && self.state != NSURLSessionTaskStateCanceling){
+        self.operationCompletionBlock(self,requestSuccess,requestSuccess?nil:serverError);
+    }
+    [self finish];
 }
 
 @end

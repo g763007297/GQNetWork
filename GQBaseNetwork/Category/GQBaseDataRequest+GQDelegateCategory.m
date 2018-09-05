@@ -13,83 +13,99 @@
 
 #pragma mark - class methods using delegate
 
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
 {
-    GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
-                                                      withSubRequestUrl:nil
-                                                            uploadDatas:nil
-                                                         withParameters:nil
-                                                   withHeaderParameters:nil
-                                                      withIndicatorView:nil
-                                                      withCancelSubject:nil
-                                                           withCacheKey:nil
-                                                          withCacheType:GQDataCacheManagerMemory
-                                                           withFilePath:nil];
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithDelegate:delegate
+                                  withSubRequestUrl:nil
+                                  uploadDatas:nil
+                                  withParameters:nil
+                                  withHeaderParameters:nil
+                                  withIndicatorView:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody withDelegate:(id<GQDataRequestDelegate>)delegate
++ (instancetype)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                               withDelegate:(id<GQDataRequestDelegate>)delegate
 {
-    GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
-                                                      withSubRequestUrl:parameterBody.subRequestUrl
-                                                            uploadDatas:parameterBody.uploadDatas
-                                                         withParameters:parameterBody.parameters
-                                                   withHeaderParameters:parameterBody.headerParameters
-                                                      withIndicatorView:parameterBody.indicatorView
-                                                      withCancelSubject:parameterBody.cancelSubject
-                                                           withCacheKey:parameterBody.cacheKey
-                                                          withCacheType:(parameterBody.cacheType?parameterBody.cacheType:GQDataCacheManagerMemory)
-                                                           withFilePath:nil];
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithDelegate:delegate
+                                  withSubRequestUrl:parameterBody.subRequestUrl
+                                  uploadDatas:parameterBody.uploadDatas
+                                  withParameters:parameterBody.parameters
+                                  withHeaderParameters:parameterBody.headerParameters
+                                  withIndicatorView:parameterBody.indicatorView
+                                  withCancelSubject:parameterBody.cancelSubject
+                                  withCacheKey:parameterBody.cacheKey
+                                  withCacheType:(parameterBody.cacheType?parameterBody.cacheType:GQDataCacheManagerMemory)
+                                  withFilePath:parameterBody.localFilePath
+                                  withCompleteCallBackQueue:parameterBody.completeCallBackQueue
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-           withParameters:(NSDictionary*)params{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
-                                                      withSubRequestUrl:nil
-                                                            uploadDatas:nil
-                                                         withParameters:params
-                                                   withHeaderParameters:nil
-                                                      withIndicatorView:nil
-                                                      withCancelSubject:nil
-                                                           withCacheKey:nil
-                                                          withCacheType:GQDataCacheManagerMemory
-                                                           withFilePath:nil];
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                     withParameters:(NSDictionary*)params{
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithDelegate:delegate
+                                  withSubRequestUrl:nil
+                                  uploadDatas:nil
+                                  withParameters:params
+                                  withHeaderParameters:nil
+                                  withIndicatorView:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
-                                                      withSubRequestUrl:subUrl
-                                                            uploadDatas:nil
-                                                         withParameters:nil
-                                                   withHeaderParameters:nil
-                                                      withIndicatorView:nil
-                                                      withCancelSubject:nil
-                                                           withCacheKey:nil
-                                                          withCacheType:GQDataCacheManagerMemory
-                                                           withFilePath:nil];
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                  withSubRequestUrl:(NSString*)subUrl{
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithDelegate:delegate
+                                  withSubRequestUrl:subUrl
+                                  uploadDatas:nil
+                                  withParameters:nil
+                                  withHeaderParameters:nil
+                                  withIndicatorView:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl
-        withCancelSubject:(NSString*)cancelSubject{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithDelegate:delegate
-                                                      withSubRequestUrl:subUrl
-                                                            uploadDatas:nil
-                                                         withParameters:nil
-                                                   withHeaderParameters:nil
-                                                      withIndicatorView:nil
-                                                      withCancelSubject:cancelSubject
-                                                           withCacheKey:nil
-                                                          withCacheType:GQDataCacheManagerMemory
-                                                           withFilePath:nil];
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                  withSubRequestUrl:(NSString*)subUrl
+                  withCancelSubject:(NSString*)cancelSubject{
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithDelegate:delegate
+                                  withSubRequestUrl:subUrl
+                                  uploadDatas:nil
+                                  withParameters:nil
+                                  withHeaderParameters:nil
+                                  withIndicatorView:nil
+                                  withCancelSubject:cancelSubject
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
@@ -108,19 +124,21 @@
  *  param cache          缓存key
  *  param cacheType      缓存类型
  *  param localFilePath  下载到什么文件位置
+ *  param completeCallBackQueue 回调指定queue
  *
  *  @return GQBaseDataRequest
  */
-- (id)initWithDelegate:(id<GQDataRequestDelegate>)delegate
-     withSubRequestUrl:(NSString*)subUrl
-           uploadDatas:(NSArray*)uploadDatas
-        withParameters:(NSDictionary*)params
-  withHeaderParameters:(NSDictionary *)headerParameters
-     withIndicatorView:(UIView*)indiView
-     withCancelSubject:(NSString*)cancelSubject
-          withCacheKey:(NSString*)cache
-         withCacheType:(GQDataCacheManagerType)cacheType
-          withFilePath:(NSString*)localFilePath
+- (instancetype)initWithDelegate:(id<GQDataRequestDelegate>)delegate
+               withSubRequestUrl:(NSString*)subUrl
+                     uploadDatas:(NSArray*)uploadDatas
+                  withParameters:(NSDictionary*)params
+            withHeaderParameters:(NSDictionary *)headerParameters
+               withIndicatorView:(UIView*)indiView
+               withCancelSubject:(NSString*)cancelSubject
+                    withCacheKey:(NSString*)cache
+                   withCacheType:(GQDataCacheManagerType)cacheType
+                    withFilePath:(NSString*)localFilePath
+       withCompleteCallBackQueue:(dispatch_queue_t)completeCallBackQueue
 {
     self = [super init];
     if(self) {
@@ -132,6 +150,8 @@
         _uploadDatas = uploadDatas;
         
         _indicatorView = indiView;
+        
+        _completeCallBackQueue = completeCallBackQueue;
         
         _cacheKey = cache;
         

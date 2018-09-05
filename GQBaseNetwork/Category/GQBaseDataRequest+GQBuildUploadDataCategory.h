@@ -20,7 +20,10 @@
  *
  *  @return NSDictionary *
  */
-+ (NSDictionary *)buildUploadData:(id)data withFileName:(NSString *)fileName andContentType:(NSString *)contentType forKey:(NSString *)key;
++ (NSDictionary *)buildUploadData:(id)data
+                     withFileName:(NSString *)fileName
+                   andContentType:(NSString *)contentType
+                           forKey:(NSString *)key;
 
 /**
  *  创建上传文件字典
@@ -32,6 +35,9 @@
  *
  *  @return NSDictionary *
  */
-+ (NSDictionary *)buildUploadFile:(NSString *)filePath withFileName:(NSString *)fileName andContentType:(NSString *)contentType forKey:(NSString *)key;
++ (NSDictionary *)buildUploadFile:(NSString *)filePath
+                     withFileName:(NSString *)fileName
+                   andContentType:(NSString *)contentType
+                           forKey:(NSString *)key;
 
 @end

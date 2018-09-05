@@ -13,139 +13,152 @@
 
 #pragma mark - class methods using block
 
-+ (id)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
-                   onRequestFailed:(GQRequestFailed)onFailedBlock{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:nil
-                                                     withHeaderParameters:nil
-                                                        withSubRequestUrl:nil
-                                                        withIndicatorView:nil
-                                                              uploadDatas:nil
-                                                        withCancelSubject:nil
-                                                             withCacheKey:nil
-                                                            withCacheType:GQDataCacheManagerMemory
-                                                             withFilePath:nil
-                                                           onRequestStart:nil
-                                                        onRechiveResponse:nil
-                                                        onWillRedirection:nil
-                                                      onNeedNewBodyStream:nil
-                                                      onWillCacheResponse:nil
-                                                        onRequestFinished:onFinishedBlock
-                                                        onRequestCanceled:nil
-                                                          onRequestFailed:onFailedBlock
-                                                        onProgressChanged:nil];
++ (instancetype)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
+                             onRequestFailed:(GQRequestFailed)onFailedBlock {
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithParameters:nil
+                                  withHeaderParameters:nil
+                                  withSubRequestUrl:nil
+                                  withIndicatorView:nil
+                                  uploadDatas:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  onRequestStart:nil
+                                  onRechiveResponse:nil
+                                  onWillRedirection:nil
+                                  onNeedNewBodyStream:nil
+                                  onWillCacheResponse:nil
+                                  onRequestFinished:onFinishedBlock
+                                  onRequestCanceled:nil
+                                  onRequestFailed:onFailedBlock
+                                  onProgressChanged:nil];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithWithParameters:(NSDictionary*)params
-              onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestFailed:(GQRequestFailed)onFailedBlock{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
-                                                     withHeaderParameters:nil
-                                                        withSubRequestUrl:nil
-                                                        withIndicatorView:nil
-                                                              uploadDatas:nil
-                                                        withCancelSubject:nil
-                                                             withCacheKey:nil
-                                                            withCacheType:GQDataCacheManagerMemory
-                                                             withFilePath:nil
-                                                           onRequestStart:nil
-                                                        onRechiveResponse:nil
-                                                        onWillRedirection:nil
-                                                      onNeedNewBodyStream:nil
-                                                      onWillCacheResponse:nil
-                                                        onRequestFinished:onFinishedBlock
-                                                        onRequestCanceled:nil
-                                                          onRequestFailed:onFailedBlock
-                                                        onProgressChanged:nil];
++ (instancetype)requestWithWithParameters:(NSDictionary*)params
+                        onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestFailed:(GQRequestFailed)onFailedBlock {
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithParameters:params
+                                  withHeaderParameters:nil
+                                  withSubRequestUrl:nil
+                                  withIndicatorView:nil
+                                  uploadDatas:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  onRequestStart:nil
+                                  onRechiveResponse:nil
+                                  onWillRedirection:nil
+                                  onNeedNewBodyStream:nil
+                                  onWillCacheResponse:nil
+                                  onRequestFinished:onFinishedBlock
+                                  onRequestCanceled:nil
+                                  onRequestFailed:onFailedBlock
+                                  onProgressChanged:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithWithParameters:(NSDictionary*)params
-              withSubRequestUrl:(NSString*)subUrl
-              onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestFailed:(GQRequestFailed)onFailedBlock{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
-                                                     withHeaderParameters:nil
-                                                        withSubRequestUrl:subUrl
-                                                        withIndicatorView:nil
-                                                              uploadDatas:nil
-                                                        withCancelSubject:nil
-                                                             withCacheKey:nil
-                                                            withCacheType:GQDataCacheManagerMemory
-                                                             withFilePath:nil
-                                                           onRequestStart:nil
-                                                        onRechiveResponse:nil
-                                                        onWillRedirection:nil
-                                                      onNeedNewBodyStream:nil
-                                                      onWillCacheResponse:nil
-                                                        onRequestFinished:onFinishedBlock
-                                                        onRequestCanceled:nil
-                                                          onRequestFailed:onFailedBlock
-                                                        onProgressChanged:nil];
++ (instancetype)requestWithWithParameters:(NSDictionary*)params
+                        withSubRequestUrl:(NSString*)subUrl
+                        onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestFailed:(GQRequestFailed)onFailedBlock {
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithParameters:params
+                                  withHeaderParameters:nil
+                                  withSubRequestUrl:subUrl
+                                  withIndicatorView:nil
+                                  uploadDatas:nil
+                                  withCancelSubject:nil
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:nil
+                                  withCompleteCallBackQueue:nil
+                                  onRequestStart:nil
+                                  onRechiveResponse:nil
+                                  onWillRedirection:nil
+                                  onNeedNewBodyStream:nil
+                                  onWillCacheResponse:nil
+                                  onRequestFinished:onFinishedBlock
+                                  onRequestCanceled:nil
+                                  onRequestFailed:onFailedBlock
+                                  onProgressChanged:nil
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                   onRequestStart:(GQRequestStart)onStartBlock
-                onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
-                onWillRedirection:(GQRequestWillRedirection)onWillRedirection
-              onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
-              onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
-                onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestCanceled:(GQRequestCanceled)onCanceledBlock
-                  onRequestFailed:(GQRequestFailed)onFailedBlock
-                onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:parameterBody.parameters
-                                                     withHeaderParameters:parameterBody.headerParameters
-                                                        withSubRequestUrl:parameterBody.subRequestUrl
-                                                        withIndicatorView:parameterBody.indicatorView
-                                                              uploadDatas:parameterBody.uploadDatas
-                                                        withCancelSubject:parameterBody.cancelSubject
-                                                             withCacheKey:parameterBody.cacheKey
-                                                            withCacheType:parameterBody.cacheType
-                                                             withFilePath:parameterBody.localFilePath
-                                                           onRequestStart:onStartBlock
-                                                        onRechiveResponse:onRechiveResponse
-                                                        onWillRedirection:onWillRedirection
-                                                      onNeedNewBodyStream:onNeedNewBodyStream
-                                                      onWillCacheResponse:onWillCacheResponse
-                                                        onRequestFinished:onFinishedBlock
-                                                        onRequestCanceled:onCanceledBlock
-                                                          onRequestFailed:onFailedBlock
-                                                        onProgressChanged:onProgressChangedBlock];
++ (instancetype)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                             onRequestStart:(GQRequestStart)onStartBlock
+                          onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                          onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+                        onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+                        onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
+                          onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+                            onRequestFailed:(GQRequestFailed)onFailedBlock
+                          onProgressChanged:(GQProgressChanged)onProgressChangedBlock {
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithParameters:parameterBody.parameters
+                                  withHeaderParameters:parameterBody.headerParameters
+                                  withSubRequestUrl:parameterBody.subRequestUrl
+                                  withIndicatorView:parameterBody.indicatorView
+                                  uploadDatas:parameterBody.uploadDatas
+                                  withCancelSubject:parameterBody.cancelSubject
+                                  withCacheKey:parameterBody.cacheKey
+                                  withCacheType:parameterBody.cacheType
+                                  withFilePath:parameterBody.localFilePath
+                                  withCompleteCallBackQueue:parameterBody.completeCallBackQueue
+                                  onRequestStart:onStartBlock
+                                  onRechiveResponse:onRechiveResponse
+                                  onWillRedirection:onWillRedirection
+                                  onNeedNewBodyStream:onNeedNewBodyStream
+                                  onWillCacheResponse:onWillCacheResponse
+                                  onRequestFinished:onFinishedBlock
+                                  onRequestCanceled:onCanceledBlock
+                                  onRequestFailed:onFailedBlock
+                                  onProgressChanged:onProgressChangedBlock];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
 
-+ (id)requestWithParameters:(NSDictionary*)params
-       withHeaderParameters:(NSDictionary *)headerParameters
-          withSubRequestUrl:(NSString*)subUrl
-          withCancelSubject:(NSString*)cancelSubject
-               withFilePath:(NSString*)localFilePath
-          onRequestFinished:(GQRequestFinished)onFinishedBlock
-            onRequestFailed:(GQRequestFailed)onFailedBlock
-          onProgressChanged:(GQProgressChanged)onProgressChangedBlock{
-    GQBaseDataRequest *request = [[[self class] alloc] initWithParameters:params
-                                                     withHeaderParameters:headerParameters
-                                                        withSubRequestUrl:subUrl
-                                                        withIndicatorView:nil
-                                                              uploadDatas:nil
-                                                        withCancelSubject:cancelSubject
-                                                             withCacheKey:nil
-                                                            withCacheType:GQDataCacheManagerMemory
-                                                             withFilePath:localFilePath
-                                                           onRequestStart:nil
-                                                        onRechiveResponse:nil
-                                                        onWillRedirection:nil
-                                                      onNeedNewBodyStream:nil
-                                                      onWillCacheResponse:nil
-                                                        onRequestFinished:onFinishedBlock
-                                                        onRequestCanceled:nil
-                                                          onRequestFailed:onFailedBlock
-                                                        onProgressChanged:onProgressChangedBlock];
++ (instancetype)requestWithParameters:(NSDictionary*)params
+                 withHeaderParameters:(NSDictionary *)headerParameters
+                    withSubRequestUrl:(NSString*)subUrl
+                    withCancelSubject:(NSString*)cancelSubject
+                         withFilePath:(NSString*)localFilePath
+                    onRequestFinished:(GQRequestFinished)onFinishedBlock
+                      onRequestFailed:(GQRequestFailed)onFailedBlock
+                    onProgressChanged:(GQProgressChanged)onProgressChangedBlock {
+    GQBaseDataRequest *request = [[[self class] alloc]
+                                  initWithParameters:params
+                                  withHeaderParameters:headerParameters
+                                  withSubRequestUrl:subUrl
+                                  withIndicatorView:nil
+                                  uploadDatas:nil
+                                  withCancelSubject:cancelSubject
+                                  withCacheKey:nil
+                                  withCacheType:GQDataCacheManagerMemory
+                                  withFilePath:localFilePath
+                                  withCompleteCallBackQueue:nil
+                                  onRequestStart:nil
+                                  onRechiveResponse:nil
+                                  onWillRedirection:nil
+                                  onNeedNewBodyStream:nil
+                                  onWillCacheResponse:nil
+                                  onRequestFinished:onFinishedBlock
+                                  onRequestCanceled:nil
+                                  onRequestFailed:onFailedBlock
+                                  onProgressChanged:onProgressChangedBlock
+                                  ];
     [[GQDataRequestManager sharedManager] addRequest:request];
     return request;
 }
@@ -172,24 +185,25 @@
  *
  *  @return GQBaseDataRequest
  */
-- (id)initWithParameters:(NSDictionary*)params
-    withHeaderParameters:(NSDictionary *)headerParameters
-       withSubRequestUrl:(NSString*)subUrl
-       withIndicatorView:(UIView*)indiView
-             uploadDatas:(NSArray*)uploadDatas
-       withCancelSubject:(NSString*)cancelSubject
-            withCacheKey:(NSString*)cache
-           withCacheType:(GQDataCacheManagerType)cacheType
-            withFilePath:(NSString*)localFilePath
-          onRequestStart:(GQRequestStart)onStartBlock
-       onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
-       onWillRedirection:(GQRequestWillRedirection)onWillRedirection
-     onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
-     onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
-       onRequestFinished:(GQRequestFinished)onFinishedBlock
-       onRequestCanceled:(GQRequestCanceled)onCanceledBlock
-         onRequestFailed:(GQRequestFailed)onFailedBlock
-       onProgressChanged:(GQProgressChanged)onProgressChangedBlock
+- (instancetype)initWithParameters:(NSDictionary*)params
+              withHeaderParameters:(NSDictionary *)headerParameters
+                 withSubRequestUrl:(NSString*)subUrl
+                 withIndicatorView:(UIView*)indiView
+                       uploadDatas:(NSArray*)uploadDatas
+                 withCancelSubject:(NSString*)cancelSubject
+                      withCacheKey:(NSString*)cache
+                     withCacheType:(GQDataCacheManagerType)cacheType
+                      withFilePath:(NSString*)localFilePath
+         withCompleteCallBackQueue:(dispatch_queue_t)completeCallBackQueue
+                    onRequestStart:(GQRequestStart)onStartBlock
+                 onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                 onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+               onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+               onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
+                 onRequestFinished:(GQRequestFinished)onFinishedBlock
+                 onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+                   onRequestFailed:(GQRequestFailed)onFailedBlock
+                 onProgressChanged:(GQProgressChanged)onProgressChangedBlock
 {
     self = [super init];
     if(self) {
@@ -209,6 +223,8 @@
         _parameters = params;
         
         _headerParameters = headerParameters;
+        
+        _completeCallBackQueue = completeCallBackQueue;
         
         if (onStartBlock) {
             _onRequestStart = [onStartBlock copy];

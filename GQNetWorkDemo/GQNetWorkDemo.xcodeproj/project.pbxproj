@@ -255,8 +255,8 @@
 			isa = PBXGroup;
 			children = (
 				DFAC01C2213E28CD0038444B /* GQSecurityPolicy */,
-				DFAC01C0213E28CD0038444B /* NSString+GQAdditions.m */,
 				DFAC01C1213E28CD0038444B /* NSString+GQAdditions.h */,
+				DFAC01C0213E28CD0038444B /* NSString+GQAdditions.m */,
 			);
 			path = Additions;
 			sourceTree = "<group>";

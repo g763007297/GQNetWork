@@ -56,6 +56,8 @@
     GQRequestFailed             _onRequestFailed;
     GQProgressChanged           _onProgressChanged;
     
+    dispatch_queue_t            _completeCallBackQueue;//请求完成回调queue
+    
     //the finally mapping result
     GQRequestResult             *_responseResult;
 }
@@ -130,6 +132,11 @@
  *  缓存key   type : NSString
  */
 @property (nonatomic, copy , readonly) GQChainObjectRequest cacheKeyChain;
+
+/**
+ 完成请求回调指定queue   type : dispatch_queue_t
+ */
+@property (nonatomic, copy, readonly) GQChainObjectRequest completeCallBackQueueChain;
 
 /**
  *  缓存类型   type : GQDataCacheManagerType

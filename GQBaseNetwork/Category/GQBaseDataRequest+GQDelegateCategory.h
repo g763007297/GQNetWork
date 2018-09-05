@@ -19,7 +19,7 @@
  *
  *  @return  GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate;
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate;
 
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
@@ -29,8 +29,8 @@
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                     withDelegate:(id<GQDataRequestDelegate>)delegate;
++ (instancetype)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                               withDelegate:(id<GQDataRequestDelegate>)delegate;
 
 /**
  *  请求方法
@@ -40,8 +40,8 @@
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-           withParameters:(NSDictionary*)params;
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                     withParameters:(NSDictionary*)params;
 /**
  *  请求方法
  *
@@ -50,8 +50,8 @@
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl;
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                  withSubRequestUrl:(NSString*)subUrl;
 
 /**
  *  请求方法
@@ -63,9 +63,9 @@
  *  @return GQBaseDataRequest
  */
 
-+ (id)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
-        withSubRequestUrl:(NSString*)subUrl
-        withCancelSubject:(NSString*)cancelSubject;
++ (instancetype)requestWithDelegate:(id<GQDataRequestDelegate>)delegate
+                  withSubRequestUrl:(NSString*)subUrl
+                  withCancelSubject:(NSString*)cancelSubject;
 
 @end
 

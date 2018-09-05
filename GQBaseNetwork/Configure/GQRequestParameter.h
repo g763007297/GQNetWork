@@ -31,4 +31,6 @@
 
 @property (nonatomic, copy)     NSString *localFilePath;//文件下载的位置
 
+@property (nonatomic, strong)   dispatch_queue_t completeCallBackQueue;
+
 @end

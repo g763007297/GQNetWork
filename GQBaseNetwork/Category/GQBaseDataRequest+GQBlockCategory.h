@@ -20,8 +20,8 @@
  *
  *  @return self
  */
-+ (id)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
-                   onRequestFailed:(GQRequestFailed)onFailedBlock;
++ (instancetype)requestWithOnRequestFinished:(GQRequestFinished)onFinishedBlock
+                             onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  添加请求体的request
@@ -32,9 +32,9 @@
  *
  *  @return self
  */
-+ (id)requestWithWithParameters:(NSDictionary*)params
-              onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestFailed:(GQRequestFailed)onFailedBlock;
++ (instancetype)requestWithWithParameters:(NSDictionary*)params
+                        onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  添加请求体的request
@@ -46,10 +46,10 @@
  *
  *  @return self
  */
-+ (id)requestWithWithParameters:(NSDictionary*)params
-              withSubRequestUrl:(NSString*)subUrl
-              onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestFailed:(GQRequestFailed)onFailedBlock;
++ (instancetype)requestWithWithParameters:(NSDictionary*)params
+                        withSubRequestUrl:(NSString*)subUrl
+                        onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestFailed:(GQRequestFailed)onFailedBlock;
 
 /**
  *  如果想一次性配置请求参数 则配置成GQRequestParameter
@@ -67,26 +67,26 @@
  *
  *  @return GQBaseDataRequest
  */
-+ (id)requestWithRequestParameter:(GQRequestParameter *)parameterBody
-                   onRequestStart:(GQRequestStart)onStartBlock
-                onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
-                onWillRedirection:(GQRequestWillRedirection)onWillRedirection
-              onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
-              onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
-                onRequestFinished:(GQRequestFinished)onFinishedBlock
-                onRequestCanceled:(GQRequestCanceled)onCanceledBlock
-                  onRequestFailed:(GQRequestFailed)onFailedBlock
-                onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
++ (instancetype)requestWithRequestParameter:(GQRequestParameter *)parameterBody
+                             onRequestStart:(GQRequestStart)onStartBlock
+                          onRechiveResponse:(GQRequestRechiveResponse)onRechiveResponse
+                          onWillRedirection:(GQRequestWillRedirection)onWillRedirection
+                        onNeedNewBodyStream:(GQRequestNeedNewBodyStream)onNeedNewBodyStream
+                        onWillCacheResponse:(GQRequestWillCacheResponse)onWillCacheResponse
+                          onRequestFinished:(GQRequestFinished)onFinishedBlock
+                          onRequestCanceled:(GQRequestCanceled)onCanceledBlock
+                            onRequestFailed:(GQRequestFailed)onFailedBlock
+                          onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
 
 #pragma mark -  file download class method using block
-+ (id)requestWithParameters:(NSDictionary*)params
-       withHeaderParameters:(NSDictionary *)headerParameters
-          withSubRequestUrl:(NSString*)subUrl
-          withCancelSubject:(NSString*)cancelSubject
-               withFilePath:(NSString*)localFilePath
-          onRequestFinished:(GQRequestFinished)onFinishedBlock
-            onRequestFailed:(GQRequestFailed)onFailedBlock
-          onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
++ (instancetype)requestWithParameters:(NSDictionary*)params
+                 withHeaderParameters:(NSDictionary *)headerParameters
+                    withSubRequestUrl:(NSString*)subUrl
+                    withCancelSubject:(NSString*)cancelSubject
+                         withFilePath:(NSString*)localFilePath
+                    onRequestFinished:(GQRequestFinished)onFinishedBlock
+                      onRequestFailed:(GQRequestFailed)onFailedBlock
+                    onProgressChanged:(GQProgressChanged)onProgressChangedBlock;
 
 
 @end

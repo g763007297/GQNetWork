@@ -56,6 +56,7 @@ static NSString *defaultUserAgent = nil;
 @synthesize onProgressChangedBlockChain = _onProgressChangedBlockChain;
 @synthesize startRequestChain = _startRequestChain;
 @synthesize timeOutIntervalChain = _timeOutIntervalChain;
+@synthesize completeCallBackQueueChain = _completeCallBackQueueChain;
 
 + (instancetype)prepareRequset
 {
@@ -69,7 +70,6 @@ GQChainRequestDefine(requestMethodChain, requestMethod, NSInteger , GQChainStuct
 GQChainRequestDefine(delegateChain, delegate, id, GQChainObjectRequest);
 GQChainRequestDefine(subRequestUrlChain,subRequestUrl, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjectRequest);
-GQChainRequestDefine(keyPathChain, keyPath, NSString *, GQChainObjectRequest);
 GQChainRequestDefine(timeOutIntervalChain, timeOutInterval, NSInteger, GQChainStuctRequest);
 GQChainRequestDefine(headerParametersChain, headerParameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(uploadDatasChain, uploadDatas, NSArray *, GQChainObjectRequest);
@@ -78,6 +78,7 @@ GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectR
 GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObjectRequest);
 GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest);
 GQChainRequestDefine(cacheTypeChain, cacheType, NSInteger , GQChainStuctRequest);
+GQChainRequestDefine(completeCallBackQueueChain, completeCallBackQueue, dispatch_queue_t, GQChainObjectRequest);
 
 GQChainRequestDefine(onStartBlockChain, onRequestStart, GQRequestStart, GQChainBlockRequestStart);
 GQChainRequestDefine(onRechiveResponseBlockChain, onRequestRechiveResponse, GQRequestRechiveResponse, GQChainBlockRequestRechiveResponse);
@@ -119,6 +120,10 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     
     _parmaterEncoding = [self getParameterEncoding];
     _loading = NO;
+    
+    if (!_completeCallBackQueue) {
+        _completeCallBackQueue =  _completeCallBackQueue ? : dispatch_get_main_queue();
+    }
     
     if (_requestMethod == 0) {
         _requestMethod = [self getRequestMethod];
@@ -356,7 +361,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     if([self isDownloadFileRequest]) {
         success = [self processDownloadFile];
         [self processResult];
-        dispatch_async(dispatch_get_main_queue(), callback);
+        dispatch_async(_completeCallBackQueue, callback);
     }
     else {
         _rawResultData = result;
@@ -377,7 +382,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
                 _responseResult = [[GQRequestResult alloc] initWithRawResultData:self.rawResultData rawJsonString:rawResultString rawResponse:response];
                 success = TRUE;
                 [self processResult];
-                dispatch_async(dispatch_get_main_queue(), callback);
+                dispatch_async(_completeCallBackQueue, callback);
             }
         }
     }
