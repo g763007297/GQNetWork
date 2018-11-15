@@ -50,16 +50,19 @@ typedef enum:NSInteger {
     #define SHOULDOVERRIDE(basename, subclassname){ NSAssert([basename isEqualToString:subclassname], @"subclass should override the method!");}
 #endif
 
-#define GQDispatch_main_async_safe(block)\
-if ([NSThread isMainThread]) {\
-    block();\
-} else { \
-    dispatch_async(dispatch_get_main_queue(),block);\
-}
+#ifndef GQDispatch_main_async_safe
+    #define GQDispatch_main_async_safe(block)\
+    if ([NSThread isMainThread]) {\
+        block();\
+    } else { \
+        dispatch_async(dispatch_get_main_queue(),block);\
+    }
+#endif
 
 #ifndef GQ_USER_DEFAULT
     #define GQ_USER_DEFAULT [NSUserDefaults standardUserDefaults]
 #endif
+
 //强弱引用
 #ifndef GQWeakify
     #define GQWeakify(object) __weak __typeof__(object) weak##_##object = object

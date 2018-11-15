@@ -305,7 +305,7 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     if (_onRequestFinished)
     {
         _onRequestFinished(self, _responseResult);
-    }else if (self.delegate)
+    } else if (self.delegate)
     {
         if([self.delegate respondsToSelector:@selector(requestDidFinishLoad:mappingResult:)])
         {

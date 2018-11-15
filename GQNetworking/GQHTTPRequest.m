@@ -273,8 +273,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 - (NSMutableURLRequest *)generatePOSTRequest
 {
     [self parseRequestParameters];
-    [self generateRequestBody];
     [self parseRequestDatas];
+    [self generateRequestBody];
     NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.requestEncoding));
     [self.request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@",charset] forHTTPHeaderField: @"Content-Type"];
     [self.request setHTTPMethod:@"POST"];
@@ -284,8 +284,8 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 - (NSMutableURLRequest *)generateMultipartPostRequest
 {
     [self parseRequestParameters];
-    [self generateRequestBody];
     [self parseRequestDatas];
+    [self generateRequestBody];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
     [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
     [self.request setHTTPMethod:@"POST"];
