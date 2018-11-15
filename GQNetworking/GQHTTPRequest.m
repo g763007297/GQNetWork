@@ -181,7 +181,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"%@", value] dataUsingEncoding:self.requestEncoding]];
-        [self.bodyData appendData:[@"\r\n" dataUsingEncoding:self.requestEncoding]];
     } else {
         if (!fileName) {
             if ([value isKindOfClass:[UIImage class]]) {
@@ -209,7 +208,6 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
         
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",contentType] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:data];
-        [self.bodyData appendData:[@"\r\n" dataUsingEncoding:self.requestEncoding]];
     }
 }
 
