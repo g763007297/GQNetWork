@@ -23,7 +23,7 @@
 
 @implementation GQHTTPRequest
 
-static NSString *boundary = @"GQHTTPRequestBoundary";
+static NSString *boundary = @"----GQHTTPRequestBoundary";
 
 - (void)dealloc
 {
@@ -292,7 +292,7 @@ static NSString *boundary = @"GQHTTPRequestBoundary";
 
 - (void)generateRequestBody
 {
-    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
+    [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
     [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
     [self.request setHTTPBody:self.bodyData];
