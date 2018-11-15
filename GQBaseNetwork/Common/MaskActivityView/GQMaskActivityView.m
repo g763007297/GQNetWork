@@ -8,6 +8,8 @@
 
 #import "GQMaskActivityView.h"
 
+#import "GQNetworkConsts.h"
+
 @interface GQMaskActivityView()
 
 @property (strong, nonatomic) UIView *bgMaskView;
@@ -92,8 +94,10 @@
     _hintLabel.hidden = NO;
     _hintLabel.text = message;
     self.alpha = 0;
+    GQWeakify(self);
     [UIView animateWithDuration:0.3
                      animations:^{
+                         GQStrongify(self);
                          self.alpha = 1;
                      }
                      completion:^(BOOL finished) {
@@ -103,12 +107,15 @@
 
 - (void)hide
 {
+    GQWeakify(self);
     [UIView animateWithDuration:0.3
                      animations:^{
+                         GQStrongify(self);
                          self.alpha = 0;
                      }
                      completion:^(BOOL finished) {
-                         [_maskViewIndicator stopAnimating];
+                         GQStrongify(self);
+                         [self->_maskViewIndicator stopAnimating];
                          [self removeFromSuperview];
                      }];
 }
