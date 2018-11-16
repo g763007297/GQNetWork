@@ -9,7 +9,7 @@
 #ifndef GQNetworkHeader_h
 #define GQNetworkHeader_h
 
-#import "GQHTTPRequest.h"
+#import "GQDataRequest.h"
 
 #import "GQRequestResult.h"
 //使用Block网络请求方法

@@ -23,7 +23,7 @@
 
 @implementation GQHTTPRequest
 
-static NSString *boundary = @"----GQHTTPRequestBoundary";
+static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 
 - (void)dealloc
 {
@@ -65,11 +65,7 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
 - (void)applyRequestHeader
 {
     if (self.headerParams&&[[self.headerParams allKeys] count]>0) {
-        [self.headerParams enumerateKeysAndObjectsUsingBlock:^(NSString * key, NSString * obj, BOOL * stop) {
-            if ([key isKindOfClass:[NSString class]]&&[obj isKindOfClass:[NSString class]]) {
-                [self setRequestHeaderField:key value:obj];
-            }
-        }];
+        [self.request setAllHTTPHeaderFields:self.headerParams];
     }
 }
 
@@ -114,12 +110,14 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
         self.localFilePath = localFilePath;
         if (parameters) {
             self.requestParameters = [[NSMutableDictionary alloc] initWithDictionary:parameters];
-        }else{
+        } else{
             self.requestParameters = [[NSMutableDictionary alloc] initWithCapacity:0];
         }
         
         if (headerParams) {
-            self.headerParams = [headerParams copy];
+            self.headerParams = [[NSMutableDictionary alloc] initWithDictionary:headerParams];
+        } else {
+            self.headerParams = [[NSMutableDictionary alloc] initWithCapacity:0];
         }
         self.bodyData = [[NSMutableData alloc] init];
         self.request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:self.requestURL]];
@@ -156,20 +154,6 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
     return  self;
 }
 
-- (NSMutableURLRequest *)generateGETRequest
-{
-    if ([[self.requestParameters allKeys] count]) {
-        NSString *paramString = GQQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
-        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
-        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
-    }
-    [self.request setURL:[NSURL URLWithString:self.requestURL]];
-    [self.request setHTTPMethod:@"GET"];
-    long long postBodySize = [self.requestURL lengthOfBytesUsingEncoding:self.requestEncoding];
-    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
-    return self.request;
-}
-
 - (void)addBodyData:(NSString *)key value:(id)value
 {
     [self addBodyData:key value:value contentType:nil fileName:nil];
@@ -177,14 +161,14 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
 
 - (void)addBodyData:(NSString *)key value:(id)value contentType:(NSString *)contentType fileName:(NSString *)fileName
 {
+    [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     if(![value isKindOfClass:[NSData class]] && ![value isKindOfClass:[UIImage class]]) {
-        [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", key] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"%@", value] dataUsingEncoding:self.requestEncoding]];
     } else {
         if (!fileName) {
             if ([value isKindOfClass:[UIImage class]]) {
-                fileName = [NSString stringWithFormat:@"uploadfile_%@.png",key];
+                fileName = [NSString stringWithFormat:@"uploadfile_%@.jpeg",key];
             } else {
                 fileName = [NSString stringWithFormat:@"uploadfile_%@",key];
             }
@@ -195,12 +179,11 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
             data = UIImageJPEGRepresentation(value, 1.0f);
         }
         
-        [self.bodyData appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"; filename=\"%@\"\r\n", key, fileName] dataUsingEncoding:self.requestEncoding]];
         
         if (!contentType) {
             if ([value isKindOfClass:[UIImage class]]) {
-                contentType = @"image/png";
+                contentType = @"image/jpeg";
             } else {
                 contentType = @"application/octet-stream";
             }
@@ -209,6 +192,7 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
         [self.bodyData appendData:[[NSString stringWithFormat:@"Content-Type: %@\r\n\r\n",contentType] dataUsingEncoding:self.requestEncoding]];
         [self.bodyData appendData:data];
     }
+    [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n"] dataUsingEncoding:self.requestEncoding]];
 }
 
 - (void)parseRequestParameters
@@ -238,6 +222,20 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
     }
 }
 
+- (NSMutableURLRequest *)generateGETRequest
+{
+    if ([[self.requestParameters allKeys] count]) {
+        NSString *paramString = GQQueryStringFromParametersWithEncoding(self.requestParameters,self.requestEncoding);
+        NSUInteger found = [self.requestURL rangeOfString:@"?"].location;
+        self.requestURL = [self.requestURL stringByAppendingFormat: NSNotFound == found ? @"?%@" : @"&%@", paramString];
+    }
+    [self.request setURL:[NSURL URLWithString:self.requestURL]];
+    [self.request setHTTPMethod:@"GET"];
+    long long postBodySize = [self.requestURL lengthOfBytesUsingEncoding:self.requestEncoding];
+    [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
+    return self.request;
+}
+
 - (NSMutableURLRequest *)generateDELETERequest
 {
     [self parseRequestParameters];
@@ -264,7 +262,7 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
     }
     [self generateRequestBody];
     [self.request setHTTPMethod:@"POST"];
-    [self.request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [self.headerParams setObject:@"application/json" forKey:@"Content-Type"];
     return  self.request;
 }
 
@@ -273,8 +271,11 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
     [self parseRequestParameters];
     [self parseRequestDatas];
     [self generateRequestBody];
+    
     NSString *charset = (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(self.requestEncoding));
-    [self.request setValue:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@",charset] forHTTPHeaderField: @"Content-Type"];
+    [self.headerParams setObject:[NSString stringWithFormat:@"application/x-www-form-urlencoded; charset=%@",charset] forKey:@"content-type"];
+    [self.headerParams setObject:@"application/x-www-form-urlencoded" forKey:@"Content-Type"];
+    
     [self.request setHTTPMethod:@"POST"];
     return  self.request;
 }
@@ -285,7 +286,9 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
     [self parseRequestDatas];
     [self generateRequestBody];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-    [self.request setValue:contentType forHTTPHeaderField: @"Content-Type"];
+    [self.headerParams addEntriesFromDictionary:@{@"Content-Type":@"multipart/form-data",
+                                                  @"content-type":contentType
+                                                  }];
     [self.request setHTTPMethod:@"POST"];
     return  self.request;
 }
@@ -294,7 +297,7 @@ static NSString *boundary = @"----GQHTTPRequestBoundary";
 {
     [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
-    [self.request setValue:[NSString stringWithFormat:@"%llu",postBodySize] forHTTPHeaderField:@"Content-Length"];
+    [self.headerParams setObject:[NSString stringWithFormat:@"%llu",postBodySize] forKey:@"Content-Length"];
     [self.request setHTTPBody:self.bodyData];
     [[GQNetworkTrafficManager sharedManager] logTrafficOut:postBodySize];
 }

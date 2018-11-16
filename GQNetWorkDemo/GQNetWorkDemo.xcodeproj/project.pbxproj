@@ -17,6 +17,7 @@
 		B6CB1D411CF83E3B00D485E3 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D401CF83E3B00D485E3 /* DetailViewController.m */; };
 		B6CB1D461CF83E3B00D485E3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */; };
 		B6CB1D491CF83E3B00D485E3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CB1D471CF83E3B00D485E3 /* LaunchScreen.storyboard */; };
+		DF1ED868219D850900523AF9 /* GQPickerActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = DF1ED867219D850900523AF9 /* GQPickerActionSheet.m */; };
 		DF9C7A9C1D1F9B6F006B0D18 /* GQDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A811D1F9B6F006B0D18 /* GQDataRequest.m */; };
 		DF9C7A9D1D1F9B6F006B0D18 /* GQHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A831D1F9B6F006B0D18 /* GQHTTPRequest.m */; };
 		DF9C7A9E1D1F9B6F006B0D18 /* GQHttpRequestManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DF9C7A851D1F9B6F006B0D18 /* GQHttpRequestManager.m */; };
@@ -66,6 +67,8 @@
 		B6CB1D451CF83E3B00D485E3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B6CB1D481CF83E3B00D485E3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B6CB1D4A1CF83E3B00D485E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DF1ED866219D850900523AF9 /* GQPickerActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQPickerActionSheet.h; sourceTree = "<group>"; };
+		DF1ED867219D850900523AF9 /* GQPickerActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQPickerActionSheet.m; sourceTree = "<group>"; };
 		DF9C7A801D1F9B6F006B0D18 /* GQDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQDataRequest.h; sourceTree = "<group>"; };
 		DF9C7A811D1F9B6F006B0D18 /* GQDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQDataRequest.m; sourceTree = "<group>"; };
 		DF9C7A821D1F9B6F006B0D18 /* GQHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQHTTPRequest.h; sourceTree = "<group>"; };
@@ -172,6 +175,7 @@
 		B6CB1D351CF83E3B00D485E3 /* GQNetWorkDemo */ = {
 			isa = PBXGroup;
 			children = (
+				DF1ED865219D850900523AF9 /* GQPickerActionSheet */,
 				B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */,
 				B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */,
 				B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */,
@@ -195,6 +199,15 @@
 				B6CB1D371CF83E3B00D485E3 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		DF1ED865219D850900523AF9 /* GQPickerActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				DF1ED866219D850900523AF9 /* GQPickerActionSheet.h */,
+				DF1ED867219D850900523AF9 /* GQPickerActionSheet.m */,
+			);
+			path = GQPickerActionSheet;
 			sourceTree = "<group>";
 		};
 		DF9C7A4C1D1F9B6F006B0D18 /* GQBaseNetwork */ = {
@@ -459,6 +472,7 @@
 				DFAC0204213E28CE0038444B /* GQBaseDataRequest+GQDelegateCategory.m in Sources */,
 				B6CB1D381CF83E3B00D485E3 /* main.m in Sources */,
 				DFAC01FC213E28CE0038444B /* GQReachability.m in Sources */,
+				DF1ED868219D850900523AF9 /* GQPickerActionSheet.m in Sources */,
 				B6CB1D411CF83E3B00D485E3 /* DetailViewController.m in Sources */,
 				DFAC01FF213E28CE0038444B /* GQQueryStringPair.m in Sources */,
 			);

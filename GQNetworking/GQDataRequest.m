@@ -7,6 +7,7 @@
 //
 
 #import "GQDataRequest.h"
+#import "GQHTTPRequest.h"
 #import "GQNetworkTrafficManager.h"
 #import "GQNetworkConsts.h"
 #import "GQDebugLog.h"
