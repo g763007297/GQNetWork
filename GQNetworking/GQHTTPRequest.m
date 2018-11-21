@@ -220,6 +220,9 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
             }
         }];
     }
+    if ([self.requestParameters count] > 0) {
+        [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
+    }
 }
 
 - (NSMutableURLRequest *)generateGETRequest
@@ -295,7 +298,6 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 
 - (void)generateRequestBody
 {
-    [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     long long postBodySize =  [self.bodyData length];
     [self.headerParams setObject:[NSString stringWithFormat:@"%llu",postBodySize] forKey:@"Content-Length"];
     [self.request setHTTPBody:self.bodyData];
