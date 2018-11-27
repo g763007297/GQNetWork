@@ -83,6 +83,11 @@
     return nil;
 }
 
+- (GQRequestMethod)getRequestMethod
+{
+    return GQRequestMethodMultipartPost;
+}
+
 //- (BOOL)useDumpyData
 //{
 //    return YES;

@@ -220,8 +220,8 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
             }
         }];
     }
-    if ([self.requestParameters count] > 0) {
-        [self.bodyData appendData:[[NSString stringWithFormat:@"\r\n--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
+    if ([self.requestParameters count] > 0 || [self.uploadDatas count] > 0) {
+        [self.bodyData appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:self.requestEncoding]];
     }
 }
 
@@ -289,9 +289,7 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     [self parseRequestDatas];
     [self generateRequestBody];
     NSString *contentType = [NSString stringWithFormat:@"multipart/form-data; boundary=%@", boundary];
-    [self.headerParams addEntriesFromDictionary:@{@"Content-Type":@"multipart/form-data",
-                                                  @"content-type":contentType
-                                                  }];
+    [self.headerParams addEntriesFromDictionary:@{@"Content-Type":contentType}];
     [self.request setHTTPMethod:@"POST"];
     return  self.request;
 }
