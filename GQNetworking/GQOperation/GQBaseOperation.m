@@ -92,7 +92,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (void)cancel
 {
-    if(![self isFinished]){
+    if([self isFinished]){
         return;
     }
     [super cancel];
