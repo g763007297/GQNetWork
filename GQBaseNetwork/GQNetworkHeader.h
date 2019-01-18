@@ -24,5 +24,7 @@
 
 //数据解析需要继承
 #import "GQBaseRequestDataHandler.h"
+//json数据解析
+#import "GQRequestJsonDataHandler.h"
 
 #endif /* GQNetworkHeader_h */
