@@ -130,6 +130,14 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     }
 }
 
+- (void)start {
+    if ([self isCancelled]) {
+        [self finish];
+        return;
+    }
+    [self main];
+}
+
 - (void)main
 {
     dispatch_async(dispatch_get_main_queue(), ^{
