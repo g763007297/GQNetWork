@@ -38,6 +38,9 @@ GQOBJECT_SINGLETON_BOILERPLATE(GQHttpRequestManager, sharedHttpRequestManager)
 }
 
 - (void)addOperation:(NSOperation *)operation {
+    if ([operation isCancelled] || [operation isFinished]) {
+        return;
+    }
     [self.connectionQueue addOperation:operation];
 }
 
