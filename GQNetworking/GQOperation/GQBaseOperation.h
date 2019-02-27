@@ -59,15 +59,15 @@ typedef NSUInteger GQURLState;
 
 - (instancetype)initWithURLRequest:(NSURLRequest *)urlRequest
                   operationSession:(NSURLSession *)operationSession
-                            saveToPath:(NSString*)savePath
-                       certificateData:(NSData *)certificateData
-                              progress:(GQHTTPRequestChangeHandler)onProgressBlock
-                        onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
-                     onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
-                 onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
-                   onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
-                   onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
-                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
+                        saveToPath:(NSString*)savePath
+                   certificateData:(NSData *)certificateData
+                          progress:(GQHTTPRequestChangeHandler)onProgressBlock
+                    onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
+                 onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
+             onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
+               onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
+               onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
+                        completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
 
 - (void)finish;
 - (void)handleResponseData:(NSData *)data;

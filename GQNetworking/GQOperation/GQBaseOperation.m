@@ -50,15 +50,15 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (instancetype)initWithURLRequest:(NSURLRequest *)urlRequest
                   operationSession:(NSURLSession *)operationSession
-                            saveToPath:(NSString*)savePath
-                       certificateData:(NSData *)certificateData
-                              progress:(GQHTTPRequestChangeHandler)onProgressBlock
-                        onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
-                     onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
-                 onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
-                   onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
-                   onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
-                            completion:(GQHTTPRequestCompletionHandler)onCompletionBlock;
+                        saveToPath:(NSString*)savePath
+                   certificateData:(NSData *)certificateData
+                          progress:(GQHTTPRequestChangeHandler)onProgressBlock
+                    onRequestStart:(GQHTTPRequestStartHandler)onStartBlock
+                 onRechiveResponse:(GQHTTPRechiveResponseHandler)onRechiveResponseBlock
+             onWillHttpRedirection:(GQHTTPWillHttpRedirectionHandler)onWillHttpRedirectionBlock
+               onNeedNewBodyStream:(GQHTTPNeedNewBodyStreamHandler)onNeedNewBodyStreamBlock
+               onWillCacheResponse:(GQHTTPWillCacheResponseHandler)onWillCacheResponse
+                        completion:(GQHTTPRequestCompletionHandler)onCompletionBlock
 {
     self = [super init];
     self.operationData = [[NSMutableData alloc] init];
@@ -104,6 +104,10 @@ static NSInteger GQHTTPRequestTaskCount = 0;
     return YES;
 }
 
+- (BOOL)isAsynchronous {
+    return YES;
+}
+
 - (BOOL)isFinished
 {
     return self.state == GQURLStateFinished;
@@ -140,9 +144,7 @@ static NSInteger GQHTTPRequestTaskCount = 0;
 
 - (void)main
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self increaseSVHTTPRequestTaskCount];
-    });
+    [self increaseSVHTTPRequestTaskCount];
     
     [self willChangeValueForKey:@"isExecuting"];
     self.state = GQURLStateExecuting;
