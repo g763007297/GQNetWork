@@ -53,3 +53,4 @@ fastlane/report.xml
 fastlane/screenshots
 
 auto.sh
+.DS_Store

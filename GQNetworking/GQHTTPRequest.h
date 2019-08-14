@@ -32,7 +32,7 @@
 @property (nonatomic, strong) NSString                  *localFilePath;
 @property (nonatomic, strong) NSString                  *requestURL;
 @property (nonatomic, strong) NSData                    *certificateData;
-@property (nonatomic, strong) NSMutableDictionary       *requestParameters;
+@property (nonatomic, strong) NSDictionary              *requestParameters;
 @property (nonatomic, strong) NSMutableDictionary       *headerParams;
 @property (nonatomic, strong) NSArray                   *uploadDatas;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
@@ -60,9 +60,6 @@
                              onRequestFailed:(void(^)(NSError *error))onFailedBlock;
 
 - (void)setTimeoutInterval:(NSTimeInterval)seconds;
-- (void)addPostForm:(NSString *)key value:(NSString *)value;
-- (void)addPostData:(NSString *)key data:(NSString *)data;
-- (void)setRequestHeaderField:(NSString *)field value:(NSString *)value;
 - (void)cancelRequest;
 - (void)startRequest;
 

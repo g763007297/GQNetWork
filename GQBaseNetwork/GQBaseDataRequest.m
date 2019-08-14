@@ -152,10 +152,13 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     }
     
     _requestStartDate = [NSDate date];
-    _userInfo = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
     
-    if ([self getStaticParams]) {
-        [_userInfo addEntriesFromDictionary:[self getStaticParams]];
+    if ([[self getStaticParams] count] > 0) {
+        NSMutableDictionary *paramters = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
+        [paramters addEntriesFromDictionary:[self getStaticParams]];
+        _userInfo = paramters;
+    } else {
+        _userInfo = _parameters;
     }
     
     NSMutableDictionary *headerParams = [[NSMutableDictionary alloc] initWithDictionary:_headerParameters];

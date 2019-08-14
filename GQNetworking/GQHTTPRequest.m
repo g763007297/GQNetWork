@@ -52,11 +52,6 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     return self;
 }
 
-- (void)setRequestHeaderField:(NSString *)field value:(NSString *)value
-{
-    [self.request setValue:value forHTTPHeaderField:field];
-}
-
 - (void)setTimeoutInterval:(NSTimeInterval)seconds
 {
     [self.request setTimeoutInterval:seconds];
@@ -67,16 +62,6 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     if (self.headerParams&&[[self.headerParams allKeys] count]>0) {
         [self.request setAllHTTPHeaderFields:self.headerParams];
     }
-}
-
-- (void)addPostForm:(NSString *)key value:(NSString *)value
-{
-    [self.requestParameters setObject:value forKey:key];
-}
-
-- (void)addPostData:(NSString *)key data:(NSString *)data
-{
-    [self.requestParameters setObject:data forKey:key];
 }
 
 - (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
@@ -109,9 +94,9 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
         self.requestMethod = requestMethod;
         self.localFilePath = localFilePath;
         if (parameters) {
-            self.requestParameters = [[NSMutableDictionary alloc] initWithDictionary:parameters];
+            self.requestParameters = parameters;
         } else{
-            self.requestParameters = [[NSMutableDictionary alloc] initWithCapacity:0];
+            self.requestParameters = @{};
         }
         
         if (headerParams) {
