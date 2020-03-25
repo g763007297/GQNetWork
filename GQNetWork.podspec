@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "GQNetWork"
-  s.version      = "1.4.3"
+  s.version      = "1.4.4"
   s.summary      = "继承形式的网络请求库，支持NSURLSession,支持https请求，请求数据缓存机制，支持链式调用"
 
   s.homepage     = "https://github.com/g763007297/GQNetWork"
@@ -23,12 +23,30 @@ Pod::Spec.new do |s|
     ss.ios.source_files  = [
       "GQNetworking/**/*.{h,m}",
       "GQBaseNetwork/**/*.{h,m}",
+      "GQNetworkOperation/**/*.{h,m}",
     ]
 
     ss.public_header_files = [
       'GQNetworking/**/*.h',
       'GQBaseNetwork/**/*.h',
+      "GQNetworkOperation/**/*.{h,m}",
     ]
+  end
+
+  s.subspec 'GQAFNetworking' do |ss|
+    ss.ios.source_files  = [
+      "GQNetworking/**/*.{h,m}",
+      "GQBaseNetwork/**/*.{h,m}",
+      "AFNetWorking/**/*.{h,m}",
+    ]
+
+    ss.public_header_files = [
+      'GQNetworking/**/*.h',
+      'GQBaseNetwork/**/*.h',
+      "AFNetWorking/**/*.{h,m}",
+    ]
+
+    ss.dependency 'AFNetworking/NSURLSession'
   end
 
   s.default_subspec = 'GQNetworking'
