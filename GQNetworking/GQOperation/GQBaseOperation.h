@@ -14,7 +14,7 @@
 typedef void (^GQHTTPRequestStartHandler)(GQBaseOperation *urlOperation);
 typedef NSURLSessionResponseDisposition (^GQHTTPRechiveResponseHandler)(NSURLResponse *response);
 typedef  NSURLRequest *(^GQHTTPWillHttpRedirectionHandler)(NSURLRequest *request, NSURLResponse *response);
-typedef NSInputStream * (^GQHTTPNeedNewBodyStreamHandler)(NSInputStream *originalStream);
+typedef NSInputStream * (^GQHTTPNeedNewBodyStreamHandler)(NSURLSession *session,NSURLSessionTask *task);
 typedef NSCachedURLResponse * (^GQHTTPWillCacheResponseHandler)(NSCachedURLResponse *proposedResponse);
 typedef void (^GQHTTPRequestChangeHandler) (float progress);
 typedef void (^GQHTTPRequestCompletionHandler)(GQBaseOperation *urlOperation,BOOL requestSuccess, NSError *error);

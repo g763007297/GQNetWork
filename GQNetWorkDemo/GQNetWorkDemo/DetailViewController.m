@@ -55,7 +55,7 @@
 }
 
 - (void)tapAction:(UITapGestureRecognizer *)ges {
-    _request = (TestRequestHandlerHttpRequest *)[TestRequestHandlerHttpRequest prepareRequset]
+    [TestRequestHandlerHttpRequest prepareRequset]
     .requestUrlChain(@"https:/baidu.com")
     .onFinishedBlockChain(^(GQBaseDataRequest * request, GQRequestResult * result){
         //            NSLog(@"%@",result.dictionary);
@@ -67,8 +67,9 @@
     })
     .onCanceledBlockChain(^(GQBaseDataRequest * request) {
         NSLog(@"%@",request);
-    });
-    _request.startRequestChain();
+    })
+    .startRequestChain();
+//    _request.startRequestChain();
     
 }
 

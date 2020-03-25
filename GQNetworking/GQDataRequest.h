@@ -8,10 +8,6 @@
 
 #import "GQBaseDataRequest.h"
 
-@class GQHTTPRequest;
-
 @interface GQDataRequest : GQBaseDataRequest
-
-@property (nonatomic, strong) GQHTTPRequest *httpRequest;
 
 @end

@@ -1,20 +1,44 @@
 //
-//  GQHTTPRequest.h
+//  GQAFNetworkingAdapt.h
 //  GQNetWorkDemo
 //
-//  Created by 高旗 on 16/5/27.
-//  Copyright © 2016年 gaoqi. All rights reserved.
+//  Created by gaoqi on 2020/3/25.
+//  Copyright © 2020 gaoqi. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import "GQHttpRequestManager.h"
 #import "GQNetworkConsts.h"
 
-@class GQBaseOperation;
+@protocol GQAFNetworkingAdaptDelegate <NSObject>
 
-@class GQURLSessionOpetation;
+- (NSURL *)destination:(NSURL *)targetPath response:(NSURLResponse *) response;
 
-@interface GQHTTPRequest : NSObject
+- (void)progressChange:(NSProgress *) downloadProgress;
+
+- (void)session:(NSURLResponse *)response
+ responseObject:(id)responseObject
+didCompleteWithError:(NSError *)error;
+
+- (NSURLSessionResponseDisposition)session:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response;
+
+- (NSURLRequest *)session:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+willPerformHTTPRedirection:(NSURLResponse *)response
+newRequest:(NSURLRequest *)request;
+
+- (NSInputStream *)SessionneedNewBodyStream:(NSURLSession *)session
+task:(NSURLSessionTask *)task;
+
+- (NSCachedURLResponse *)session:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+willCacheResponse:(NSCachedURLResponse *)proposedResponse;
+
+@end
+
+@interface GQAFNetworkingAdapt : NSObject <GQAFNetworkingAdaptDelegate>
 {
     void (^_onRequestStartBlock)(void);
     NSURLSessionResponseDisposition (^_onRechiveResponseBlock)(NSURLResponse *response);
@@ -37,8 +61,8 @@
 @property (nonatomic, strong) NSArray                   *uploadDatas;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
 @property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, strong) GQBaseOperation           *urlOperation;
 @property (nonatomic, assign) GQParameterEncoding       parmaterEncoding;
+@property (nonatomic, strong) NSURLSessionTask          *requestTask;
 
 - (instancetype)initRequestWithParameters:(NSDictionary *)parameters
                                 headerParams:(NSDictionary *)headerParams

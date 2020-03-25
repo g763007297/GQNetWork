@@ -7,17 +7,38 @@
 //
 
 #import "GQDataRequest.h"
-#import "GQHTTPRequest.h"
+
 #import "GQNetworkTrafficManager.h"
 #import "GQNetworkConsts.h"
 #import "GQDebugLog.h"
+
+#if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
+#import "GQAFNetworkingAdapt.h"
+#else
+#import "GQHTTPRequest.h"
+#endif
+
+@interface GQDataRequest()
+
+#if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
+@property (nonatomic, strong) GQAFNetworkingAdapt *httpRequest;
+#else
+@property (nonatomic, strong) GQHTTPRequest *httpRequest;
+#endif
+
+@end
 
 @implementation GQDataRequest
 
 - (void)doRequestWithParams:(NSDictionary*)params
 {
     GQWeakify(self);
-    self.httpRequest = [[GQHTTPRequest alloc]
+    self.httpRequest =
+#if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
+    [[GQAFNetworkingAdapt alloc]
+#else
+    [[GQHTTPRequest alloc]
+#endif
                         initRequestWithParameters:params
                         headerParams:_headerParameters
                         uploadDatas:_uploadDatas
@@ -39,9 +60,9 @@
                             GQStrongify(self);
                             return [self notifyRequestWillRedirection:request response:response];
                         }
-                        onNeedNewBodyStream:^NSInputStream *(NSInputStream * originalStream){
+                        onNeedNewBodyStream:^NSInputStream *(NSURLSession *session,NSURLSessionTask *task){
                             GQStrongify(self);
-                            return [self notifyRequestNeedNewBodyStream:originalStream];
+                            return [self notifyRequestNeedNewBodyStream:session task:task];
                         }
                         onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
                             GQStrongify(self);

@@ -276,15 +276,17 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     return redirectionRequest;
 }
 
-- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSInputStream *)originalStream
+- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSURLSession *)session task:(NSURLSessionTask *)task
 {
-    NSInputStream *inputSteam = originalStream;
+    NSInputStream *inputSteam = nil;
+    if (task.originalRequest.HTTPBodyStream && [task.originalRequest.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
+        inputSteam = [task.originalRequest.HTTPBodyStream copy];
+    }
     if (_onRequestNeedNewBodyStream) {
-        inputSteam = _onRequestNeedNewBodyStream(self,originalStream);
-    }else if
-        (self.delegate){
-        if ([self.delegate respondsToSelector:@selector(requestNeedNewBodyStream:originStream:)]) {
-            inputSteam = [self.delegate requestNeedNewBodyStream:self originStream:originalStream];
+        inputSteam = _onRequestNeedNewBodyStream(self,session,task);
+    }else if (self.delegate){
+        if ([self.delegate respondsToSelector:@selector(requestNeedNewBodyStream:session:task:)]) {
+            inputSteam = [self.delegate requestNeedNewBodyStream:self session:session task:task];
         }
     }
     return inputSteam;

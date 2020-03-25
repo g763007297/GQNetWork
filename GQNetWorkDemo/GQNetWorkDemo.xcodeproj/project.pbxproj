@@ -10,6 +10,8 @@
 		B620C9DA1DBC658100505B9A /* GQSessionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B620C9D71DBC658100505B9A /* GQSessionOperation.m */; };
 		B620C9DB1DBC658100505B9A /* GQURLOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B620C9D91DBC658100505B9A /* GQURLOperation.m */; };
 		B620C9DE1DBC659800505B9A /* GQBaseOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B620C9DD1DBC659800505B9A /* GQBaseOperation.m */; };
+		B65E0934242B5D3900846205 /* GQAFNetworkingAdapt.m in Sources */ = {isa = PBXBuildFile; fileRef = B65E0930242B5D3900846205 /* GQAFNetworkingAdapt.m */; };
+		B65E0935242B5D3900846205 /* GQAFNetworkingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B65E0931242B5D3900846205 /* GQAFNetworkingManager.m */; };
 		B669D4721CFD1C0F00CB8AC5 /* DemoHttpRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */; };
 		B6CB1D381CF83E3B00D485E3 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D371CF83E3B00D485E3 /* main.m */; };
 		B6CB1D3B1CF83E3B00D485E3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6CB1D3A1CF83E3B00D485E3 /* AppDelegate.m */; };
@@ -51,6 +53,10 @@
 		B620C9D91DBC658100505B9A /* GQURLOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQURLOperation.m; sourceTree = "<group>"; };
 		B620C9DC1DBC659800505B9A /* GQBaseOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQBaseOperation.h; sourceTree = "<group>"; };
 		B620C9DD1DBC659800505B9A /* GQBaseOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQBaseOperation.m; sourceTree = "<group>"; };
+		B65E0930242B5D3900846205 /* GQAFNetworkingAdapt.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQAFNetworkingAdapt.m; sourceTree = "<group>"; };
+		B65E0931242B5D3900846205 /* GQAFNetworkingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GQAFNetworkingManager.m; sourceTree = "<group>"; };
+		B65E0932242B5D3900846205 /* GQAFNetworkingAdapt.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQAFNetworkingAdapt.h; sourceTree = "<group>"; };
+		B65E0933242B5D3900846205 /* GQAFNetworkingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GQAFNetworkingManager.h; sourceTree = "<group>"; };
 		B669D4701CFD1C0F00CB8AC5 /* DemoHttpRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DemoHttpRequest.h; sourceTree = "<group>"; };
 		B669D4711CFD1C0F00CB8AC5 /* DemoHttpRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DemoHttpRequest.m; sourceTree = "<group>"; };
 		B67046851D0FDF4D001E546E /* DemoNetworkConsts.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DemoNetworkConsts.h; sourceTree = "<group>"; };
@@ -141,9 +147,22 @@
 			path = GQOperation;
 			sourceTree = "<group>";
 		};
+		B65E092F242B5D3900846205 /* AFNetWorking */ = {
+			isa = PBXGroup;
+			children = (
+				B65E0932242B5D3900846205 /* GQAFNetworkingAdapt.h */,
+				B65E0930242B5D3900846205 /* GQAFNetworkingAdapt.m */,
+				B65E0933242B5D3900846205 /* GQAFNetworkingManager.h */,
+				B65E0931242B5D3900846205 /* GQAFNetworkingManager.m */,
+			);
+			name = AFNetWorking;
+			path = ../AFNetWorking;
+			sourceTree = "<group>";
+		};
 		B6CB1D2A1CF83E3B00D485E3 = {
 			isa = PBXGroup;
 			children = (
+				B65E092F242B5D3900846205 /* AFNetWorking */,
 				DF9C7A4C1D1F9B6F006B0D18 /* GQBaseNetwork */,
 				DF9C7A7F1D1F9B6F006B0D18 /* GQNetworking */,
 				B6CB1D351CF83E3B00D485E3 /* GQNetWorkDemo */,
@@ -401,6 +420,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -457,7 +477,9 @@
 				B6CB1D3E1CF83E3B00D485E3 /* MasterViewController.m in Sources */,
 				DF9C7A9E1D1F9B6F006B0D18 /* GQHttpRequestManager.m in Sources */,
 				DFAC01F5213E28CE0038444B /* GQBaseCache.m in Sources */,
+				B65E0935242B5D3900846205 /* GQAFNetworkingManager.m in Sources */,
 				DFAC0204213E28CE0038444B /* GQBaseDataRequest+GQDelegateCategory.m in Sources */,
+				B65E0934242B5D3900846205 /* GQAFNetworkingAdapt.m in Sources */,
 				B6CB1D381CF83E3B00D485E3 /* main.m in Sources */,
 				DFAC01FC213E28CE0038444B /* GQReachability.m in Sources */,
 				DF1ED868219D850900523AF9 /* GQPickerActionSheet.m in Sources */,

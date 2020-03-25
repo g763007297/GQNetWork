@@ -291,7 +291,7 @@
 - (void)notifyRequestDidCancel;
 - (NSURLSessionResponseDisposition)notifyRequestRechiveResponse:(NSURLResponse *)response;
 - (NSURLRequest *)notifyRequestWillRedirection:(NSURLRequest *)request response:(NSURLResponse *)response;
-- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSInputStream *)originalStream;
+- (NSInputStream *)notifyRequestNeedNewBodyStream:(NSURLSession *)session task:(NSURLSessionTask *)task;
 - (NSCachedURLResponse *)notifyRequestWillCacheResponse:(NSCachedURLResponse *)proposedResponse;
 
 - (void)doRelease;

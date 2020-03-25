@@ -1,33 +1,31 @@
 //
-//  GQHTTPRequest.m
+//  GQAFNetworkingAdapt.m
 //  GQNetWorkDemo
 //
-//  Created by 高旗 on 16/5/27.
-//  Copyright © 2016年 gaoqi. All rights reserved.
+//  Created by 高旗 on 20/3/25.
+//  Copyright © 2020年 gaoqi. All rights reserved.
 //
 #import <UIKit/UIKit.h>
-#import "GQHTTPRequest.h"
+#import "GQAFNetworkingAdapt.h"
 #import "GQQueryStringPair.h"
-#import "GQHttpRequestManager.h"
 #import "GQNetworkTrafficManager.h"
-#import "GQURLOperation.h"
-#import "GQSessionOperation.h"
 #import "GQNetworkConsts.h"
 
-@interface GQHTTPRequest()
+#import "GQAFNetworkingManager.h"
+
+@interface GQAFNetworkingAdapt()
 {
     BOOL  _isUploadFile;
 }
 
 @end
 
-@implementation GQHTTPRequest
+@implementation GQAFNetworkingAdapt
 
 static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 
 - (void)dealloc
 {
-    self.urlOperation = nil;
     self.requestURL = nil;
     self.request = nil;
     self.bodyData = nil;
@@ -41,7 +39,6 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     self = [super init];
     if (self) {
         _isUploadFile = NO;
-        self.urlOperation = nil;
         self.requestURL = nil;
         self.requestParameters = nil;
         self.localFilePath = nil;
@@ -64,7 +61,7 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     }
 }
 
-- (GQHTTPRequest *)initRequestWithParameters:(NSDictionary *)parameters
+- (instancetype)initRequestWithParameters:(NSDictionary *)parameters
                                 headerParams:(NSDictionary *)headerParams
                                  uploadDatas:(NSArray *)uploadDatas
                                          URL:(NSString *)url
@@ -329,92 +326,94 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
     }
     //添加请求头
     [self applyRequestHeader];
-    Class operationClass;
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-        operationClass = [GQSessionOperation class];
-    }else {
-        operationClass = [GQURLOperation class];
+#if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
+    [[GQAFNetworkingManager sharedHttpRequestManager] addRequest:self];
+#endif
+}
+
+- (void)cancelRequest
+{
+#if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
+    [[GQAFNetworkingManager sharedHttpRequestManager] cancelRequest:self];
+#endif
+    if (_onRequestCanceled) {
+        _onRequestCanceled();
     }
-    
-    if (operationClass) {
-        GQWeakify(self);
-        self.urlOperation = [[operationClass alloc]
-                            initWithURLRequest:self.request
-                              operationSession:[GQHttpRequestManager sharedHttpRequestManager].session
-                              saveToPath:self.localFilePath
-                              certificateData:self.certificateData
-                              progress:^(float progress) {
-                                  GQStrongify(self);
-                                  if (self&&self->_onRequestProgressChangedBlock) {
-                                      self->_onRequestProgressChangedBlock(progress);
-                                  }
-                              }
-                              onRequestStart:^(GQBaseOperation *urlConnectionOperation) {
-                                  GQStrongify(self);
-                                  if (self&&self->_onRequestStartBlock) {
-                                      self->_onRequestStartBlock();
-                                  }
-                              }
-                              onRechiveResponse:^NSURLSessionResponseDisposition(NSURLResponse *response) {
-                                  GQStrongify(self);
-                                  if (self) {
-                                      if (self->_onRechiveResponseBlock) {
-                                          return self->_onRechiveResponseBlock(response);
-                                      }
-                                  }else{
-                                      return NSURLSessionResponseCancel;
-                                  }
-                                  return NSURLSessionResponseAllow;
-                              }
-                              onWillHttpRedirection:^NSURLRequest *(NSURLRequest *request, NSURLResponse *response) {
-                                  GQStrongify(self);
-                                  if (self&&self->_onWillHttpRedirection) {
-                                      return self->_onWillHttpRedirection(request,response);
-                                  }
-                                  return request;
-                              }
-                              onNeedNewBodyStream:^NSInputStream *(NSURLSession *session,NSURLSessionTask *task){
-                                  GQStrongify(self);
-                                if (self&&self->_onNeedNewBodyStream) {
-                                    return self->_onNeedNewBodyStream(session,task);
-                                }
-                                return nil;
-                              }
-                              onWillCacheResponse:^NSCachedURLResponse *(NSCachedURLResponse *proposedResponse) {
-                                  GQStrongify(self);
-                                  if (self&&self->_onWillCacheResponse) {
-                                      return self->_onWillCacheResponse(proposedResponse);
-                                  }
-                                  return proposedResponse;
-                              }
-                              completion:^(GQBaseOperation *urlConnectionOperation, BOOL requestSuccess, NSError *error) {
-                                  GQStrongify(self);
-                                  if (requestSuccess) {
-                                      [[GQNetworkTrafficManager sharedManager] logTrafficIn:urlConnectionOperation.responseData.length];
-                                      if (self&&self->_onRequestFinishBlock) {
-                                          self->_onRequestFinishBlock(self.urlOperation.responseData);
-                                      }
-                                  }else{
-                                      if (self&&self->_onRequestFailedBlock) {
-                                          self->_onRequestFailedBlock(error);
-                                      }
-                                  }
-                              }];
-        [[GQHttpRequestManager sharedHttpRequestManager] addOperation:self.urlOperation];
-    }else {
-        NSError *error = [[NSError alloc] initWithDomain:@"class missing" code:-110 userInfo:@{@"userInfo":@"class missing"}];
+}
+
+#pragma mark -- NSURLSessionDelegate NSURLSessionTaskDelegate
+
+- (NSURL *)destination:(NSURL *)targetPath response:(NSURLResponse *) response {
+    if (self.localFilePath) {
+        return [NSURL URLWithString:self.localFilePath];
+    } else {
+        NSURL *documentsDirectoryURL = [[NSFileManager defaultManager] URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:nil create:NO error:nil];
+        return [documentsDirectoryURL URLByAppendingPathComponent:[response suggestedFilename]];
+    }
+}
+
+- (void)progressChange:(NSProgress *) downloadProgress {
+    if (self&&self->_onRequestProgressChangedBlock) {
+        self->_onRequestProgressChangedBlock(downloadProgress.fractionCompleted);
+    }
+}
+
+- (void)session:(NSURLResponse *)response
+ responseObject:(id)responseObject
+didCompleteWithError:(NSError *)error {
+    if (!error) {
+        [[GQNetworkTrafficManager sharedManager] logTrafficIn:response.expectedContentLength];
+        if (self&&self->_onRequestFinishBlock) {
+            self->_onRequestFinishBlock(responseObject);
+        }
+    }else{
         if (self&&self->_onRequestFailedBlock) {
             self->_onRequestFailedBlock(error);
         }
     }
 }
 
-- (void)cancelRequest
+- (NSURLSessionResponseDisposition)session:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
 {
-    [self.urlOperation cancel];
-    if (_onRequestCanceled) {
-        _onRequestCanceled();
+    if (self) {
+        if (self->_onRechiveResponseBlock) {
+            return self->_onRechiveResponseBlock(response);
+        }
+    }else{
+        return NSURLSessionResponseCancel;
     }
+    return NSURLSessionResponseAllow;
+}
+
+- (NSURLRequest *)session:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+willPerformHTTPRedirection:(NSURLResponse *)response
+newRequest:(NSURLRequest *)request
+{
+    if (self&&self->_onWillHttpRedirection) {
+        return self->_onWillHttpRedirection(request,response);
+    }
+    return request;
+}
+
+- (NSInputStream *)SessionneedNewBodyStream:(NSURLSession *)session
+                                       task:(NSURLSessionTask *)task {
+    if (self&&self->_onNeedNewBodyStream) {
+        return self->_onNeedNewBodyStream(session,task);
+    }
+    return nil;
+}
+
+- (NSCachedURLResponse *)session:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+ willCacheResponse:(NSCachedURLResponse *)proposedResponse
+{
+    if (self&&self->_onWillCacheResponse) {
+        return self->_onWillCacheResponse(proposedResponse);
+    }
+    return proposedResponse;
 }
 
 @end

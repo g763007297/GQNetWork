@@ -136,11 +136,8 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
  needNewBodyStream:(void (^)(NSInputStream * bodyStream))completionHandler
 {
     NSInputStream *inputStream = nil;
-    if (task.originalRequest.HTTPBodyStream && [task.originalRequest.HTTPBodyStream conformsToProtocol:@protocol(NSCopying)]) {
-        inputStream = [task.originalRequest.HTTPBodyStream copy];
-    }
     if (_onNeedNewBodyStreamBlock) {
-        inputStream = _onNeedNewBodyStreamBlock(inputStream);
+        inputStream = _onNeedNewBodyStreamBlock(session,task);
     }
     if (completionHandler) {
         completionHandler(inputStream);
