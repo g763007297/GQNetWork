@@ -329,6 +329,9 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 #if __has_include(<AFNetworking/AFURLSessionManager.h>) || __has_include("AFURLSessionManager.h")
     [[GQAFNetworkingManager sharedHttpRequestManager] addRequest:self];
 #endif
+    if (self&&self->_onRequestStartBlock) {
+        self->_onRequestStartBlock();
+    }
 }
 
 - (void)cancelRequest
