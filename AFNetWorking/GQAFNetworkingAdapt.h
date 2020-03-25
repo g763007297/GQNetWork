@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GQHttpRequestManager.h"
 #import "GQNetworkConsts.h"
 
 @protocol GQAFNetworkingAdaptDelegate <NSObject>

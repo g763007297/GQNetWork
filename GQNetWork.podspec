@@ -13,13 +13,13 @@ Pod::Spec.new do |s|
 
   s.platform     = :ios
 
-  s.ios.deployment_target = '6.0'
-
   s.source       = { :git => "https://github.com/g763007297/GQNetWork.git", :tag => s.version }
 
   s.requires_arc = true
 
   s.subspec 'GQNetworking' do |ss|
+    ss.ios.deployment_target = '6.0'
+
     ss.ios.source_files  = [
       "GQNetworking/**/*.{h,m}",
       "GQBaseNetwork/**/*.{h,m}",
@@ -29,11 +29,12 @@ Pod::Spec.new do |s|
     ss.public_header_files = [
       'GQNetworking/**/*.h',
       'GQBaseNetwork/**/*.h',
-      "GQNetworkOperation/**/*.{h,m}",
+      "GQNetworkOperation/**/*.{h}",
     ]
   end
 
   s.subspec 'GQAFNetworking' do |ss|
+    ss.ios.deployment_target = '8.0'
     ss.ios.source_files  = [
       "GQNetworking/**/*.{h,m}",
       "GQBaseNetwork/**/*.{h,m}",
@@ -43,7 +44,7 @@ Pod::Spec.new do |s|
     ss.public_header_files = [
       'GQNetworking/**/*.h',
       'GQBaseNetwork/**/*.h',
-      "AFNetWorking/**/*.{h,m}",
+      "AFNetWorking/**/*.{h}",
     ]
 
     ss.dependency 'AFNetworking/NSURLSession'
