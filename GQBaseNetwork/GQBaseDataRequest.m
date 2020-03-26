@@ -30,6 +30,16 @@ static NSString *defaultUserAgent = nil;
 
 @end
 
+static dispatch_queue_t responseSerializer_queue() {
+    static dispatch_queue_t gq_responseSerializer_queue;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        gq_responseSerializer_queue = dispatch_queue_create("com.gq.networking.response.Serializer", DISPATCH_QUEUE_CONCURRENT);
+    });
+
+    return gq_responseSerializer_queue;
+}
+
 @implementation GQBaseDataRequest
 
 @synthesize requestUrlChain = _requestUrlChain;
@@ -370,26 +380,28 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     }
     else {
         _rawResultData = result;
-        NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
-        //add callback here
-        if (!rawResultString|| ![rawResultString length]) {
-            errorInfo = [NSError errorWithDomain:@"empty data" code:GQRequestErrorNoData userInfo:nil];
-            dispatch_async(dispatch_get_main_queue(), callback);
-        }else {
-            _requestDataHandler = [self generateRequestHandler];
-            id response = [self.requestDataHandler parseDataString:rawResultString error:&errorInfo];
-            if (errorInfo) {
-                errorInfo = [NSError errorWithDomain:errorInfo?errorInfo.domain:@"" code:GQRequestErrorParse userInfo:errorInfo?errorInfo.userInfo:@{}];
-                success = FALSE;
+        _requestDataHandler = [self generateRequestHandler];
+        dispatch_async(responseSerializer_queue(), ^{
+            NSString *rawResultString = [[NSString alloc] initWithData:self.rawResultData encoding:[self getResponseEncoding]];
+            //add callback here
+            if (!rawResultString|| ![rawResultString length]) {
+                errorInfo = [NSError errorWithDomain:@"empty data" code:GQRequestErrorNoData userInfo:nil];
                 dispatch_async(dispatch_get_main_queue(), callback);
+            }else {
+                id response = [self.requestDataHandler parseDataString:rawResultString error:&errorInfo];
+                if (errorInfo) {
+                    errorInfo = [NSError errorWithDomain:errorInfo?errorInfo.domain:@"" code:GQRequestErrorParse userInfo:errorInfo?errorInfo.userInfo:@{}];
+                    success = FALSE;
+                    dispatch_async(self->_completeCallBackQueue, callback);
+                }
+                else {
+                    self->_responseResult = [[GQRequestResult alloc] initWithRawResultData:self.rawResultData rawJsonString:rawResultString rawResponse:response];
+                    success = TRUE;
+                    [self processResult];
+                    dispatch_async(self->_completeCallBackQueue, callback);
+                }
             }
-            else {
-                _responseResult = [[GQRequestResult alloc] initWithRawResultData:self.rawResultData rawJsonString:rawResultString rawResponse:response];
-                success = TRUE;
-                [self processResult];
-                dispatch_async(_completeCallBackQueue, callback);
-            }
-        }
+        });
     }
 }
 

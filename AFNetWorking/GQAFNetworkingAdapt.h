@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "GQNetworkConsts.h"
 
+#import "GQRequestSerialization.h"
+
 @protocol GQAFNetworkingAdaptDelegate <NSObject>
 
 - (NSURL *)destination:(NSURL *)targetPath response:(NSURLResponse *) response;
@@ -50,17 +52,9 @@ willCacheResponse:(NSCachedURLResponse *)proposedResponse;
     void (^_onRequestProgressChangedBlock)(float);
 }
 
-@property (nonatomic, assign) GQRequestMethod           requestMethod;
-@property (nonatomic, assign) NSStringEncoding          requestEncoding;
-@property (nonatomic, strong) NSString                  *localFilePath;
-@property (nonatomic, strong) NSString                  *requestURL;
-@property (nonatomic, strong) NSData                    *certificateData;
-@property (nonatomic, strong) NSDictionary              *requestParameters;
-@property (nonatomic, strong) NSMutableDictionary       *headerParams;
-@property (nonatomic, strong) NSArray                   *uploadDatas;
-@property (nonatomic, strong) NSMutableURLRequest       *request;
-@property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, assign) GQParameterEncoding       parmaterEncoding;
+@property (nonatomic, strong, readonly) NSData                    *certificateData;
+@property (nonatomic, strong, readonly) NSString                  *localFilePath;
+@property (nonatomic, strong, readonly) NSURLRequest              *request;
 @property (nonatomic, strong) NSURLSessionTask          *requestTask;
 
 - (instancetype)initRequestWithParameters:(NSDictionary *)parameters

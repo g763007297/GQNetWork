@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "GQHttpRequestManager.h"
 #import "GQNetworkConsts.h"
+#import "GQRequestSerialization.h"
 
 @class GQBaseOperation;
 
@@ -27,18 +28,8 @@
     void (^_onRequestProgressChangedBlock)(float);
 }
 
-@property (nonatomic, assign) GQRequestMethod           requestMethod;
-@property (nonatomic, assign) NSStringEncoding          requestEncoding;
-@property (nonatomic, strong) NSString                  *localFilePath;
-@property (nonatomic, strong) NSString                  *requestURL;
-@property (nonatomic, strong) NSData                    *certificateData;
-@property (nonatomic, strong) NSDictionary              *requestParameters;
-@property (nonatomic, strong) NSMutableDictionary       *headerParams;
-@property (nonatomic, strong) NSArray                   *uploadDatas;
-@property (nonatomic, strong) NSMutableURLRequest       *request;
-@property (nonatomic, strong) NSMutableData             *bodyData;
-@property (nonatomic, strong) GQBaseOperation           *urlOperation;
-@property (nonatomic, assign) GQParameterEncoding       parmaterEncoding;
+@property (nonatomic, strong, readonly) NSString                  *localFilePath;
+@property (nonatomic, strong, readonly) NSData                    *certificateData;
 
 - (instancetype)initRequestWithParameters:(NSDictionary *)parameters
                                 headerParams:(NSDictionary *)headerParams
