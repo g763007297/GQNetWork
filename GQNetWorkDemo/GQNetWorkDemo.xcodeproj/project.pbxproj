@@ -167,12 +167,12 @@
 		B6C7BBBE242C98D300A23734 /* GQOperation */ = {
 			isa = PBXGroup;
 			children = (
-				B6C7BBBF242C98D300A23734 /* GQSessionOperation.h */,
-				B6C7BBC0242C98D300A23734 /* GQURLOperation.m */,
+				B6C7BBC4242C98D300A23734 /* GQBaseOperation.h */,
 				B6C7BBC1242C98D300A23734 /* GQBaseOperation.m */,
+				B6C7BBBF242C98D300A23734 /* GQSessionOperation.h */,
 				B6C7BBC2242C98D300A23734 /* GQSessionOperation.m */,
 				B6C7BBC3242C98D300A23734 /* GQURLOperation.h */,
-				B6C7BBC4242C98D300A23734 /* GQBaseOperation.h */,
+				B6C7BBC0242C98D300A23734 /* GQURLOperation.m */,
 			);
 			path = GQOperation;
 			sourceTree = "<group>";

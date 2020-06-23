@@ -10,6 +10,7 @@
 #import "GQQueryStringPair.h"
 #import "GQNetworkTrafficManager.h"
 #import "GQNetworkConsts.h"
+#import "GQRequestSerialization.h"
 
 #import "GQAFNetworkingManager.h"
 

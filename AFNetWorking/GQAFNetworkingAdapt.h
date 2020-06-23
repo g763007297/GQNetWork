@@ -9,8 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "GQNetworkConsts.h"
 
-#import "GQRequestSerialization.h"
-
 @protocol GQAFNetworkingAdaptDelegate <NSObject>
 
 - (NSURL *)destination:(NSURL *)targetPath response:(NSURLResponse *) response;

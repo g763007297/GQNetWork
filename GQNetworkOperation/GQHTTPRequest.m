@@ -13,6 +13,7 @@
 #import "GQURLOperation.h"
 #import "GQSessionOperation.h"
 #import "GQNetworkConsts.h"
+#import "GQRequestSerialization.h"
 
 @interface GQHTTPRequest()
 
