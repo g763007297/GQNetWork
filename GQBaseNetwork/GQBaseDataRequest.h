@@ -34,7 +34,7 @@
     NSString                *_cancelSubject;
     
     //请求体
-    NSDictionary            *_parameters;
+    id                      _parameters;
     
     //上传文件数组
     NSArray<NSDictionary *>   *_uploadDatas;
@@ -66,7 +66,7 @@
 @property (nonatomic, assign, readonly) BOOL loading;//是否正在加载
 @property (nonatomic, copy, readonly) NSData *rawResultData;//请求回来的元数据
 @property (nonatomic, copy, readonly) NSString *requestUrl;//请求地址
-@property (nonatomic, copy, readonly) NSDictionary *userInfo;//请求参数
+@property (nonatomic, copy, readonly) id userInfo;//请求参数
 @property (nonatomic, copy, readonly) GQBaseRequestDataHandler *requestDataHandler;//解析方式
 
 #pragma mark -- chain code methods   链式写法

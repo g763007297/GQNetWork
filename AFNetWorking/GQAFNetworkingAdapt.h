@@ -55,26 +55,26 @@ willCacheResponse:(NSCachedURLResponse *)proposedResponse;
 @property (nonatomic, strong, readonly) NSData                    *certificateData;
 @property (nonatomic, strong, readonly) NSString                  *localFilePath;
 @property (nonatomic, strong, readonly) NSURLRequest              *request;
-@property (nonatomic, strong) NSURLSessionTask          *requestTask;
+@property (nonatomic, strong) NSURLSessionTask                    *requestTask;
 
-- (instancetype)initRequestWithParameters:(NSDictionary *)parameters
-                                headerParams:(NSDictionary *)headerParams
-                                 uploadDatas:(NSArray *)uploadDatas
-                                         URL:(NSString *)url
-                             certificateData:(NSData *)certificateData
-                                  saveToPath:(NSString *)localFilePath
-                             requestEncoding:(NSStringEncoding)requestEncoding
-                            parmaterEncoding:(GQParameterEncoding)parameterEncoding
-                               requestMethod:(GQRequestMethod)requestMethod
-                              onRequestStart:(void(^)(void))onStartBlock
-                           onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
-                       onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
-                         onNeedNewBodyStream:(NSInputStream *(^)(NSURLSession *session,NSURLSessionTask *task))onNeedNewBodyStream
-                         onWillCacheResponse:(NSCachedURLResponse *(^)(NSCachedURLResponse *proposedResponse))onWillCacheResponse
-                           onProgressChanged:(void(^)(float progress))onProgressChangedBlock
-                           onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
-                           onRequestCanceled:(void(^)(void))onCanceledBlock
-                             onRequestFailed:(void(^)(NSError *error))onFailedBlock;
+- (instancetype)initRequestWithParameters:(id)parameters
+                             headerParams:(NSDictionary *)headerParams
+                              uploadDatas:(NSArray *)uploadDatas
+                                      URL:(NSString *)url
+                          certificateData:(NSData *)certificateData
+                               saveToPath:(NSString *)localFilePath
+                          requestEncoding:(NSStringEncoding)requestEncoding
+                         parmaterEncoding:(GQParameterEncoding)parameterEncoding
+                            requestMethod:(GQRequestMethod)requestMethod
+                           onRequestStart:(void(^)(void))onStartBlock
+                        onRechiveResponse:(NSURLSessionResponseDisposition (^)(NSURLResponse *response))onRechiveResponseBlock
+                    onWillHttpRedirection:(NSURLRequest* (^)(NSURLRequest *request,NSURLResponse *response))onWillHttpRedirection
+                      onNeedNewBodyStream:(NSInputStream *(^)(NSURLSession *session,NSURLSessionTask *task))onNeedNewBodyStream
+                      onWillCacheResponse:(NSCachedURLResponse *(^)(NSCachedURLResponse *proposedResponse))onWillCacheResponse
+                        onProgressChanged:(void(^)(float progress))onProgressChangedBlock
+                        onRequestFinished:(void(^)(NSData *responseData))onFinishedBlock
+                        onRequestCanceled:(void(^)(void))onCanceledBlock
+                          onRequestFailed:(void(^)(NSError *error))onFailedBlock;
 
 - (void)setTimeoutInterval:(NSTimeInterval)seconds;
 - (void)cancelRequest;

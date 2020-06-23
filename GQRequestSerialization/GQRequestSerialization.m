@@ -24,7 +24,7 @@
 
 @property (nonatomic, strong) NSString                  *requestURL;
 @property (nonatomic, strong) NSData                    *certificateData;
-@property (nonatomic, strong) NSMutableDictionary       *requestParameters;
+@property (nonatomic, strong) id                        requestParameters;
 @property (nonatomic, strong) NSMutableDictionary       *headerParams;
 @property (nonatomic, strong) NSArray                   *uploadDatas;
 @property (nonatomic, strong) NSMutableURLRequest       *request;
@@ -37,7 +37,7 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 
 @implementation GQRequestSerialization
 
-- (instancetype)initRequestWithParameters:(NSDictionary *)parameters
+- (instancetype)initRequestWithParameters:(id)parameters
                              headerParams:(NSDictionary *)headerParams
                               uploadDatas:(NSArray *)uploadDatas
                                       URL:(NSString *)url
@@ -55,9 +55,9 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
         _isUploadFile = NO;
         
         if (parameters) {
-            self.requestParameters = parameters.mutableCopy;
+            self.requestParameters = parameters;
         } else{
-            self.requestParameters = @{}.mutableCopy;
+            self.requestParameters = @{};
         }
         
         if (headerParams) {
@@ -179,7 +179,7 @@ static NSString *boundary = @"----WebKitFormGQHTTPRequest7MA4YWxkTrZu0gW";
 
 - (NSMutableURLRequest *)generateJSONPOSTRequest
 {
-    if ([[self.requestParameters allKeys] count]) {
+    if ([self.requestParameters count] > 0) {
         NSData *jsonData = [NSJSONSerialization dataWithJSONObject:self.requestParameters options:NSJSONWritingPrettyPrinted error:nil];
         [self.bodyData appendData:jsonData];
     }

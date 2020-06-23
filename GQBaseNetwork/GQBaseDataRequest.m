@@ -83,7 +83,7 @@ GQChainRequestDefine(cancelSubjectChain, cancelSubject, NSString *, GQChainObjec
 GQChainRequestDefine(timeOutIntervalChain, timeOutInterval, NSInteger, GQChainStuctRequest);
 GQChainRequestDefine(headerParametersChain, headerParameters, NSDictionary *, GQChainObjectRequest);
 GQChainRequestDefine(uploadDatasChain, uploadDatas, NSArray *, GQChainObjectRequest);
-GQChainRequestDefine(parametersChain, parameters, NSDictionary *, GQChainObjectRequest);
+GQChainRequestDefine(parametersChain, parameters, id, GQChainObjectRequest);
 GQChainRequestDefine(indicatorViewChain, indicatorView, UIView *, GQChainObjectRequest);
 GQChainRequestDefine(localFilePathChain, localFilePath, NSString * , GQChainObjectRequest);
 GQChainRequestDefine(cacheKeyChain, cacheKey, NSString * , GQChainObjectRequest);
@@ -163,7 +163,8 @@ GQMethodRequestDefine(onProgressChangedBlockChain,GQProgressChanged);
     
     _requestStartDate = [NSDate date];
     
-    if ([[self getStaticParams] count] > 0) {
+    //如果参数传进来是字典类型，则需要处理默认参数，否则，直接赋值；
+    if ([_parameters isKindOfClass:[NSDictionary class]] && [[self getStaticParams] count] > 0) {
         NSMutableDictionary *paramters = [[NSMutableDictionary alloc] initWithDictionary:_parameters];
         [paramters addEntriesFromDictionary:[self getStaticParams]];
         _userInfo = paramters;

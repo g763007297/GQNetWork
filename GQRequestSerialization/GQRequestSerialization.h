@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
  
 @property (nonatomic, strong, readonly) NSMutableURLRequest *request;
 
-- (instancetype)initRequestWithParameters:(NSDictionary *)parameters
+- (instancetype)initRequestWithParameters:(id)parameters
                              headerParams:(NSDictionary *)headerParams
                               uploadDatas:(NSArray *)uploadDatas
                                       URL:(NSString *)url
